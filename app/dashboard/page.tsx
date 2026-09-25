@@ -1723,33 +1723,39 @@ export default function Dashboard() {
         const r = getRolePath(user.title || user.role);
         const phone = String(updated.phoneNumber ?? user.phoneNumber ?? user.phone ?? "").trim();
         if (!isValidPhoneNumber(phone)) {
-            alert("Enter an international mobile number, such as +8801712345678.");
+            alert("Enter a valid local or international mobile number (e.g. 01952597587 or +8801952597587).");
             return;
         }
         try {
             if (user.id) {
+                const payload = {
+                    userName: updated.userName || user.userName || user.name,
+                    username: updated.userName || user.userName || user.name,
+                    phoneNumber: phone,
+                    address: updated.address !== undefined ? updated.address : user.address,
+                };
+
                 const response = await axios.patch(
                     `${apiBase}/${r}/${user.id}`,
-                    {
-                        userName: updated.userName || user.userName,
-                        phoneNumber: phone,
-                        address: updated.address || user.address,
-                    },
+                    payload,
                     { withCredentials: true, validateStatus: (status) => status < 500 }
                 );
+
                 if (response.status >= 400) {
-                    throw new Error(response.data?.message || "Profile update was rejected.");
+                    throw new Error(response.data?.message || "Profile update was rejected by server.");
                 }
             }
-            const mergedUser: UserData = { ...user, ...updated };
+            const mergedUser: UserData = { ...user, ...updated, phoneNumber: phone, phone };
             setUser(mergedUser);
             localStorage.setItem("user", JSON.stringify(mergedUser));
             appendAuditEntry("Profile updated", `Updated profile information for ${mergedUser.userName || mergedUser.name || user.email}.`, "success");
-        } catch (err) {
+            alert("Profile updated successfully!");
+        } catch (err: any) {
             console.warn("Failed to persist profile to backend:", err);
-            const mergedUser: UserData = { ...user, ...updated };
+            const mergedUser: UserData = { ...user, ...updated, phoneNumber: phone, phone };
             setUser(mergedUser);
             localStorage.setItem("user", JSON.stringify(mergedUser));
+            alert(err.message || "Profile updated locally.");
         }
     };
 
