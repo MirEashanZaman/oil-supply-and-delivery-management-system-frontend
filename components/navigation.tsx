@@ -29,14 +29,14 @@ export default function Navigation() {
     const isActive = (path: string) => pathname === path;
 
     return (
-        <nav className="navbar bg-[#0F2747] text-white shadow-none rounded-2xl px-4 py-2.5 my-3 w-full max-w-[1240px] flex items-center justify-between gap-3 border border-[#163860]">
-            <div className="flex items-center gap-2.5">
-                <Link href="/" className="flex items-center gap-2 text-white font-black text-sm sm:text-base tracking-tight hover:opacity-95 transition-opacity">
-                    <span className="w-8 h-8 rounded-lg bg-[#F59E0B] text-[#1E293B] flex items-center justify-center font-black text-xs shadow-none">
+        <nav className="navbar bg-[#0F2747] text-white shadow-none rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 my-2 sm:my-3 w-full max-w-[1240px] flex items-center justify-between gap-2 border border-[#163860]">
+            <div className="flex items-center gap-1.5 sm:gap-2.5">
+                <Link href="/" className="flex items-center gap-1.5 sm:gap-2 text-white font-black text-xs sm:text-base tracking-tight hover:opacity-95 transition-opacity">
+                    <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#F59E0B] text-[#1E293B] flex items-center justify-center font-black text-xs shadow-none">
                         OS
                     </span>
                     <span className="hidden sm:inline font-bold">Oil Supply & Delivery Management System</span>
-                    <span className="sm:hidden font-bold">OSDMS</span>
+                    <span className="sm:hidden font-bold text-xs">OSDMS</span>
                 </Link>
             </div>
 
