@@ -29,21 +29,20 @@ export default function Navigation() {
     const isActive = (path: string) => pathname === path;
 
     return (
-        <nav className="navbar bg-[#0F2747] text-white shadow-none rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 my-2 sm:my-3 w-full max-w-[1240px] flex items-center justify-between gap-2 border border-[#163860]">
-            <div className="flex items-center gap-1.5 sm:gap-2.5">
-                <Link href="/" className="flex items-center gap-1.5 sm:gap-2 text-white font-black text-xs sm:text-base tracking-tight hover:opacity-95 transition-opacity">
+        <nav className="navbar bg-[#0F2747] text-white shadow-none rounded-2xl px-3 py-2 sm:px-4 sm:py-2.5 my-2 sm:my-3 w-full max-w-[1240px] flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 border border-[#163860]">
+            <div className="flex items-center gap-2">
+                <Link href="/" className="flex items-center gap-2 text-white font-black text-sm sm:text-base tracking-tight hover:opacity-95 transition-opacity">
                     <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#F59E0B] text-[#1E293B] flex items-center justify-center font-black text-xs shadow-none">
                         OS
                     </span>
-                    <span className="hidden sm:inline font-bold">Oil Supply & Delivery Management System</span>
-                    <span className="sm:hidden font-bold text-xs">OSDMS</span>
+                    <span className="font-bold text-xs sm:text-sm">OSDMS</span>
                 </Link>
             </div>
 
-            <div className="flex items-center gap-1 sm:gap-2 flex-wrap justify-center">
+            <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap justify-center text-xs">
                 <Link
                     href="/"
-                    className={`btn btn-sm shadow-none rounded-lg text-xs sm:text-sm font-semibold border-none transition-colors ${isActive("/")
+                    className={`btn btn-xs sm:btn-sm shadow-none rounded-lg text-xs font-semibold border-none transition-colors ${isActive("/")
                             ? "bg-[#163860] text-[#F59E0B] font-bold"
                             : "btn-ghost text-slate-200 hover:bg-[#163860]/70 hover:text-white"
                         }`}
@@ -52,7 +51,7 @@ export default function Navigation() {
                 </Link>
                 <Link
                     href="/about"
-                    className={`btn btn-sm shadow-none rounded-lg text-xs sm:text-sm font-semibold border-none transition-colors ${isActive("/about")
+                    className={`btn btn-xs sm:btn-sm shadow-none rounded-lg text-xs font-semibold border-none transition-colors ${isActive("/about")
                             ? "bg-[#163860] text-[#F59E0B] font-bold"
                             : "btn-ghost text-slate-200 hover:bg-[#163860]/70 hover:text-white"
                         }`}
@@ -61,7 +60,7 @@ export default function Navigation() {
                 </Link>
                 <Link
                     href="/contact"
-                    className={`btn btn-sm shadow-none rounded-lg text-xs sm:text-sm font-semibold border-none transition-colors ${isActive("/contact")
+                    className={`btn btn-xs sm:btn-sm shadow-none rounded-lg text-xs font-semibold border-none transition-colors ${isActive("/contact")
                             ? "bg-[#163860] text-[#F59E0B] font-bold"
                             : "btn-ghost text-slate-200 hover:bg-[#163860]/70 hover:text-white"
                         }`}
@@ -72,7 +71,7 @@ export default function Navigation() {
                 {user && (
                     <Link
                         href="/dashboard"
-                        className={`btn btn-sm shadow-none rounded-lg text-xs sm:text-sm font-semibold border-none transition-colors ${isActive("/dashboard")
+                        className={`btn btn-xs sm:btn-sm shadow-none rounded-lg text-xs font-semibold border-none transition-colors ${isActive("/dashboard")
                                 ? "bg-[#F59E0B] text-[#1E293B] font-bold"
                                 : "btn-ghost text-slate-200 hover:bg-[#163860]/70 hover:text-white"
                             }`}
@@ -82,30 +81,30 @@ export default function Navigation() {
                 )}
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
                 {!user ? (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 sm:gap-2">
                         <Link
                             href="/login"
-                            className="btn btn-sm shadow-none bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] font-bold rounded-lg border-none text-xs sm:text-sm"
+                            className="btn btn-xs sm:btn-sm shadow-none bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] font-bold rounded-lg border-none text-xs"
                         >
                             Sign In
                         </Link>
                         <Link
                             href="/registration"
-                            className="btn btn-sm btn-outline text-white border-slate-400 hover:bg-white/10 hover:border-white rounded-lg text-xs sm:text-sm font-semibold"
+                            className="btn btn-xs sm:btn-sm btn-outline text-white border-slate-400 hover:bg-white/10 hover:border-white rounded-lg text-xs font-semibold"
                         >
                             Register
                         </Link>
                     </div>
                 ) : (
-                    <div className="flex items-center gap-2">
-                        <span className="badge bg-[#163860] text-[#F59E0B] border border-[#F59E0B]/30 font-bold text-xs px-2.5 py-1 hidden md:inline-flex">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                        <span className="badge bg-[#163860] text-[#F59E0B] border border-[#F59E0B]/30 font-bold text-[11px] px-2 py-0.5">
                             {user.title || "User"}
                         </span>
                         <button
                             onClick={handleLogout}
-                            className="btn btn-sm btn-ghost text-red-300 hover:bg-red-950/40 hover:text-red-200 rounded-lg font-bold text-xs sm:text-sm cursor-pointer"
+                            className="btn btn-xs sm:btn-sm btn-ghost text-red-300 hover:bg-red-950/40 hover:text-red-200 rounded-lg font-bold text-xs cursor-pointer"
                         >
                             Sign Out
                         </button>

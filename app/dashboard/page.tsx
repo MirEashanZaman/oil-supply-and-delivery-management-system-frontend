@@ -1821,50 +1821,51 @@ export default function Dashboard() {
             )}
 
             { }
-            <div className="flex-1 flex flex-col items-center p-4 sm:p-6 w-full">
-                { }
-                <div className="w-full max-w-[1200px] card bg-[#FFFFFF] border border-[#E2E8F0] shadow-sm rounded-2xl p-6 mb-8 text-left">
-                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-6">
-                        <div className="flex items-center gap-4">
+            {/* Main Content Area */}
+            <div className="flex-1 flex flex-col items-center px-1 sm:px-6 w-full max-w-full">
+                {/* User Info Bar */}
+                <div className="w-full max-w-[1200px] card bg-[#FFFFFF] border border-[#E2E8F0] shadow-sm rounded-2xl p-4 sm:p-6 mb-6 text-left">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E2E8F0] pb-4 sm:pb-6">
+                        <div className="flex items-center gap-3">
                             {user.photoUrl ? (
                                 <img
                                     src={user.photoUrl}
                                     alt="User photo"
-                                    className="w-14 h-14 rounded-2xl object-cover border-2 border-[#E2E8F0] shadow-md"
+                                    className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl object-cover border-2 border-[#E2E8F0] shadow-sm shrink-0"
                                     onError={(e) => {
                                         e.currentTarget.style.display = "none";
                                     }}
                                 />
                             ) : (
-                                <div className="w-14 h-14 rounded-2xl bg-[#0F2747] text-white flex items-center justify-center font-black text-2xl shadow-md">
+                                <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-[#0F2747] text-white flex items-center justify-center font-black text-xl sm:text-2xl shadow-sm shrink-0">
                                     {(user.userName || user.name || user.email || "U")[0].toUpperCase()}
                                 </div>
                             )}
-                            <div>
-                                <div className="flex items-center gap-3">
-                                    <h2 className="text-xl font-extrabold text-[#0F2747]">
+                            <div className="min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                    <h2 className="text-base sm:text-xl font-extrabold text-[#0F2747] truncate">
                                         {user.userName || user.name}
                                     </h2>
-                                    <span className={`badge border-none font-bold text-xs px-3 py-1 ${getRoleBadgeColor(user.title || user.role || "")}`}>
+                                    <span className={`badge border-none font-bold text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 ${getRoleBadgeColor(user.title || user.role || "")}`}>
                                         {user.title || user.role || "User"}
                                     </span>
                                 </div>
-                                <p className="text-xs text-secondary-gray mt-0.5">
-                                    {user.email} • {user.address || "Main Operational Hub"}
+                                <p className="text-[11px] sm:text-xs text-secondary-gray mt-0.5 truncate max-w-[240px] sm:max-w-none">
+                                    {user.email} {user.address ? `• ${user.address}` : ""}
                                 </p>
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-3 w-full md:w-auto justify-end flex-wrap">
+                        <div className="flex items-center gap-2 w-full sm:w-auto justify-start sm:justify-end flex-wrap pt-2 sm:pt-0">
                             {user.role === "Customer" && (
                                 <button
                                     type="button"
                                     onClick={() => setIsCartModalOpen(true)}
-                                    className="btn btn-accent btn-sm rounded-xl font-bold flex items-center gap-2"
+                                    className="btn btn-accent btn-xs sm:btn-sm rounded-xl font-bold flex items-center gap-1.5"
                                 >
-                                    <span> Delivery Cart</span>
+                                    <span>Delivery Cart</span>
                                     {cartTotalItems > 0 && (
-                                        <span className="badge badge-sm bg-[#0F2747] text-white border-none font-bold">
+                                        <span className="badge badge-xs bg-[#0F2747] text-white border-none font-bold">
                                             {cartTotalItems}
                                         </span>
                                     )}
@@ -1873,7 +1874,7 @@ export default function Dashboard() {
                             <button
                                 type="button"
                                 onClick={refreshDashboard}
-                                className="btn btn-ghost btn-sm text-[#0F2747] hover:bg-slate-100 rounded-xl font-bold"
+                                className="btn btn-ghost btn-xs sm:btn-sm text-[#0F2747] hover:bg-slate-100 rounded-xl font-bold"
                                 disabled={isDashboardRefreshing}
                             >
                                 {isDashboardRefreshing ? "Refreshing..." : "Refresh"}
@@ -1881,7 +1882,7 @@ export default function Dashboard() {
                             <button
                                 type="button"
                                 onClick={handleLogout}
-                                className="btn btn-ghost btn-sm text-[#DC2626] hover:bg-rose-50 rounded-xl font-bold"
+                                className="btn btn-ghost btn-xs sm:btn-sm text-[#DC2626] hover:bg-rose-50 rounded-xl font-bold"
                             >
                                 Sign Out
                             </button>
@@ -1903,22 +1904,23 @@ export default function Dashboard() {
                         </div>
                     )}
 
-                    <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                    {/* Metrics Grid */}
+                    <div className="mt-4 sm:mt-6 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
                         {dashboardMetrics.map((metric) => (
-                            <div key={metric.label} className={`rounded-2xl border p-4 shadow-sm ${metric.tint}`}>
-                                <div className="text-xs font-bold uppercase tracking-[0.12em] opacity-80">{metric.label}</div>
-                                <div className="mt-3 text-2xl font-black leading-none">{metric.value}</div>
-                                <div className="mt-2 text-xs font-medium opacity-80">{metric.detail}</div>
+                            <div key={metric.label} className={`rounded-xl sm:rounded-2xl border p-3 sm:p-4 shadow-sm ${metric.tint}`}>
+                                <div className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.08em] opacity-80 truncate">{metric.label}</div>
+                                <div className="mt-1.5 sm:mt-3 text-lg sm:text-2xl font-black leading-none">{metric.value}</div>
+                                <div className="mt-1.5 text-[10px] sm:text-xs font-medium opacity-80 line-clamp-1">{metric.detail}</div>
                             </div>
                         ))}
                     </div>
 
-                    { }
-                    <div className="flex items-center gap-2 overflow-x-auto pt-4 no-scrollbar">
+                    {/* Navigation Tabs */}
+                    <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pt-4 pb-1 no-scrollbar w-full">
                         <button
                             type="button"
                             onClick={() => setActiveTab("overview")}
-                            className={`btn btn-sm rounded-xl font-bold transition-all ${activeTab === "overview"
+                            className={`btn btn-xs sm:btn-sm rounded-xl font-bold transition-all text-xs shrink-0 ${activeTab === "overview"
                                 ? "btn-primary shadow-sm"
                                 : "btn-ghost text-secondary-gray hover:text-[#0F2747]"
                                 }`}
@@ -1928,7 +1930,7 @@ export default function Dashboard() {
                         <button
                             type="button"
                             onClick={() => setActiveTab("products")}
-                            className={`btn btn-sm rounded-xl font-bold transition-all ${activeTab === "products"
+                            className={`btn btn-xs sm:btn-sm rounded-xl font-bold transition-all text-xs shrink-0 ${activeTab === "products"
                                 ? "btn-primary shadow-sm"
                                 : "btn-ghost text-secondary-gray hover:text-[#0F2747]"
                                 }`}
@@ -1938,7 +1940,7 @@ export default function Dashboard() {
                         <button
                             type="button"
                             onClick={() => setActiveTab("orders")}
-                            className={`btn btn-sm rounded-xl font-bold transition-all ${activeTab === "orders"
+                            className={`btn btn-xs sm:btn-sm rounded-xl font-bold transition-all text-xs shrink-0 ${activeTab === "orders"
                                 ? "btn-primary shadow-sm"
                                 : "btn-ghost text-secondary-gray hover:text-[#0F2747]"
                                 }`}
