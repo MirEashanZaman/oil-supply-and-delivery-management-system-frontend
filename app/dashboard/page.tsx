@@ -1807,24 +1807,23 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-[#F5F7FA] text-[#1E293B] flex flex-col">
+        <div className="min-h-screen bg-[#F5F7FA] text-[#1E293B] flex flex-col w-full max-w-[100vw] overflow-x-hidden">
             <MyHeader name="Dashboard" message="Oil Supply & Delivery Operations Portal" />
             <MyNavigation />
 
             {cartToast && (
                 <div
                     role="status"
-                    className="fixed right-5 top-5 z-[70] rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 shadow-sm"
+                    className="fixed right-3 sm:right-5 top-5 z-[70] rounded-xl border border-emerald-200 bg-emerald-50 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-semibold text-emerald-800 shadow-sm max-w-[90vw]"
                 >
                     {cartToast}
                 </div>
             )}
 
-            { }
             {/* Main Content Area */}
-            <div className="flex-1 flex flex-col items-center px-1 sm:px-6 w-full max-w-full">
+            <div className="flex-1 flex flex-col items-center px-2 sm:px-6 w-full max-w-full overflow-x-hidden">
                 {/* User Info Bar */}
-                <div className="w-full max-w-[1200px] card bg-[#FFFFFF] border border-[#E2E8F0] shadow-sm rounded-2xl p-4 sm:p-6 mb-6 text-left">
+                <div className="w-full max-w-[1200px] card bg-[#FFFFFF] border border-[#E2E8F0] shadow-sm rounded-2xl p-3.5 sm:p-6 mb-4 sm:mb-6 text-left">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E2E8F0] pb-4 sm:pb-6">
                         <div className="flex items-center gap-3">
                             {user.photoUrl ? (

@@ -187,11 +187,11 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 justify-items-center w-full">
           {filteredProducts.map((product) => (
             <div
               key={product.id}
-              className="card bg-white w-96 max-w-full border border-slate-200 overflow-hidden rounded-2xl"
+              className="card bg-white w-full sm:w-96 max-w-full border border-slate-200 overflow-hidden rounded-2xl"
             >
               <figure className="h-48 w-full overflow-hidden bg-[#F5F7FA]">
                 <img
