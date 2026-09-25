@@ -130,7 +130,7 @@ export default function Login() {
                         phoneNumber: u.phoneNumber || userData.phoneNumber,
                         address: u.address || userData.address,
                         title: normalizeRole(u.title || r),
-                        photoUrl: u.filename ? `${API_ENDPOINT}/customer/getimage/${u.filename}` : userData.photoUrl,
+                        photoUrl: u.filename ? `/api/profile-image/${encodeURIComponent(u.filename)}` : userData.photoUrl,
                     };
                 } else {
                     const rolePath = matchedRole.toLowerCase();

@@ -6,8 +6,8 @@ export async function GET(
     { params }: { params: Promise<{ filename: string }> },
 ) {
     const { filename } = await params;
-    const response = await fetch(
-        `${API_ENDPOINT}/customer/getimage/${encodeURIComponent(filename)}`,
+    let response = await fetch(
+        `${API_ENDPOINT}/customer/auth/getimage/${encodeURIComponent(filename)}`,
         {
             headers: {
                 cookie: request.headers.get("cookie") || "",
@@ -15,6 +15,27 @@ export async function GET(
             cache: "no-store",
         },
     );
+
+    if (!response.ok) {
+        response = await fetch(
+            `${API_ENDPOINT}/customer/getimage/${encodeURIComponent(filename)}`,
+            {
+                headers: {
+                    cookie: request.headers.get("cookie") || "",
+                },
+                cache: "no-store",
+            },
+        );
+    }
+
+    if (!response.ok) {
+        response = await fetch(
+            `${API_ENDPOINT}/uploads/${encodeURIComponent(filename)}`,
+            {
+                cache: "no-store",
+            },
+        );
+    }
 
     if (!response.ok) {
         return new NextResponse(null, { status: response.status });
