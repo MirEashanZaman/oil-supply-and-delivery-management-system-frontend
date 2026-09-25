@@ -1802,7 +1802,7 @@ export default function Dashboard() {
         }
     };
 
-    const handleUpdateProfile = async (updated: Partial<UserData>) => {
+    const handleUpdateProfile = async (updated: Partial<UserData> & { photoFile?: File | null }) => {
         if (!user) return;
         const r = getRolePath(user.title || user.role);
         const phone = String(updated.phoneNumber ?? user.phoneNumber ?? user.phone ?? "").trim();
@@ -1810,47 +1810,95 @@ export default function Dashboard() {
             alert("Enter a valid local or international mobile number (e.g. 01952597587 or +8801952597587).");
             return;
         }
+
+        let updatedPhotoUrl = updated.photoUrl || user.photoUrl;
+
         try {
             if (user.id) {
-                const payload: any = {
-                    userName: updated.userName || user.userName || user.name,
-                    username: updated.userName || user.userName || user.name,
-                    phoneNumber: phone,
-                    address: updated.address !== undefined ? updated.address : user.address,
-                };
-
-                if (updated.password && updated.password.trim().length > 0) {
-                    payload.password = updated.password.trim();
-                }
-
                 const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
                 const headers: any = {};
                 if (token) {
                     headers["Authorization"] = `Bearer ${token}`;
                 }
 
-                const response = await axios.patch(
-                    `${apiBase}/${r}/${user.id}`,
-                    payload,
-                    {
-                        headers,
-                        withCredentials: true,
-                        validateStatus: (status) => status < 500
+                let response;
+                if (updated.photoFile) {
+                    const formData = new FormData();
+                    formData.append("userName", updated.userName || user.userName || user.name || "");
+                    formData.append("username", updated.userName || user.userName || user.name || "");
+                    formData.append("phoneNumber", phone);
+                    if (updated.address !== undefined) formData.append("address", updated.address);
+                    else if (user.address) formData.append("address", user.address);
+                    if (updated.password && updated.password.trim().length > 0) {
+                        formData.append("password", updated.password.trim());
                     }
-                );
+                    formData.append("photo", updated.photoFile);
+
+                    headers["Content-Type"] = "multipart/form-data";
+
+                    response = await axios.patch(
+                        `${apiBase}/${r}/${user.id}`,
+                        formData,
+                        {
+                            headers,
+                            withCredentials: true,
+                            validateStatus: (status) => status < 500
+                        }
+                    );
+                } else {
+                    const payload: any = {
+                        userName: updated.userName || user.userName || user.name,
+                        username: updated.userName || user.userName || user.name,
+                        phoneNumber: phone,
+                        address: updated.address !== undefined ? updated.address : user.address,
+                    };
+
+                    if (updated.password && updated.password.trim().length > 0) {
+                        payload.password = updated.password.trim();
+                    }
+
+                    response = await axios.patch(
+                        `${apiBase}/${r}/${user.id}`,
+                        payload,
+                        {
+                            headers,
+                            withCredentials: true,
+                            validateStatus: (status) => status < 500
+                        }
+                    );
+                }
 
                 if (response.status >= 400) {
                     throw new Error(response.data?.message || "Profile update was rejected by server.");
                 }
+
+                const savedRecord = response.data;
+                if (savedRecord?.filename) {
+                    updatedPhotoUrl = `/api/profile-image/${encodeURIComponent(savedRecord.filename)}`;
+                }
             }
-            const mergedUser: UserData = { ...user, ...updated, phoneNumber: phone, phone };
+            const mergedUser: UserData = {
+                ...user,
+                ...updated,
+                photoUrl: updatedPhotoUrl,
+                phoneNumber: phone,
+                phone,
+            };
+            delete (mergedUser as any).photoFile;
             setUser(mergedUser);
             localStorage.setItem("user", JSON.stringify(mergedUser));
             appendAuditEntry("Profile updated", `Updated profile information for ${mergedUser.userName || mergedUser.name || user.email}.`, "success");
             alert("Profile updated successfully!");
         } catch (err: any) {
             console.warn("Failed to persist profile to backend:", err);
-            const mergedUser: UserData = { ...user, ...updated, phoneNumber: phone, phone };
+            const mergedUser: UserData = {
+                ...user,
+                ...updated,
+                photoUrl: updatedPhotoUrl,
+                phoneNumber: phone,
+                phone,
+            };
+            delete (mergedUser as any).photoFile;
             setUser(mergedUser);
             localStorage.setItem("user", JSON.stringify(mergedUser));
             alert(err.message || "Profile updated locally.");

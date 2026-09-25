@@ -6,7 +6,7 @@ import { getRoleBadgeColor, isValidPhoneNumber } from "../utils";
 
 interface ProfileTabProps {
   userData: UserData | null;
-  onUpdateProfile?: (updated: Partial<UserData>) => void;
+  onUpdateProfile?: (updated: Partial<UserData> & { photoFile?: File | null }) => void;
   onDeleteAccount?: () => void;
 }
 
@@ -25,6 +25,17 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [saved, setSaved] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+
+  React.useEffect(() => {
+    if (userData) {
+      setName(userData.userName || userData.name || "");
+      setPhone(userData.phoneNumber || userData.phone || "");
+      setAddress(userData.address || "");
+      if (userData.photoUrl && !photoFile) {
+        setPhotoPreview(userData.photoUrl);
+      }
+    }
+  }, [userData]);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -54,18 +65,20 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
     setIsUploading(true);
     try {
       if (onUpdateProfile) {
-        onUpdateProfile({
+        await onUpdateProfile({
           userName: name,
           name: name,
           phoneNumber: phone,
           phone: phone,
           address,
           photoUrl: photoPreview,
+          photoFile: photoFile,
           password: password.trim() ? password.trim() : undefined,
         });
       }
       setPassword("");
       setConfirmPassword("");
+      setPhotoFile(null);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } finally {

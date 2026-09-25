@@ -1,0 +1,14 @@
+{
+  "id": "session-1790342470450",
+  "startedAt": "2026-09-25T13:21:10.450Z",
+  "cwd": "C:\\Users\\Admin\\Desktop\\APWD\\oil-supply-delivery-management-system-frontend",
+  "context": {},
+  "metrics": {
+    "edits": 0,
+    "commands": 0,
+    "tasks": 0,
+    "errors": 0
+  },
+  "endedAt": "2026-09-25T13:23:05.198Z",
+  "duration": 114749
+}
