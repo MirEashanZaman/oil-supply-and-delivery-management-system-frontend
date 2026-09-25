@@ -12,6 +12,15 @@ interface CheckoutPaymentModalProps {
     cartItems: CartItem[];
     cartTotalItems: number;
     cartTotalAmount: number;
+    bulkDiscountAmount?: number;
+    bulkDiscountRate?: number;
+    promoDiscountAmount?: number;
+    appliedPromo?: string | null;
+    promoCodeInput?: string;
+    setPromoCodeInput?: (val: string) => void;
+    promoError?: string | null;
+    onApplyPromo?: (code: string) => void;
+    onRemovePromo?: () => void;
     orderQuantity: number;
     setOrderQuantity: (qty: number) => void;
     sourcingChoice: "supplier" | "dealer";
@@ -57,6 +66,15 @@ export const CheckoutPaymentModal: React.FC<CheckoutPaymentModalProps> = ({
     cartItems,
     cartTotalItems,
     cartTotalAmount,
+    bulkDiscountAmount = 0,
+    bulkDiscountRate = 0,
+    promoDiscountAmount = 0,
+    appliedPromo = null,
+    promoCodeInput = "",
+    setPromoCodeInput,
+    promoError = null,
+    onApplyPromo,
+    onRemovePromo,
     orderQuantity,
     setOrderQuantity,
     sourcingChoice,
@@ -170,7 +188,19 @@ export const CheckoutPaymentModal: React.FC<CheckoutPaymentModalProps> = ({
                                 </div>
                             ))}
                         </div>
-                        <div className="border-t border-[#E2E8F0] pt-2 flex justify-between items-center text-xs">
+                        {bulkDiscountAmount > 0 && (
+                            <div className="flex justify-between items-center text-xs text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-lg font-medium border border-emerald-200 mt-2">
+                                <span>Bulk Volume Discount ({Math.round(bulkDiscountRate * 100)}% off):</span>
+                                <span className="font-bold">-${bulkDiscountAmount.toFixed(2)} USD</span>
+                            </div>
+                        )}
+                        {promoDiscountAmount > 0 && (
+                            <div className="flex justify-between items-center text-xs text-amber-800 bg-amber-50 px-2.5 py-1.5 rounded-lg font-medium border border-amber-200 mt-1">
+                                <span>Promo Discount ({appliedPromo}):</span>
+                                <span className="font-bold">-${promoDiscountAmount.toFixed(2)} USD</span>
+                            </div>
+                        )}
+                        <div className="border-t border-[#E2E8F0] pt-2 mt-2 flex justify-between items-center text-xs">
                             <span className="font-bold text-dark-slate">Total Consolidated Amount:</span>
                             <span className="text-base font-extrabold text-primary">${cartTotalAmount.toFixed(2)} USD</span>
                         </div>
@@ -179,41 +209,113 @@ export const CheckoutPaymentModal: React.FC<CheckoutPaymentModalProps> = ({
 
                     checkoutProduct && (
                         <>
-                            <div className="bg-[#FAFBFD] p-4 rounded-xl border border-[#E2E8F0] mb-5 flex gap-4 items-center">
-                                <img
-                                    src={checkoutProduct.image || getProductImage(checkoutProduct.name, checkoutProduct.image, checkoutProduct.id)}
-                                    alt={checkoutProduct.name}
-                                    className="w-16 h-16 rounded-xl object-cover border border-[#CBD5E1] shrink-0"
-                                    onError={(e) => {
-                                        e.currentTarget.src = getProductImage(checkoutProduct.name, undefined, checkoutProduct.id);
-                                    }}
-                                />
-                                <div className="flex-1">
-                                    <div className="flex justify-between items-center">
-                                        <div>
-                                            <span className="text-xs font-bold text-secondary-gray uppercase">{checkoutProduct.category}</span>
-                                            <h3 className="text-base font-bold text-dark-slate">{checkoutProduct.name}</h3>
-                                            <p className="text-xs text-secondary-gray">{checkoutProduct.price}</p>
+                            <div className="bg-[#FAFBFD] p-4 rounded-xl border border-[#E2E8F0] mb-5 flex flex-col gap-3">
+                                <div className="flex gap-4 items-center">
+                                    <img
+                                        src={checkoutProduct.image || getProductImage(checkoutProduct.name, checkoutProduct.image, checkoutProduct.id)}
+                                        alt={checkoutProduct.name}
+                                        className="w-16 h-16 rounded-xl object-cover border border-[#CBD5E1] shrink-0"
+                                        onError={(e) => {
+                                            e.currentTarget.src = getProductImage(checkoutProduct.name, undefined, checkoutProduct.id);
+                                        }}
+                                    />
+                                    <div className="flex-1">
+                                        <div className="flex justify-between items-center">
+                                            <div>
+                                                <span className="text-xs font-bold text-secondary-gray uppercase">{checkoutProduct.category}</span>
+                                                <h3 className="text-base font-bold text-dark-slate">{checkoutProduct.name}</h3>
+                                                <p className="text-xs text-secondary-gray">{checkoutProduct.price}</p>
+                                            </div>
+                                            <div className="text-right">
+                                                <label className="block text-xs font-bold text-dark-slate mb-1">Quantity</label>
+                                                <input
+                                                    type="number"
+                                                    min="1"
+                                                    max="100"
+                                                    value={orderQuantity}
+                                                    onChange={(e) => setOrderQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                                                    className="w-20 p-1.5 border border-secondary-gray rounded-lg text-center font-bold bg-white text-dark-slate outline-none"
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="text-right">
-                                            <label className="block text-xs font-bold text-dark-slate mb-1">Quantity</label>
-                                            <input
-                                                type="number"
-                                                min="1"
-                                                max="100"
-                                                value={orderQuantity}
-                                                onChange={(e) => setOrderQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                                                className="w-20 p-1.5 border border-secondary-gray rounded-lg text-center font-bold bg-white text-dark-slate outline-none"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="border-t border-gray-200 mt-3 pt-2 flex justify-between items-center">
-                                        <span className="text-xs font-semibold text-dark-slate">Total Payable:</span>
-                                        <span className="text-base font-extrabold text-primary">
-                                            ${(checkoutProduct.numericPrice * orderQuantity).toFixed(2)} USD
-                                        </span>
                                     </div>
                                 </div>
+
+                                {(() => {
+                                    const singleSubtotal = checkoutProduct.numericPrice * orderQuantity;
+                                    const singleBulkRate = orderQuantity >= 100 ? 0.15 : orderQuantity >= 50 ? 0.10 : orderQuantity >= 20 ? 0.05 : 0;
+                                    const singleBulkDisc = Number((singleSubtotal * singleBulkRate).toFixed(2));
+                                    const singlePromoDisc = promoDiscountAmount > 0 ? promoDiscountAmount : 0;
+                                    const singleTotal = Math.max(0, singleSubtotal - singleBulkDisc - singlePromoDisc);
+
+                                    return (
+                                        <div className="border-t border-gray-200 pt-2 space-y-1.5 text-xs">
+                                            <div className="flex justify-between text-secondary-gray">
+                                                <span>Subtotal:</span>
+                                                <span className="font-bold text-dark-slate">${singleSubtotal.toFixed(2)} USD</span>
+                                            </div>
+                                            {singleBulkDisc > 0 && (
+                                                <div className="flex justify-between text-emerald-700 bg-emerald-50 px-2 py-1 rounded font-medium border border-emerald-200">
+                                                    <span>Bulk Volume Discount ({Math.round(singleBulkRate * 100)}% off {orderQuantity}+ units):</span>
+                                                    <span className="font-bold">-${singleBulkDisc.toFixed(2)} USD</span>
+                                                </div>
+                                            )}
+                                            {singlePromoDisc > 0 && (
+                                                <div className="flex justify-between text-amber-800 bg-amber-50 px-2 py-1 rounded font-medium border border-amber-200">
+                                                    <span>Promo Discount ({appliedPromo}):</span>
+                                                    <span className="font-bold">-${singlePromoDisc.toFixed(2)} USD</span>
+                                                </div>
+                                            )}
+                                            <div className="flex justify-between items-center pt-1 border-t border-slate-200">
+                                                <span className="text-xs font-semibold text-dark-slate">Total Payable:</span>
+                                                <span className="text-base font-extrabold text-primary">
+                                                    ${singleTotal.toFixed(2)} USD
+                                                </span>
+                                            </div>
+                                        </div>
+                                    );
+                                })()}
+                            </div>
+
+                            {/* Promo Code Input in single checkout */}
+                            <div className="mb-4 bg-[#FAFBFD] p-3 rounded-xl border border-[#E2E8F0] text-xs">
+                                <label className="block text-[11px] font-bold text-dark-slate mb-1">
+                                    Have a Promo Code? <span className="font-normal text-secondary-gray">(OIL10, PETRO20, WELCOME50)</span>
+                                </label>
+                                {appliedPromo ? (
+                                    <div className="flex items-center justify-between p-2 bg-emerald-50 border border-emerald-300 rounded-lg text-emerald-800 font-bold">
+                                        <span>✓ Coupon applied: <strong>{appliedPromo}</strong></span>
+                                        {onRemovePromo && (
+                                            <button
+                                                type="button"
+                                                onClick={onRemovePromo}
+                                                className="text-red-600 hover:text-red-800 underline text-[11px] font-semibold cursor-pointer"
+                                            >
+                                                Remove
+                                            </button>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={promoCodeInput}
+                                            onChange={(e) => setPromoCodeInput && setPromoCodeInput(e.target.value)}
+                                            placeholder="Enter coupon code (e.g. OIL10)"
+                                            className="flex-1 p-2 border border-[#E2E8F0] rounded-lg text-xs font-medium bg-white text-dark-slate uppercase focus:border-[#F59E0B] outline-none"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => onApplyPromo && onApplyPromo(promoCodeInput)}
+                                            className="px-4 py-2 bg-[#0F2747] hover:bg-[#163860] text-white font-bold text-xs rounded-lg transition-colors cursor-pointer"
+                                        >
+                                            Apply
+                                        </button>
+                                    </div>
+                                )}
+                                {promoError && (
+                                    <p className="text-[11px] text-red-600 mt-1 font-semibold">{promoError}</p>
+                                )}
                             </div>
 
                             <div className="mb-5">

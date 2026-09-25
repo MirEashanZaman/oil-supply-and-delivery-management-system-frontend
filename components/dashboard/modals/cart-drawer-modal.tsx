@@ -11,6 +11,15 @@ interface CartDrawerModalProps {
     cartTotalItems: number;
     cartSubtotal: number;
     cartTotalAmount: number;
+    bulkDiscountAmount?: number;
+    bulkDiscountRate?: number;
+    promoDiscountAmount?: number;
+    appliedPromo?: string | null;
+    promoCodeInput?: string;
+    setPromoCodeInput?: (val: string) => void;
+    promoError?: string | null;
+    onApplyPromo?: (code: string) => void;
+    onRemovePromo?: () => void;
     availableSuppliers: SystemUser[];
     availableDealers: SystemUser[];
     deliveryAddress: string;
@@ -30,6 +39,15 @@ export const CartDrawerModal: React.FC<CartDrawerModalProps> = ({
     cartTotalItems,
     cartSubtotal,
     cartTotalAmount,
+    bulkDiscountAmount = 0,
+    bulkDiscountRate = 0,
+    promoDiscountAmount = 0,
+    appliedPromo = null,
+    promoCodeInput = "",
+    setPromoCodeInput,
+    promoError = null,
+    onApplyPromo,
+    onRemovePromo,
     availableSuppliers,
     availableDealers,
     deliveryAddress,
@@ -277,6 +295,21 @@ export const CartDrawerModal: React.FC<CartDrawerModalProps> = ({
                                     <span>Subtotal:</span>
                                     <span className="font-bold text-dark-slate">${cartSubtotal.toFixed(2)} USD</span>
                                 </div>
+
+                                {bulkDiscountAmount > 0 && (
+                                    <div className="flex justify-between text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-lg font-medium border border-emerald-200">
+                                        <span>Bulk Volume Discount ({Math.round(bulkDiscountRate * 100)}% off {cartTotalItems}+ units):</span>
+                                        <span className="font-bold">-${bulkDiscountAmount.toFixed(2)} USD</span>
+                                    </div>
+                                )}
+
+                                {promoDiscountAmount > 0 && (
+                                    <div className="flex justify-between text-amber-800 bg-amber-50 px-2.5 py-1.5 rounded-lg font-medium border border-amber-200">
+                                        <span>Promo Discount ({appliedPromo}):</span>
+                                        <span className="font-bold">-${promoDiscountAmount.toFixed(2)} USD</span>
+                                    </div>
+                                )}
+
                                 <div className="flex justify-between text-secondary-gray">
                                     <span>Enterprise Road Tanker Logistics:</span>
                                     <span className="font-bold text-success-green">FREE (Institutional Promo)</span>
@@ -285,6 +318,49 @@ export const CartDrawerModal: React.FC<CartDrawerModalProps> = ({
                                     <span className="font-bold text-dark-slate">Total Amount Due:</span>
                                     <span className="font-black text-primary">${cartTotalAmount.toFixed(2)} USD</span>
                                 </div>
+                            </div>
+
+                            {/* Promo Code Input Box */}
+                            <div className="pt-2 border-t border-[#E2E8F0]">
+                                <label className="block text-[11px] font-bold text-dark-slate mb-1">
+                                    Have a Promo Code? <span className="font-normal text-secondary-gray">(e.g. OIL10, PETRO20, WELCOME50)</span>
+                                </label>
+                                {appliedPromo ? (
+                                    <div className="flex items-center justify-between p-2 bg-emerald-50 border border-emerald-300 rounded-lg text-emerald-800 text-xs font-bold">
+                                        <div className="flex items-center gap-1.5">
+                                            <span>✓ Coupon applied: <strong>{appliedPromo}</strong></span>
+                                        </div>
+                                        {onRemovePromo && (
+                                            <button
+                                                type="button"
+                                                onClick={onRemovePromo}
+                                                className="text-red-600 hover:text-red-800 underline text-[11px] font-semibold cursor-pointer"
+                                            >
+                                                Remove
+                                            </button>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={promoCodeInput}
+                                            onChange={(e) => setPromoCodeInput && setPromoCodeInput(e.target.value)}
+                                            placeholder="Enter coupon code (e.g. OIL10)"
+                                            className="flex-1 p-2 border border-[#E2E8F0] rounded-lg text-xs font-medium bg-white text-dark-slate uppercase focus:border-[#F59E0B] outline-none"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => onApplyPromo && onApplyPromo(promoCodeInput)}
+                                            className="px-4 py-2 bg-[#0F2747] hover:bg-[#163860] text-white font-bold text-xs rounded-lg transition-colors cursor-pointer"
+                                        >
+                                            Apply
+                                        </button>
+                                    </div>
+                                )}
+                                {promoError && (
+                                    <p className="text-[11px] text-red-600 mt-1 font-semibold">{promoError}</p>
+                                )}
                             </div>
                         </div>
                     )}

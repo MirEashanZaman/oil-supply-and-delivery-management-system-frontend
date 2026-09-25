@@ -132,9 +132,74 @@ export default function Dashboard() {
     const [lastSyncedAt, setLastSyncedAt] = useState<string>(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
     const [auditTrail, setAuditTrail] = useState<Array<{ id: number; action: string; detail: string; timestamp: string; type: "info" | "warning" | "success" }>>([]);
 
+    const [promoCodeInput, setPromoCodeInput] = useState<string>("");
+    const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
+    const [promoDiscountRate, setPromoDiscountRate] = useState<number>(0);
+    const [promoFixedDiscount, setPromoFixedDiscount] = useState<number>(0);
+    const [promoError, setPromoError] = useState<string | null>(null);
+
     const cartTotalItems = useMemo(() => cartItems.reduce((acc, item) => acc + item.quantity, 0), [cartItems]);
     const cartSubtotal = useMemo(() => cartItems.reduce((acc, item) => acc + (item.product.numericPrice * item.quantity), 0), [cartItems]);
-    const cartTotalAmount = useMemo(() => Number(cartSubtotal.toFixed(2)), [cartSubtotal]);
+
+    // Volume Discount: 5% for >= 20 units, 10% for >= 50 units, 15% for >= 100 units
+    const bulkDiscountRate = useMemo(() => {
+        if (cartTotalItems >= 100) return 0.15;
+        if (cartTotalItems >= 50) return 0.10;
+        if (cartTotalItems >= 20) return 0.05;
+        return 0;
+    }, [cartTotalItems]);
+
+    const bulkDiscountAmount = useMemo(() => Number((cartSubtotal * bulkDiscountRate).toFixed(2)), [cartSubtotal, bulkDiscountRate]);
+    const promoDiscountAmount = useMemo(() => {
+        if (promoDiscountRate > 0) return Number((cartSubtotal * promoDiscountRate).toFixed(2));
+        if (promoFixedDiscount > 0) return Math.min(cartSubtotal, promoFixedDiscount);
+        return 0;
+    }, [cartSubtotal, promoDiscountRate, promoFixedDiscount]);
+
+    const totalDiscountAmount = useMemo(() => Number((bulkDiscountAmount + promoDiscountAmount).toFixed(2)), [bulkDiscountAmount, promoDiscountAmount]);
+    const cartTotalAmount = useMemo(() => Math.max(0, Number((cartSubtotal - totalDiscountAmount).toFixed(2))), [cartSubtotal, totalDiscountAmount]);
+
+    const handleApplyPromoCode = (code: string) => {
+        const clean = code.trim().toUpperCase();
+        setPromoError(null);
+        if (!clean) {
+            setAppliedPromo(null);
+            setPromoDiscountRate(0);
+            setPromoFixedDiscount(0);
+            return;
+        }
+        if (clean === "OIL10" || clean === "ENERGY10") {
+            setAppliedPromo(clean);
+            setPromoDiscountRate(0.10);
+            setPromoFixedDiscount(0);
+            setPromoError(null);
+        } else if (clean === "PETRO20" || clean === "SAVE20") {
+            setAppliedPromo(clean);
+            setPromoDiscountRate(0.20);
+            setPromoFixedDiscount(0);
+            setPromoError(null);
+        } else if (clean === "FLAT100" || clean === "BONUS100") {
+            setAppliedPromo(clean);
+            setPromoDiscountRate(0);
+            setPromoFixedDiscount(100);
+            setPromoError(null);
+        } else if (clean === "WELCOME50") {
+            setAppliedPromo(clean);
+            setPromoDiscountRate(0);
+            setPromoFixedDiscount(50);
+            setPromoError(null);
+        } else {
+            setPromoError("Invalid promo code. Try OIL10, PETRO20, or WELCOME50");
+        }
+    };
+
+    const handleRemovePromoCode = () => {
+        setAppliedPromo(null);
+        setPromoDiscountRate(0);
+        setPromoFixedDiscount(0);
+        setPromoCodeInput("");
+        setPromoError(null);
+    };
 
     const dashboardMetrics = useMemo(() => {
         const revenue = orders.reduce((sum, order) => sum + (Number(order.totalAmount) || 0), 0);
@@ -1081,9 +1146,21 @@ export default function Dashboard() {
             return;
         }
 
-        const totalAmount = isMultiCheckout ? cartTotalAmount : Number((checkoutProduct.numericPrice * orderQuantity).toFixed(2));
         const destination = deliveryAddress.trim() || user.address || "Main Operational Hub";
         const cleanType = paymentMethod === "card" ? cardType : paymentMethod === "mobile" ? `${mobileOperator} Sandbox` : `${bankName} Wire Sandbox`;
+
+        let totalAmount = 0;
+        let singleDiscount = 0;
+        if (isMultiCheckout) {
+            totalAmount = cartTotalAmount;
+        } else {
+            const rawSub = Number((checkoutProduct.numericPrice * orderQuantity).toFixed(2));
+            const singleBulkRate = orderQuantity >= 100 ? 0.15 : orderQuantity >= 50 ? 0.10 : orderQuantity >= 20 ? 0.05 : 0;
+            const singleBulkDisc = Number((rawSub * singleBulkRate).toFixed(2));
+            const singlePromoDisc = promoDiscountAmount > 0 ? promoDiscountAmount : 0;
+            singleDiscount = Number((singleBulkDisc + singlePromoDisc).toFixed(2));
+            totalAmount = Math.max(0, Number((rawSub - singleDiscount).toFixed(2)));
+        }
 
         try {
             const paymentReference = `sandbox_${Date.now()}`;
@@ -1097,10 +1174,15 @@ export default function Dashboard() {
                 const defaultSupplierId = availableSuppliers[0]?.id ? Number(availableSuppliers[0].id) : 1;
                 const defaultDealerId = availableDealers[0]?.id ? Number(availableDealers[0].id) : 1;
 
+                // Allocate proportional discount across cart items if any
+                const discountRatio = cartSubtotal > 0 ? totalDiscountAmount / cartSubtotal : 0;
+
                 for (const item of cartItems) {
                     const itemDest = deliveryAddress.trim() || item.deliveryAddress?.trim() || destination;
                     const itemQty = Math.max(1, parseInt(String(item.quantity)) || 1);
-                    const itemAmount = Number((item.product.numericPrice * itemQty).toFixed(2));
+                    const itemSubtotal = Number((item.product.numericPrice * itemQty).toFixed(2));
+                    const itemDiscount = Number((itemSubtotal * discountRatio).toFixed(2));
+                    const itemAmount = Math.max(0, Number((itemSubtotal - itemDiscount).toFixed(2)));
                     const partyIdNum = Number(item.selectedPartyId);
 
                     const itemPayload: any = {
@@ -1109,6 +1191,7 @@ export default function Dashboard() {
                         deliveryAddress: itemDest,
                         delivery_address: itemDest,
                         status: "pending",
+                        discount: itemDiscount,
                         product: { id: Number(item.product.id) || 1 },
                         payment: { paymentReference: `sandbox_${Date.now()}_${item.product.id}`, paymentMethod: cleanType, amount: itemAmount, status: "completed" },
                         sourceType: item.sourcingChoice,
@@ -1153,6 +1236,7 @@ export default function Dashboard() {
                 deliveryAddress: destination,
                 delivery_address: destination,
                 status: "pending",
+                discount: singleDiscount,
                 product: { id: checkoutProduct.id },
                 payment: { paymentReference, paymentMethod: cleanType, amount: totalAmount, status: "completed" },
                 sourceType: sourcingChoice,
@@ -2153,6 +2237,15 @@ export default function Dashboard() {
                 cartTotalItems={cartTotalItems}
                 cartSubtotal={cartSubtotal}
                 cartTotalAmount={cartTotalAmount}
+                bulkDiscountAmount={bulkDiscountAmount}
+                bulkDiscountRate={bulkDiscountRate}
+                promoDiscountAmount={promoDiscountAmount}
+                appliedPromo={appliedPromo}
+                promoCodeInput={promoCodeInput}
+                setPromoCodeInput={setPromoCodeInput}
+                promoError={promoError}
+                onApplyPromo={handleApplyPromoCode}
+                onRemovePromo={handleRemovePromoCode}
                 availableSuppliers={availableSuppliers}
                 availableDealers={availableDealers}
                 deliveryAddress={deliveryAddress}
@@ -2180,6 +2273,15 @@ export default function Dashboard() {
                 cartItems={cartItems}
                 cartTotalItems={cartTotalItems}
                 cartTotalAmount={cartTotalAmount}
+                bulkDiscountAmount={bulkDiscountAmount}
+                bulkDiscountRate={bulkDiscountRate}
+                promoDiscountAmount={promoDiscountAmount}
+                appliedPromo={appliedPromo}
+                promoCodeInput={promoCodeInput}
+                setPromoCodeInput={setPromoCodeInput}
+                promoError={promoError}
+                onApplyPromo={handleApplyPromoCode}
+                onRemovePromo={handleRemovePromoCode}
                 orderQuantity={orderQuantity}
                 setOrderQuantity={setOrderQuantity}
                 sourcingChoice={sourcingChoice}
