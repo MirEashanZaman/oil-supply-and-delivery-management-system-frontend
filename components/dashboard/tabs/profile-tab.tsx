@@ -18,6 +18,9 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   const [name, setName] = useState(userData?.userName || userData?.name || "");
   const [phone, setPhone] = useState(userData?.phoneNumber || userData?.phone || "");
   const [address, setAddress] = useState(userData?.address || "");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | undefined>(userData?.photoUrl);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [saved, setSaved] = useState(false);
@@ -39,6 +42,15 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       alert("Enter a valid local or international mobile number.");
       return;
     }
+    if (password && password.length < 6) {
+      alert("Password must be at least 6 characters long.");
+      return;
+    }
+    if (password && password !== confirmPassword) {
+      alert("Passwords do not match. Please verify your new password.");
+      return;
+    }
+
     setIsUploading(true);
     try {
       if (onUpdateProfile) {
@@ -49,8 +61,11 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           phone: phone,
           address,
           photoUrl: photoPreview,
+          password: password.trim() ? password.trim() : undefined,
         });
       }
+      setPassword("");
+      setConfirmPassword("");
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } finally {
@@ -106,7 +121,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       </div>
 
       <div className="card bg-card-white border border-[#E2E8F0] shadow-sm rounded-2xl p-6">
-        <h3 className="text-lg font-bold text-[#0F2747] mb-4">Update Profile & Account Details</h3>
+        <h3 className="text-lg font-bold text-[#0F2747] mb-4">Update Profile & Security Details</h3>
 
         {saved && (
           <div className="p-3 mb-4 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold animate-fadeIn">
@@ -160,6 +175,43 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                 placeholder="Enter your address"
                 className="input input-bordered w-full text-sm bg-white text-[#1E293B] rounded-xl border-[#E2E8F0] focus:border-[#F59E0B]"
               />
+            </div>
+          </div>
+
+          <div className="pt-2 border-t border-[#E2E8F0]">
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-xs font-bold text-[#0F2747]">
+                Change Password <span className="text-secondary-gray font-normal">(Leave blank to keep existing password)</span>
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="text-[11px] font-bold text-primary-gold hover:underline"
+              >
+                {showPassword ? "Hide Passwords" : "Show Passwords"}
+              </button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="New password (min 6 characters)"
+                  autoComplete="new-password"
+                  className="input input-bordered w-full text-sm bg-white text-[#1E293B] rounded-xl border-[#E2E8F0] focus:border-[#F59E0B]"
+                />
+              </div>
+              <div>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm new password"
+                  autoComplete="new-password"
+                  className="input input-bordered w-full text-sm bg-white text-[#1E293B] rounded-xl border-[#E2E8F0] focus:border-[#F59E0B]"
+                />
+              </div>
             </div>
           </div>
 

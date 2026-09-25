@@ -1728,12 +1728,16 @@ export default function Dashboard() {
         }
         try {
             if (user.id) {
-                const payload = {
+                const payload: any = {
                     userName: updated.userName || user.userName || user.name,
                     username: updated.userName || user.userName || user.name,
                     phoneNumber: phone,
                     address: updated.address !== undefined ? updated.address : user.address,
                 };
+
+                if (updated.password && updated.password.trim().length > 0) {
+                    payload.password = updated.password.trim();
+                }
 
                 const response = await axios.patch(
                     `${apiBase}/${r}/${user.id}`,

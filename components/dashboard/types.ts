@@ -10,6 +10,7 @@ export type UserData = {
     role?: string;
     status?: string;
     photoUrl?: string;
+    password?: string;
 };
 
 export type PaymentInfo = {
