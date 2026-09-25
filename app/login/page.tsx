@@ -169,6 +169,9 @@ export default function Login() {
                 console.warn("User profile fetch notice:", fetchErr);
             }
 
+            if (apiUserData?.access_token) {
+                localStorage.setItem("access_token", apiUserData.access_token);
+            }
             localStorage.setItem("user", JSON.stringify(userData));
             router.push("/dashboard");
         } catch (error: any) {

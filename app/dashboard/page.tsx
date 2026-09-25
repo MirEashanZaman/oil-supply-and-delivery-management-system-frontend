@@ -1739,10 +1739,20 @@ export default function Dashboard() {
                     payload.password = updated.password.trim();
                 }
 
+                const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+                const headers: any = {};
+                if (token) {
+                    headers["Authorization"] = `Bearer ${token}`;
+                }
+
                 const response = await axios.patch(
                     `${apiBase}/${r}/${user.id}`,
                     payload,
-                    { withCredentials: true, validateStatus: (status) => status < 500 }
+                    {
+                        headers,
+                        withCredentials: true,
+                        validateStatus: (status) => status < 500
+                    }
                 );
 
                 if (response.status >= 400) {
