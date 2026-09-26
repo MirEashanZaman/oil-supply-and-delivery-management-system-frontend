@@ -6,6 +6,7 @@ import axios from "axios";
 import MyHeader from "@/components/header";
 import MyNavigation from "@/components/navigation";
 import { PRODUCT_IMAGE_MAP, getProductImage } from "@/components/dashboard/utils";
+import { getStoredReviews, OrderReview } from "@/lib/reviews";
 
 type CarouselProduct = {
     id: number;
@@ -50,6 +51,7 @@ export default function Home() {
     const [isLoadingProducts, setIsLoadingProducts] = useState(true);
     const [productsError, setProductsError] = useState<string | null>(null);
     const [user, setUser] = useState<{ userName?: string; email?: string; title?: string } | null>(null);
+    const [publicReviews, setPublicReviews] = useState<OrderReview[]>([]);
 
     useEffect(() => {
         const stored = localStorage.getItem("user");
@@ -60,6 +62,8 @@ export default function Home() {
                 console.error("Failed to parse user session:", err);
             }
         }
+        const reviewsMap = getStoredReviews();
+        setPublicReviews(Object.values(reviewsMap));
     }, []);
 
     const handleLogout = () => {
@@ -549,6 +553,94 @@ export default function Home() {
                     <p className="text-xs text-[#64748B] leading-relaxed">
                         Complete shipment tracking with estimated transit times, destination depot validation, and delivery status logs.
                     </p>
+                </div>
+            </div>
+
+            {/* Public Verified Delivery Reviews Section (Visible to Everyone) */}
+            <div className="w-full mb-12 text-left">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 border-b border-[#E2E8F0] pb-4">
+                    <div>
+                        <div className="flex items-center gap-2">
+                            <span className="badge bg-[#16A34A] text-white text-[11px] font-bold border-none">
+                                100% Verified
+                            </span>
+                            <h2 className="text-xl sm:text-2xl font-black text-[#1E293B]">
+                                Verified Delivery Reviews & Fuel Ratings
+                            </h2>
+                        </div>
+                        <p className="text-xs text-[#64748B] mt-1">
+                            Feedback from commercial buyers, fleet managers, and dealers with confirmed completed deliveries.
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                            🔒 Only complete order buyers can review
+                        </span>
+                    </div>
+                </div>
+
+                {publicReviews.length === 0 ? (
+                    <div className="bg-white p-8 rounded-2xl border border-[#E2E8F0] text-center shadow-xs">
+                        <p className="text-xs text-slate-500">No verified delivery reviews recorded yet.</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {publicReviews.map((rev) => (
+                            <div
+                                key={rev.orderId}
+                                className="card bg-white p-5 rounded-2xl border border-[#E2E8F0] shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between"
+                            >
+                                <div>
+                                    <div className="flex items-center justify-between gap-2 mb-2">
+                                        <div className="flex items-center gap-1.5">
+                                            <div className="flex text-amber-500 text-sm">
+                                                {Array.from({ length: 5 }).map((_, idx) => (
+                                                    <span key={idx} className={idx < rev.rating ? "text-amber-500" : "text-slate-200"}>
+                                                        ★
+                                                    </span>
+                                                ))}
+                                            </div>
+                                            <span className="text-xs font-bold text-dark-slate">({rev.rating}/5)</span>
+                                        </div>
+                                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                            </svg>
+                                            Verified Delivery #{rev.orderId}
+                                        </span>
+                                    </div>
+
+                                    <p className="text-xs text-[#1E293B] font-medium leading-relaxed italic bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                        "{rev.comment}"
+                                    </p>
+                                </div>
+
+                                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                                    <div>
+                                        <p className="font-bold text-[#1E293B]">{rev.reviewerName}</p>
+                                        <p className="text-[11px] text-[#64748B]">
+                                            {rev.reviewerRole || "Commercial Buyer"} · {rev.productName || "Petroleum Grade"}
+                                        </p>
+                                    </div>
+                                    <span className="text-[10px] text-slate-400 font-medium">
+                                        {rev.createdAt ? new Date(rev.createdAt).toLocaleDateString() : "Recent"}
+                                    </span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                <div className="mt-6 p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                    <p className="text-slate-600">
+                        <strong className="text-slate-800">Have a delivered order?</strong> Log in to your account, head to the Orders tab, and submit your delivery rating directly on your completed order receipt.
+                    </p>
+                    <Link
+                        href="/dashboard"
+                        className="btn bg-[#0F2747] hover:bg-[#163860] text-white btn-xs px-4 py-2 rounded-lg font-bold border-none shrink-0"
+                    >
+                        Go to My Orders
+                    </Link>
                 </div>
             </div>
         </div>

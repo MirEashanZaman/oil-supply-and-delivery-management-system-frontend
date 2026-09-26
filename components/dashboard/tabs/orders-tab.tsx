@@ -1,7 +1,6 @@
-"use client";
-
 import React, { useState } from "react";
 import { Order, UserData } from "../types";
+import { OrderReview, getStoredReviews, saveOrderReview } from "@/lib/reviews";
 
 interface OrdersTabProps {
   orders: Order[];
@@ -14,14 +13,7 @@ interface OrdersTabProps {
   onDeleteOrder?: (id: number) => void;
 }
 
-export type OrderReview = {
-  orderId: number;
-  productId?: number;
-  rating: number;
-  comment: string;
-  createdAt: string;
-  reviewerName: string;
-};
+export type { OrderReview };
 
 export const OrdersTab: React.FC<OrdersTabProps> = ({
   orders,
@@ -47,12 +39,7 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
   const isDealer = userData?.role === "Dealer" || userData?.title === "Dealer";
 
   React.useEffect(() => {
-    try {
-      const storedReviews = localStorage.getItem("osdms_order_reviews");
-      if (storedReviews) {
-        setReviews(JSON.parse(storedReviews));
-      }
-    } catch { }
+    setReviews(getStoredReviews());
   }, []);
 
   const handleOpenReviewModal = (order: Order) => {
@@ -76,17 +63,17 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
     const newReview: OrderReview = {
       orderId: reviewingOrder.id,
       productId: reviewingOrder.product?.id,
+      productName: reviewingOrder.product?.name || "Petroleum Fuel",
       rating,
       comment: reviewComment.trim(),
       createdAt: new Date().toISOString(),
-      reviewerName: userData?.userName || userData?.name || userData?.email || "Valued Customer",
+      reviewerName: userData?.userName || userData?.name || userData?.email || "Verified Buyer",
+      reviewerRole: userData?.role || userData?.title || "Verified Customer",
+      deliveryAddress: reviewingOrder.deliveryAddress || reviewingOrder.address || "Destination Depot",
     };
 
-    const updated = { ...reviews, [reviewingOrder.id]: newReview };
+    const updated = saveOrderReview(newReview);
     setReviews(updated);
-    try {
-      localStorage.setItem("osdms_order_reviews", JSON.stringify(updated));
-    } catch { }
 
     setReviewSubmitting(false);
     setReviewSuccessMsg("Thank you! Your delivery feedback and rating have been recorded.");
