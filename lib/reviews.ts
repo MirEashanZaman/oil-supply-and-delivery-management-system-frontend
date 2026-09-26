@@ -10,11 +10,16 @@ export type OrderReview = {
   deliveryAddress?: string;
 };
 
-export const STORAGE_KEY_REVIEWS = "osdms_order_reviews";
+export const STORAGE_KEY_REVIEWS = "osdms_authentic_order_reviews_v2";
 
 export function getStoredReviews(): Record<number, OrderReview> {
   if (typeof window === "undefined") return {};
   try {
+    // Clear old legacy key with dummy data if present in user browser
+    if (localStorage.getItem("osdms_order_reviews")) {
+      localStorage.removeItem("osdms_order_reviews");
+    }
+
     const raw = localStorage.getItem(STORAGE_KEY_REVIEWS);
     if (!raw) {
       return {};
@@ -36,4 +41,5 @@ export function saveOrderReview(review: OrderReview): Record<number, OrderReview
   }
   return updated;
 }
+
 
