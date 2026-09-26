@@ -15,7 +15,6 @@ export const STORAGE_KEY_REVIEWS = "osdms_authentic_order_reviews_v2";
 export function getStoredReviews(): Record<number, OrderReview> {
   if (typeof window === "undefined") return {};
   try {
-    // Clear old legacy key with dummy data if present in user browser
     if (localStorage.getItem("osdms_order_reviews")) {
       localStorage.removeItem("osdms_order_reviews");
     }
@@ -41,5 +40,3 @@ export function saveOrderReview(review: OrderReview): Record<number, OrderReview
   }
   return updated;
 }
-
-
