@@ -47,7 +47,7 @@ export default function ProductDetails({
                 (product?.name && r.productName && r.productName.toLowerCase().includes(product.name.toLowerCase())) ||
                 (product?.name && product.name.toLowerCase().includes((r.productName || "").toLowerCase()))
         );
-        setProductReviews(filtered.length > 0 ? filtered : all.slice(0, 2));
+        setProductReviews(filtered);
     }, [product]);
 
     useEffect(() => {
