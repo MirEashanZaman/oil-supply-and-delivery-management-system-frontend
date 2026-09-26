@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Order, UserData } from "../types";
-import { OrderReview, getStoredReviews, saveOrderReview } from "@/lib/reviews";
+import { OrderReview, getStoredReviews, fetchAllServerReviews, submitServerOrderReview } from "@/lib/reviews";
 
 interface OrdersTabProps {
   orders: Order[];
@@ -40,6 +40,9 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
 
   React.useEffect(() => {
     setReviews(getStoredReviews());
+    fetchAllServerReviews().then((liveMap) => {
+      setReviews(liveMap);
+    });
   }, []);
 
   const handleOpenReviewModal = (order: Order) => {
@@ -55,7 +58,7 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
     setReviewSuccessMsg(null);
   };
 
-  const handleSaveReview = (e: React.FormEvent) => {
+  const handleSaveReview = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!reviewingOrder) return;
 
@@ -72,7 +75,7 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
       deliveryAddress: reviewingOrder.deliveryAddress || reviewingOrder.address || "Destination Depot",
     };
 
-    const updated = saveOrderReview(newReview);
+    const updated = await submitServerOrderReview(newReview);
     setReviews(updated);
 
     setReviewSubmitting(false);

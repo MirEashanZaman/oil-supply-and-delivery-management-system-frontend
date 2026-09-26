@@ -6,7 +6,7 @@ import axios from "axios";
 import MyHeader from "@/components/header";
 import MyNavigation from "@/components/navigation";
 import { PRODUCT_IMAGE_MAP, getProductImage } from "@/components/dashboard/utils";
-import { getStoredReviews, OrderReview } from "@/lib/reviews";
+import { getStoredReviews, fetchAllServerReviews, OrderReview } from "@/lib/reviews";
 
 type CarouselProduct = {
     id: number;
@@ -64,6 +64,11 @@ export default function Home() {
         }
         const reviewsMap = getStoredReviews();
         setPublicReviews(Object.values(reviewsMap));
+
+        // Fetch live authentic reviews from central database
+        fetchAllServerReviews().then((liveMap) => {
+            setPublicReviews(Object.values(liveMap));
+        });
     }, []);
 
     const handleLogout = () => {

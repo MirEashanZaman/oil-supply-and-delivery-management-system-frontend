@@ -7,7 +7,7 @@ import MyNavigation from "@/components/navigation";
 import MyHeader from "@/components/header";
 import { getProductImage } from "@/components/dashboard/utils";
 import { getPusherClient, ChatMessage } from "@/lib/pusher";
-import { getStoredReviews, OrderReview } from "@/lib/reviews";
+import { getStoredReviews, fetchAllServerReviews, OrderReview } from "@/lib/reviews";
 
 type Product = {
     id: number;
@@ -39,15 +39,22 @@ export default function ProductDetails({
     const [productReviews, setProductReviews] = useState<OrderReview[]>([]);
 
     useEffect(() => {
-        const reviewsMap = getStoredReviews();
-        const all = Object.values(reviewsMap);
-        const filtered = all.filter(
-            (r) =>
-                (product?.id && r.productId === product.id) ||
-                (product?.name && r.productName && r.productName.toLowerCase().includes(product.name.toLowerCase())) ||
-                (product?.name && product.name.toLowerCase().includes((r.productName || "").toLowerCase()))
-        );
-        setProductReviews(filtered);
+        const filterForProduct = (reviewsMap: Record<number, OrderReview>) => {
+            const all = Object.values(reviewsMap);
+            return all.filter(
+                (r) =>
+                    (product?.id && r.productId === product.id) ||
+                    (product?.name && r.productName && r.productName.toLowerCase().includes(product.name.toLowerCase())) ||
+                    (product?.name && product.name.toLowerCase().includes((r.productName || "").toLowerCase()))
+            );
+        };
+
+        const localMap = getStoredReviews();
+        setProductReviews(filterForProduct(localMap));
+
+        fetchAllServerReviews().then((liveMap) => {
+            setProductReviews(filterForProduct(liveMap));
+        });
     }, [product]);
 
     useEffect(() => {
