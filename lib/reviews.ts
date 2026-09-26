@@ -75,7 +75,6 @@ export async function fetchAllServerReviews(): Promise<Record<number, OrderRevie
           };
         }
       });
-      // Merge with local fallback
       const local = getLocalStoredReviews();
       const merged = { ...local, ...map };
       if (typeof window !== "undefined") {
@@ -90,10 +89,8 @@ export async function fetchAllServerReviews(): Promise<Record<number, OrderRevie
 }
 
 export async function submitServerOrderReview(review: OrderReview): Promise<Record<number, OrderReview>> {
-  // 1. Immediately save locally for instantaneous feedback
   const localMap = saveLocalOrderReview(review);
 
-  // 2. Sync to central backend database for cross-device visibility (Android & Laptop)
   try {
     await axios.post("/api/reviews", {
       orderId: review.orderId,

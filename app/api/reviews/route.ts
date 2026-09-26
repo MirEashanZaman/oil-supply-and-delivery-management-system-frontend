@@ -24,7 +24,6 @@ async function writeStoredReviewsFile(reviews: any[]): Promise<void> {
 }
 
 export async function GET() {
-  // 1. Try to fetch from NestJS backend if reachable
   try {
     const response = await fetch(`${API_ENDPOINT}/review/list`, {
       cache: "no-store",
@@ -37,7 +36,6 @@ export async function GET() {
     }
   } catch {}
 
-  // 2. Persistent cloud/server file fallback
   const fileReviews = await readStoredReviewsFile();
   return NextResponse.json(fileReviews);
 }
@@ -46,7 +44,6 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    // 1. Save to cloud server persistent file immediately
     const existing = await readStoredReviewsFile();
     const updated = [
       ...existing.filter((r) => r.orderId !== body.orderId),
@@ -54,7 +51,6 @@ export async function POST(req: NextRequest) {
     ];
     await writeStoredReviewsFile(updated);
 
-    // 2. Also forward to backend DB if active
     try {
       await fetch(`${API_ENDPOINT}/review/submit`, {
         method: "POST",
