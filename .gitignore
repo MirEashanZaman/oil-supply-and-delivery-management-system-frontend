@@ -27,6 +27,8 @@ android/**/keystore.properties
 # misc
 .DS_Store
 *.pem
+.claude-flow
+.agents
 
 # debug
 npm-debug.log*
