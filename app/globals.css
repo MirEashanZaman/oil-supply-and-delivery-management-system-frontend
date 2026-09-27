@@ -54,6 +54,21 @@ textarea {
   max-width: 100%;
 }
 
+.badge {
+  height: auto !important;
+  min-height: 1.5rem !important;
+  padding-left: 0.65rem !important;
+  padding-right: 0.65rem !important;
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1.25 !important;
+  flex-shrink: 0 !important;
+}
+
 :root,
 [data-theme="light"],
 [data-theme="dark"],
