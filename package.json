@@ -6,13 +6,17 @@
     "dev": "next dev --port 5000",
     "build": "next build",
     "start": "next start --port 5000",
+    "cap:sync": "npx cap sync",
     "android:sync": "npx cap sync android",
-    "android:open": "npx cap open android"
+    "android:open": "npx cap open android",
+    "ios:sync": "npx cap sync ios",
+    "ios:open": "npx cap open ios"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.2",
     "@capacitor/cli": "^8.5.2",
     "@capacitor/core": "^8.5.2",
+    "@capacitor/ios": "^8.5.2",
     "@types/leaflet": "^1.9.22",
     "axios": "^1.19.0",
     "leaflet": "^1.9.4",
