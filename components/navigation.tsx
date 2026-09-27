@@ -101,7 +101,7 @@ export default function Navigation() {
                     ) : (
                         <div className="hidden sm:flex items-center gap-2">
                             <span className="text-xs text-slate-300 font-medium">
-                                Hi, <strong className="text-white">{user.userName || user.name || "User"}</strong>
+                                Hi, <strong className="text-white">{user.userName || user.name || "User"}.</strong>
                             </span>
                             <button
                                 onClick={handleLogout}
@@ -185,7 +185,7 @@ export default function Navigation() {
                         ) : (
                             <div className="flex items-center justify-between pt-1">
                                 <span className="text-xs text-slate-300">
-                                    Logged in: <strong className="text-white">{user.userName || user.name || "User"}</strong>
+                                    Logged in: <strong className="text-white">{user.userName || user.name || "User"}.</strong>
                                 </span>
                                 <button
                                     onClick={() => {
