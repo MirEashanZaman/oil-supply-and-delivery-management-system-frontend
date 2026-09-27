@@ -1959,7 +1959,7 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-[#F5F7FA] text-[#1E293B] flex flex-col w-full max-w-[100vw] overflow-x-hidden">
+        <div className="w-full flex flex-col items-center">
             <MyHeader name="Dashboard" message="Oil Supply & Delivery Operations Portal" />
             <MyNavigation />
 
