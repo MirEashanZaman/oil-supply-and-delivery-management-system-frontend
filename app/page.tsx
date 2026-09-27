@@ -360,107 +360,109 @@ export default function Home() {
                             <p className="text-xs">Verified oil products will appear here once listed.</p>
                         </div>
                     ) : isMarqueeMode ? (
-                        <div className="carousel w-full overflow-hidden">
-                            <div className="animate-carousel-rtl flex gap-6">
-                                {products.map((product) => (
-                                    <div key={`prod-1-${product.id}`} className="carousel-item">
-                                        <div className="card bg-[#FFFFFF] w-80 sm:w-96 shadow-sm border border-[#E2E8F0] overflow-hidden hover:shadow-md transition-all text-left rounded-2xl">
-                                            <figure className="h-48 w-full overflow-hidden bg-[#F5F7FA]">
-                                                <img
-                                                    src={product.image}
-                                                    alt={product.name}
-                                                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                                                    onError={(e) => {
-                                                        e.currentTarget.src = getProductImage(product.name, undefined, product.id);
-                                                    }}
-                                                />
-                                            </figure>
-                                            <div className="card-body p-5 flex flex-col justify-between">
-                                                <div>
-                                                    <div className="flex items-center justify-between mb-2">
-                                                        <span className="badge bg-[#F5F7FA] border border-[#CBD5E1] text-xs font-semibold text-[#1E293B]">
-                                                            {product.category}
-                                                        </span>
-                                                        <span className={`badge text-xs font-semibold border-none ${product.stockLevel === "In Stock" ? "bg-[#16A34A] text-white" : product.stockLevel === "Low Stock" ? "bg-[#F59E0B] text-[#1E293B]" : "bg-[#DC2626] text-white"
-                                                            }`}>
-                                                            {product.stockLevel}
-                                                        </span>
+                        <div className="w-full overflow-hidden">
+                            <div className="animate-carousel-rtl flex flex-nowrap">
+                                <div className="marquee-track">
+                                    {products.map((product) => (
+                                        <div key={`prod-1-${product.id}`} className="marquee-card">
+                                            <div className="card bg-[#FFFFFF] w-full shadow-sm border border-[#E2E8F0] overflow-hidden hover:shadow-md transition-all text-left rounded-2xl h-full flex flex-col justify-between">
+                                                <figure className="h-44 sm:h-48 w-full overflow-hidden bg-[#F5F7FA] shrink-0">
+                                                    <img
+                                                        src={product.image}
+                                                        alt={product.name}
+                                                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                                                        onError={(e) => {
+                                                            e.currentTarget.src = getProductImage(product.name, undefined, product.id);
+                                                        }}
+                                                    />
+                                                </figure>
+                                                <div className="card-body p-4 sm:p-5 flex flex-col justify-between grow">
+                                                    <div>
+                                                        <div className="flex items-center justify-between mb-2 gap-1.5">
+                                                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-[#F5F7FA] border border-[#CBD5E1] text-[#1E293B] truncate max-w-[130px]">
+                                                                {product.category}
+                                                            </span>
+                                                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold shrink-0 ${product.stockLevel === "In Stock" ? "bg-[#16A34A] text-white" : product.stockLevel === "Low Stock" ? "bg-[#F59E0B] text-[#1E293B]" : "bg-[#DC2626] text-white"}`}>
+                                                                {product.stockLevel}
+                                                            </span>
+                                                        </div>
+                                                        <h3 className="card-title text-sm sm:text-base font-bold text-[#1E293B] mb-1 line-clamp-1">
+                                                            {product.name}
+                                                        </h3>
+                                                        <p className="text-xs text-[#64748B] line-clamp-2">
+                                                            {product.description}
+                                                        </p>
                                                     </div>
-                                                    <h3 className="card-title text-base sm:text-lg font-bold text-[#1E293B] mb-1">
-                                                        {product.name}
-                                                    </h3>
-                                                    <p className="text-xs sm:text-sm text-[#64748B] line-clamp-2">
-                                                        {product.description}
-                                                    </p>
-                                                </div>
 
-                                                <div className="pt-3 mt-2 border-t border-[#E2E8F0] flex items-center justify-between gap-2">
-                                                    <span className="text-base font-extrabold text-[#0F2747]">
-                                                        {product.price}
-                                                    </span>
-                                                    <div className="card-actions justify-end">
-                                                        <Link
-                                                            href={`/products/${product.id}`}
-                                                            className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] btn-sm font-bold border-none rounded-xl"
-                                                        >
-                                                            View Details
-                                                        </Link>
+                                                    <div className="pt-3 mt-2 border-t border-[#E2E8F0] flex items-center justify-between gap-2">
+                                                        <span className="text-sm sm:text-base font-extrabold text-[#0F2747]">
+                                                            {product.price}
+                                                        </span>
+                                                        <div className="card-actions justify-end">
+                                                            <Link
+                                                                href={`/products/${product.id}`}
+                                                                className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] btn-xs sm:btn-sm font-bold border-none rounded-xl"
+                                                            >
+                                                                View Details
+                                                            </Link>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
 
-                                {products.map((product) => (
-                                    <div key={`prod-2-${product.id}`} className="carousel-item">
-                                        <div className="card bg-[#FFFFFF] w-80 sm:w-96 shadow-sm border border-[#E2E8F0] overflow-hidden hover:shadow-md transition-all text-left rounded-2xl">
-                                            <figure className="h-48 w-full overflow-hidden bg-[#F5F7FA]">
-                                                <img
-                                                    src={product.image}
-                                                    alt={product.name}
-                                                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                                                    onError={(e) => {
-                                                        e.currentTarget.src = getProductImage(product.name, undefined, product.id);
-                                                    }}
-                                                />
-                                            </figure>
-                                            <div className="card-body p-5 flex flex-col justify-between">
-                                                <div>
-                                                    <div className="flex items-center justify-between mb-2">
-                                                        <span className="badge bg-[#F5F7FA] border border-[#CBD5E1] text-xs font-semibold text-[#1E293B]">
-                                                            {product.category}
-                                                        </span>
-                                                        <span className={`badge text-xs font-semibold border-none ${product.stockLevel === "In Stock" ? "bg-[#16A34A] text-white" : product.stockLevel === "Low Stock" ? "bg-[#F59E0B] text-[#1E293B]" : "bg-[#DC2626] text-white"
-                                                            }`}>
-                                                            {product.stockLevel}
-                                                        </span>
+                                <div className="marquee-track" aria-hidden="true">
+                                    {products.map((product) => (
+                                        <div key={`prod-2-${product.id}`} className="marquee-card">
+                                            <div className="card bg-[#FFFFFF] w-full shadow-sm border border-[#E2E8F0] overflow-hidden hover:shadow-md transition-all text-left rounded-2xl h-full flex flex-col justify-between">
+                                                <figure className="h-44 sm:h-48 w-full overflow-hidden bg-[#F5F7FA] shrink-0">
+                                                    <img
+                                                        src={product.image}
+                                                        alt={product.name}
+                                                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                                                        onError={(e) => {
+                                                            e.currentTarget.src = getProductImage(product.name, undefined, product.id);
+                                                        }}
+                                                    />
+                                                </figure>
+                                                <div className="card-body p-4 sm:p-5 flex flex-col justify-between grow">
+                                                    <div>
+                                                        <div className="flex items-center justify-between mb-2 gap-1.5">
+                                                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-[#F5F7FA] border border-[#CBD5E1] text-[#1E293B] truncate max-w-[130px]">
+                                                                {product.category}
+                                                            </span>
+                                                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold shrink-0 ${product.stockLevel === "In Stock" ? "bg-[#16A34A] text-white" : product.stockLevel === "Low Stock" ? "bg-[#F59E0B] text-[#1E293B]" : "bg-[#DC2626] text-white"}`}>
+                                                                {product.stockLevel}
+                                                            </span>
+                                                        </div>
+                                                        <h3 className="card-title text-sm sm:text-base font-bold text-[#1E293B] mb-1 line-clamp-1">
+                                                            {product.name}
+                                                        </h3>
+                                                        <p className="text-xs text-[#64748B] line-clamp-2">
+                                                            {product.description}
+                                                        </p>
                                                     </div>
-                                                    <h3 className="card-title text-base sm:text-lg font-bold text-[#1E293B] mb-1">
-                                                        {product.name}
-                                                    </h3>
-                                                    <p className="text-xs sm:text-sm text-[#64748B] line-clamp-2">
-                                                        {product.description}
-                                                    </p>
-                                                </div>
 
-                                                <div className="pt-3 mt-2 border-t border-[#E2E8F0] flex items-center justify-between gap-2">
-                                                    <span className="text-base font-extrabold text-[#0F2747]">
-                                                        {product.price}
-                                                    </span>
-                                                    <div className="card-actions justify-end">
-                                                        <Link
-                                                            href={`/products/${product.id}`}
-                                                            className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] btn-sm font-bold border-none rounded-xl"
-                                                        >
-                                                            View Details
-                                                        </Link>
+                                                    <div className="pt-3 mt-2 border-t border-[#E2E8F0] flex items-center justify-between gap-2">
+                                                        <span className="text-sm sm:text-base font-extrabold text-[#0F2747]">
+                                                            {product.price}
+                                                        </span>
+                                                        <div className="card-actions justify-end">
+                                                            <Link
+                                                                href={`/products/${product.id}`}
+                                                                className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] btn-xs sm:btn-sm font-bold border-none rounded-xl"
+                                                            >
+                                                                View Details
+                                                            </Link>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     ) : (

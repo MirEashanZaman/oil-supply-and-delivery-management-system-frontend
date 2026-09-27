@@ -50,10 +50,6 @@ textarea {
   text-shadow: none !important;
 }
 
-* {
-  max-width: 100%;
-}
-
 .badge {
   height: auto !important;
   min-height: 1.5rem !important;
@@ -123,22 +119,55 @@ html {
 
 @keyframes marquee-rtl {
   0% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 
   100% {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
 .animate-carousel-rtl {
-  display: flex;
-  width: max-content;
-  animation: marquee-rtl 32s linear infinite;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  width: max-content !important;
+  max-width: none !important;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  animation: marquee-rtl 28s linear infinite;
 }
 
 .animate-carousel-rtl:hover {
   animation-play-state: paused;
+}
+
+.marquee-track {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 1.25rem !important;
+  width: max-content !important;
+  max-width: none !important;
+  padding-right: 1.25rem !important;
+  flex-shrink: 0 !important;
+}
+
+.marquee-card {
+  width: 280px !important;
+  min-width: 280px !important;
+  max-width: 280px !important;
+  flex-shrink: 0 !important;
+}
+
+@media (min-width: 640px) {
+  .marquee-card {
+    width: 360px !important;
+    min-width: 360px !important;
+    max-width: 360px !important;
+  }
 }
 
 @keyframes fadeIn {
