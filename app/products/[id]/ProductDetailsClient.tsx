@@ -233,11 +233,11 @@ export default function ProductDetails({
 
                 {/* Verified Delivery Reviews Section for this Product (Visible to Everyone) */}
                 {product && (
-                    <div className="mt-8 bg-white p-6 sm:p-8 rounded-2xl border border-[#E2E8F0] shadow-sm text-left">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 border-b border-[#E2E8F0] pb-4">
+                    <div className="mt-8 bg-white p-5 sm:p-8 rounded-2xl border border-[#E2E8F0] shadow-sm text-left">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-[#E2E8F0] pb-4">
                             <div>
-                                <div className="flex items-center gap-2">
-                                    <span className="badge bg-[#16A34A] text-white text-[11px] font-bold border-none">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#16A34A] text-white shadow-none shrink-0">
                                         Verified
                                     </span>
                                     <h2 className="text-lg sm:text-xl font-black text-[#1E293B]">
