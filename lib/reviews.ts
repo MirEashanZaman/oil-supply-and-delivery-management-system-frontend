@@ -1,4 +1,5 @@
 import axios from "axios";
+import { API_ENDPOINT } from "./api";
 
 export type OrderReview = {
   id?: number;
@@ -52,58 +53,77 @@ export function saveLocalOrderReview(review: OrderReview): Record<number, OrderR
 }
 
 export async function fetchAllServerReviews(): Promise<Record<number, OrderReview>> {
-  try {
-    const res = await axios.get("/api/reviews", {
-      validateStatus: (status) => status < 500,
-    });
-    if (Array.isArray(res.data)) {
-      const map: Record<number, OrderReview> = {};
-      const dummyIds = [101, 104, 109, 115];
-      res.data.forEach((item: any) => {
-        if (item?.orderId && !dummyIds.includes(Number(item.orderId))) {
-          map[item.orderId] = {
-            id: item.id,
-            orderId: Number(item.orderId),
-            productId: item.productId ? Number(item.productId) : undefined,
-            productName: item.productName || "Petroleum Grade",
-            rating: Number(item.rating) || 5,
-            comment: item.comment || "",
-            createdAt: item.createdAt || new Date().toISOString(),
-            reviewerName: item.reviewerName || "Verified Buyer",
-            reviewerRole: item.reviewerRole || "Commercial Buyer",
-            deliveryAddress: item.deliveryAddress || "Destination Depot",
-          };
-        }
+  const map: Record<number, OrderReview> = {};
+  const dummyIds = [101, 104, 109, 115];
+
+  const candidateUrls = [
+    `${API_ENDPOINT}/review/list`,
+    "/api/reviews",
+  ];
+
+  for (const url of candidateUrls) {
+    try {
+      const res = await axios.get(url, {
+        validateStatus: (status) => status < 500,
       });
-      const local = getLocalStoredReviews();
-      const merged = { ...local, ...map };
-      if (typeof window !== "undefined") {
-        try {
-          localStorage.setItem(STORAGE_KEY_REVIEWS, JSON.stringify(merged));
-        } catch {}
+      if (Array.isArray(res.data) && res.data.length > 0) {
+        res.data.forEach((item: any) => {
+          if (item?.orderId && !dummyIds.includes(Number(item.orderId))) {
+            map[Number(item.orderId)] = {
+              id: item.id,
+              orderId: Number(item.orderId),
+              productId: item.productId ? Number(item.productId) : undefined,
+              productName: item.productName || "Petroleum Grade",
+              rating: Number(item.rating) || 5,
+              comment: item.comment || "",
+              createdAt: item.createdAt || new Date().toISOString(),
+              reviewerName: item.reviewerName || "Verified Buyer",
+              reviewerRole: item.reviewerRole || "Commercial Buyer",
+              deliveryAddress: item.deliveryAddress || "Destination Depot",
+            };
+          }
+        });
+        break;
       }
-      return merged;
-    }
-  } catch {}
-  return getLocalStoredReviews();
+    } catch {}
+  }
+
+  const local = getLocalStoredReviews();
+  const merged = { ...local, ...map };
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem(STORAGE_KEY_REVIEWS, JSON.stringify(merged));
+    } catch {}
+  }
+  return merged;
 }
 
 export async function submitServerOrderReview(review: OrderReview): Promise<Record<number, OrderReview>> {
   const localMap = saveLocalOrderReview(review);
 
+  const payload = {
+    orderId: review.orderId,
+    productId: review.productId,
+    productName: review.productName,
+    rating: review.rating,
+    comment: review.comment,
+    reviewerName: review.reviewerName,
+    reviewerRole: review.reviewerRole,
+    deliveryAddress: review.deliveryAddress,
+  };
+
   try {
-    await axios.post("/api/reviews", {
-      orderId: review.orderId,
-      productId: review.productId,
-      productName: review.productName,
-      rating: review.rating,
-      comment: review.comment,
-      reviewerName: review.reviewerName,
-      reviewerRole: review.reviewerRole,
-      deliveryAddress: review.deliveryAddress,
+    await axios.post(`${API_ENDPOINT}/review/submit`, payload, {
+      validateStatus: (status) => status < 500,
     });
-  } catch (err) {
-    console.warn("Review backend sync notice:", err);
+  } catch (backendErr) {
+    try {
+      await axios.post("/api/reviews", payload, {
+        validateStatus: (status) => status < 500,
+      });
+    } catch (routeErr) {
+      console.warn("Review backend sync notice:", routeErr);
+    }
   }
 
   return localMap;
