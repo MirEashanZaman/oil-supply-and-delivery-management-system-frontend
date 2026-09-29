@@ -109,6 +109,7 @@ export type SystemUser = {
     address?: string;
     title?: string;
     role?: string;
+    status?: string;
     createdAt?: string;
     joiningDate?: string;
 };
