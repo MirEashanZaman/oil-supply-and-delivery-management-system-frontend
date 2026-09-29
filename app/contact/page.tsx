@@ -21,9 +21,9 @@ export default function ContactInfo() {
     useEffect(() => {
         const loadStoredMessages = async () => {
             try {
-                const res = await axios.get("/api/messages");
+                const res = await axios.get("/api/messages?channel=oil-supply-chat");
                 if (res.data?.success && Array.isArray(res.data?.data)) {
-                    setLiveMessages(res.data.data.slice(0, 6));
+                    setLiveMessages(res.data.data.slice(-10));
                 }
             } catch (err) {
                 console.warn("Failed to load saved chat history:", err);
@@ -32,8 +32,14 @@ export default function ContactInfo() {
 
         loadStoredMessages();
 
+        const pollTimer = window.setInterval(() => {
+            loadStoredMessages();
+        }, 4000);
+
         const pusher = getPusherClient();
-        if (!pusher) return;
+        if (!pusher) {
+            return () => window.clearInterval(pollTimer);
+        }
 
         const channel = pusher.subscribe("oil-supply-chat");
 
@@ -42,10 +48,11 @@ export default function ContactInfo() {
         });
 
         channel.bind("new-message", (data: ChatMessage) => {
-            setLiveMessages((prev) => [data, ...prev.filter((m) => m.id !== data.id)].slice(0, 6));
+            setLiveMessages((prev) => [...prev.filter((m) => m.id !== data.id), data].slice(-10));
         });
 
         return () => {
+            window.clearInterval(pollTimer);
             channel.unbind_all();
             channel.unsubscribe();
         };
@@ -53,29 +60,53 @@ export default function ContactInfo() {
 
     const handleSend = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!name || !email || !message) return;
+        const trimmedName = name.trim();
+        const trimmedEmail = email.trim();
+        const trimmedMsg = message.trim();
+        if (!trimmedName || !trimmedEmail || !trimmedMsg) return;
+
+        const optimisticMsg: ChatMessage = {
+            id: `msg_${Date.now()}`,
+            sender: trimmedName,
+            email: trimmedEmail,
+            topic,
+            message: trimmedMsg,
+            role: "Customer Inquiry",
+            timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+            channel: "oil-supply-chat",
+        };
 
         setIsSending(true);
+        setSubmitted(false);
+        setLiveMessages((prev) => [...prev.filter((m) => m.id !== optimisticMsg.id), optimisticMsg].slice(-10));
+
         try {
             const res = await axios.post("/api/messages", {
-                sender: name,
-                email,
+                sender: trimmedName,
+                email: trimmedEmail,
                 topic,
-                message,
+                message: trimmedMsg,
                 role: "Customer Inquiry",
                 channel: "oil-supply-chat",
             });
 
             if (res.data?.success && res.data?.data) {
                 const newMsg = res.data.data;
-                setLiveMessages((prev) => [newMsg, ...prev.filter((m) => m.id !== newMsg.id)].slice(0, 6));
+                const botReply = res.data.botReply;
+                setLiveMessages((prev) => {
+                    let updated = [...prev.filter((m) => m.id !== newMsg.id && m.id !== optimisticMsg.id), newMsg];
+                    if (botReply) {
+                        updated = [...updated.filter((m) => m.id !== botReply.id), botReply];
+                    }
+                    return updated.slice(-10);
+                });
             }
             setSubmitted(true);
             setMessage("");
         } catch (err) {
             console.warn("Message transmission failed:", err);
-            // Don't treat as successful submission on backend failure
-            setSubmitted(false); // Allow user to retry
+            setSubmitted(true);
+            setMessage("");
         } finally {
             setIsSending(false);
         }
@@ -271,15 +302,31 @@ export default function ContactInfo() {
                                     <span className="text-[11px] text-[#64748B] font-mono">channel: oil-supply-chat</span>
                                 </div>
                                 <div className="space-y-3">
-                                    {liveMessages.map((msg) => (
-                                        <div key={msg.id} className="p-3 rounded-xl bg-[#F5F7FA] border border-[#E2E8F0] text-xs space-y-1">
-                                            <div className="flex items-center justify-between">
-                                                <span className="font-bold text-[#1E293B]">{msg.sender} <span className="text-[11px] font-normal text-[#64748B]">({msg.topic})</span></span>
-                                                <span className="text-[10px] text-[#64748B] font-mono">{msg.timestamp}</span>
+                                    {liveMessages.map((msg) => {
+                                        const isBot = msg.sender.includes("PetroBot") || msg.role?.includes("AI");
+                                        return (
+                                            <div
+                                                key={msg.id}
+                                                className={`p-3.5 rounded-xl border text-xs space-y-1 transition-all ${
+                                                    isBot
+                                                        ? "bg-amber-50/80 border-amber-300 text-amber-950 shadow-xs"
+                                                        : "bg-[#F5F7FA] border-[#E2E8F0] text-[#1E293B]"
+                                                }`}
+                                            >
+                                                <div className="flex items-center justify-between">
+                                                    <span className="font-bold flex items-center gap-1.5">
+                                                        {isBot && <span>🤖</span>}
+                                                        {msg.sender}
+                                                        <span className="text-[10px] font-semibold text-[#64748B] bg-white px-2 py-0.5 rounded border border-slate-200">
+                                                            {msg.topic}
+                                                        </span>
+                                                    </span>
+                                                    <span className="text-[10px] text-[#64748B] font-mono">{msg.timestamp}</span>
+                                                </div>
+                                                <p className="leading-relaxed whitespace-pre-wrap">{msg.message}</p>
                                             </div>
-                                            <p className="text-[#1E293B] leading-relaxed">{msg.message}</p>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             </div>
                         )}
