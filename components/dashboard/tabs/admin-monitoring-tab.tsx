@@ -153,7 +153,7 @@ export const AdminMonitoringTab: React.FC<AdminMonitoringTabProps> = ({
 
         <div className="flex flex-wrap items-center gap-1.5 pt-3 border-t border-[#F1F5F9]">
           <span className="text-xs font-bold text-secondary-gray mr-1">Filter by Role:</span>
-          {["All", "Customer", "Dealer", "Supplier", "Admin"].map((roleOption) => (
+          {["All", "Customer", "Dealer", "Supplier", "Deliveryman", "Admin"].map((roleOption) => (
             <button
               key={roleOption}
               type="button"
@@ -179,19 +179,20 @@ export const AdminMonitoringTab: React.FC<AdminMonitoringTabProps> = ({
                 <th className="py-3 px-4 font-bold">Email</th>
                 <th className="py-3 px-4 font-bold">Phone</th>
                 <th className="py-3 px-4 font-bold">Address / Hub</th>
+                <th className="py-3 px-4 font-bold">Status</th>
                 <th className="py-3 px-4 font-bold text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E2E8F0]">
               {loadingUsers ? (
                 <tr>
-                  <td colSpan={6} className="text-center py-8 text-secondary-gray">
+                  <td colSpan={7} className="text-center py-8 text-secondary-gray">
                     Loading users...
                   </td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="text-center py-8 text-secondary-gray">
+                  <td colSpan={7} className="text-center py-8 text-secondary-gray">
                     No users found matching query.
                   </td>
                 </tr>
@@ -199,6 +200,9 @@ export const AdminMonitoringTab: React.FC<AdminMonitoringTabProps> = ({
                 filteredUsers.map((u, index) => {
                   const role = u.title || u.role || "User";
                   const isTargetAdmin = role.toLowerCase() === "admin";
+                  const isDelivery = role.toLowerCase().includes("delivery");
+                  const userStatus = (u.status || "active").toLowerCase();
+                  const isPendingApproval = isDelivery && (userStatus === "pending_approval" || userStatus === "pending");
                   const rowKey = `${u.id ?? "unknown"}-${index}-${role}-${u.email || "no-email"}-${u.userName || u.username || u.name || "no-name"}`;
 
                   return (
@@ -212,9 +216,37 @@ export const AdminMonitoringTab: React.FC<AdminMonitoringTabProps> = ({
                       <td className="py-3 px-4 text-secondary-gray text-xs">{u.email}</td>
                       <td className="py-3 px-4 text-secondary-gray text-xs">{u.phoneNumber || u.phone || "—"}</td>
                       <td className="py-3 px-4 text-secondary-gray text-xs">{u.address || "—"}</td>
+                      <td className="py-3 px-4">
+                        <span className={`text-[11px] font-bold px-2 py-0.5 rounded ${isPendingApproval ? "bg-amber-100 text-amber-800 border border-amber-300" : userStatus === "active" ? "bg-emerald-100 text-emerald-800 border border-emerald-300" : "bg-slate-100 text-slate-700"}`}>
+                          {isPendingApproval ? "Pending Approval" : u.status || "Active"}
+                        </span>
+                      </td>
                       <td className="py-3 px-4 text-right">
                         {!isTargetAdmin && (
-                          <div className="flex justify-end gap-2">
+                          <div className="flex justify-end gap-2 items-center">
+                            {isPendingApproval && (
+                              <button
+                                onClick={async () => {
+                                  try {
+                                    const res = await fetch(`/api/backend/admin/deliveryman/${u.id}/approve`, {
+                                      method: "PUT",
+                                      credentials: "include",
+                                    });
+                                    if (res.ok) {
+                                      alert(`Deliveryman ${u.userName || u.username || u.name || u.email} approved successfully!`);
+                                      window.location.reload();
+                                    } else {
+                                      alert("Failed to approve deliveryman.");
+                                    }
+                                  } catch {
+                                    alert("Approval request failed.");
+                                  }
+                                }}
+                                className="btn btn-xs bg-[#16A34A] hover:bg-[#15803D] text-white font-bold border-none rounded-lg cursor-pointer"
+                              >
+                                Approve
+                              </button>
+                            )}
                             <button
                               onClick={() => onEditUser(u)}
                               className="btn btn-xs bg-[#0F2747] hover:bg-[#0F2747]/90 text-white font-bold border-none rounded-lg cursor-pointer"
@@ -280,6 +312,7 @@ export const AdminMonitoringTab: React.FC<AdminMonitoringTabProps> = ({
                     <option>Customer</option>
                     <option>Dealer</option>
                     <option>Supplier</option>
+                    <option>Deliveryman</option>
                     <option>Admin</option>
                   </select>
                 </label>
