@@ -99,7 +99,8 @@ export async function fetchAllServerReviews(): Promise<Record<number, OrderRevie
 }
 
 export async function submitServerOrderReview(review: OrderReview): Promise<Record<number, OrderReview>> {
-  const localMap = saveLocalOrderReview(review);
+  const previousState = getLocalStoredReviews();
+  const optimisticMap = saveLocalOrderReview(review);
 
   const payload = {
     orderId: review.orderId,
@@ -112,21 +113,41 @@ export async function submitServerOrderReview(review: OrderReview): Promise<Reco
     deliveryAddress: review.deliveryAddress,
   };
 
+  let synced = false;
+
   try {
-    await axios.post(`${API_ENDPOINT}/review/submit`, payload, {
+    const backendRes = await axios.post(`${API_ENDPOINT}/review/submit`, payload, {
       validateStatus: (status) => status < 500,
     });
+    if (backendRes.status >= 200 && backendRes.status < 300) {
+      synced = true;
+    }
   } catch (backendErr) {
+    console.warn("Backend review submission failed, falling back to Next.js API route:", backendErr);
+  }
+
+  if (!synced) {
     try {
-      await axios.post("/api/reviews", payload, {
+      const routeRes = await axios.post("/api/reviews", payload, {
         validateStatus: (status) => status < 500,
       });
+      if (routeRes.status >= 200 && routeRes.status < 300) {
+        synced = true;
+      }
     } catch (routeErr) {
-      console.warn("Review backend sync notice:", routeErr);
+      console.warn("Next.js review route submission notice:", routeErr);
     }
   }
 
-  return localMap;
+  if (!synced && typeof window !== "undefined") {
+    // If backend and server fallback both reject (e.g. order not delivered), rollback client storage
+    try {
+      localStorage.setItem(STORAGE_KEY_REVIEWS, JSON.stringify(previousState));
+    } catch {}
+    return previousState;
+  }
+
+  return optimisticMap;
 }
 
 export const getStoredReviews = getLocalStoredReviews;
