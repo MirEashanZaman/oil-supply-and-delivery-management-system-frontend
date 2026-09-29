@@ -112,23 +112,35 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
         <div className="h-80 sm:h-96 overflow-y-auto bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 sm:p-4 space-y-2.5 sm:space-y-3 mb-3 sm:mb-4 w-full">
           {messages.map((m) => {
             const isMe = m.email === userData?.email;
+            const isBot = m.sender.includes("PetroBot") || m.role?.includes("AI");
             return (
               <div
                 key={m.id}
-                className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border text-xs transition-all w-full max-w-full break-words ${isMe ? "bg-[#0F2747]/5 border-[#0F2747]/20" : "bg-white border-[#E2E8F0]"
-                  }`}
+                className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border text-xs transition-all w-full max-w-full break-words ${
+                  isBot
+                    ? "bg-gradient-to-r from-[#0F2747]/10 via-[#F59E0B]/10 to-[#0F2747]/5 border-[#F59E0B]/40 shadow-sm"
+                    : isMe
+                      ? "bg-[#0F2747]/5 border-[#0F2747]/20"
+                      : "bg-white border-[#E2E8F0]"
+                }`}
               >
                 <div className="flex items-center justify-between gap-1.5 mb-1 flex-wrap">
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="font-bold text-[#1E293B] text-xs sm:text-sm">{m.sender}</span>
+                    <span className="font-bold text-[#1E293B] text-xs sm:text-sm flex items-center gap-1">
+                      {isBot && <span className="text-[#D97706]">🤖</span>}
+                      {m.sender}
+                    </span>
                     <span
-                      className={`badge text-[9px] sm:text-[10px] font-bold uppercase border-none px-1.5 sm:px-2 py-0.5 ${m.role === "Supplier"
-                        ? "bg-[#0F2747] text-[#F59E0B]"
-                        : m.role === "Dealer"
-                          ? "bg-[#F59E0B]/20 text-[#D97706]"
-                          : m.role === "Admin"
-                            ? "bg-[#16A34A]/20 text-[#16A34A]"
-                            : "bg-[#64748B]/15 text-[#1E293B]"
+                      className={`badge text-[9px] sm:text-[10px] font-bold uppercase border-none px-1.5 sm:px-2 py-0.5 ${
+                        isBot
+                          ? "bg-[#D97706] text-white shadow-xs"
+                          : m.role === "Supplier"
+                          ? "bg-[#0F2747] text-[#F59E0B]"
+                          : m.role === "Dealer"
+                            ? "bg-[#F59E0B]/20 text-[#D97706]"
+                            : m.role === "Admin"
+                              ? "bg-[#16A34A]/20 text-[#16A34A]"
+                              : "bg-[#64748B]/15 text-[#1E293B]"
                         }`}
                     >
                       {m.role || "User"}
@@ -142,7 +154,11 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
                   <span className="text-[9px] sm:text-[10px] text-[#64748B] font-mono">{m.timestamp}</span>
                 </div>
                 <div className="mb-1.5">
-                  <span className="inline-block text-[10px] sm:text-[11px] font-semibold text-[#0F2747] bg-[#0F2747]/10 px-2 py-0.5 rounded-md">
+                  <span
+                    className={`inline-block text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-md ${
+                      isBot ? "text-[#B45309] bg-[#FDE68A]" : "text-[#0F2747] bg-[#0F2747]/10"
+                    }`}
+                  >
                     {m.topic}
                   </span>
                 </div>
