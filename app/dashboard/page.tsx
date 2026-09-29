@@ -1607,6 +1607,33 @@ export default function Dashboard() {
         }
     };
 
+    const handleAdminApproveDeliveryman = async (id: number, name: string): Promise<boolean> => {
+        try {
+            const res = await axios.put(
+                `${apiBase}/admin/deliveryman/${id}/approve`,
+                {},
+                { withCredentials: true, validateStatus: (status) => status < 500 }
+            );
+
+            if (res.status === 200 || res.status === 201) {
+                appendAuditEntry("Deliveryman Approved", `Approved delivery personnel account for ${name} (ID: ${id}).`, "success");
+                alert(`Deliveryman ${name} approved successfully! Their account is now active.`);
+                await fetchAllMergedUsers();
+                return true;
+            } else {
+                const message = Array.isArray(res.data?.message)
+                    ? res.data.message.join(", ")
+                    : res.data?.message || `Failed to approve deliveryman (${res.status}).`;
+                alert(message);
+                return false;
+            }
+        } catch (err: any) {
+            const message = err.response?.data?.message || err.message || "Failed to approve deliveryman.";
+            alert(message);
+            return false;
+        }
+    };
+
     const handleAdminDeleteUser = async (id: number) => {
         const resolveTargetUser = () => {
             const matches = allMergedUsers.filter((user) => Number(user.id) === Number(id));
@@ -2312,6 +2339,7 @@ export default function Dashboard() {
                                 });
                             }}
                             onDeleteUser={handleAdminDeleteUser}
+                            onApproveDeliveryman={handleAdminApproveDeliveryman}
                             onCreateUser={handleAdminCreateUser}
                             creatingUser={isCreatingUser}
                         />

@@ -3,12 +3,14 @@
 import React, { useState } from "react";
 import { SystemUser } from "../types";
 import { getRoleBadgeColor } from "../utils";
+import { API_ENDPOINT } from "@/lib/api";
 
 interface AdminMonitoringTabProps {
   users: SystemUser[];
   loadingUsers: boolean;
   onEditUser: (user: SystemUser) => void;
   onDeleteUser: (id: number) => void;
+  onApproveDeliveryman?: (id: number, name: string) => Promise<boolean>;
   onCreateUser: (newUser: {
     name: string;
     email: string;
@@ -26,6 +28,7 @@ export const AdminMonitoringTab: React.FC<AdminMonitoringTabProps> = ({
   loadingUsers,
   onEditUser,
   onDeleteUser,
+  onApproveDeliveryman,
   onCreateUser,
   creatingUser,
 }) => {
@@ -227,16 +230,21 @@ export const AdminMonitoringTab: React.FC<AdminMonitoringTabProps> = ({
                             {isPendingApproval && (
                               <button
                                 onClick={async () => {
+                                  const name = u.userName || u.username || u.name || u.email || "Deliveryman";
+                                  if (onApproveDeliveryman) {
+                                    await onApproveDeliveryman(u.id, name);
+                                    return;
+                                  }
                                   try {
-                                    const res = await fetch(`/api/backend/admin/deliveryman/${u.id}/approve`, {
+                                    const res = await fetch(`${API_ENDPOINT}/admin/deliveryman/${u.id}/approve`, {
                                       method: "PUT",
                                       credentials: "include",
                                     });
                                     if (res.ok) {
-                                      alert(`Deliveryman ${u.userName || u.username || u.name || u.email} approved successfully!`);
+                                      alert(`Deliveryman ${name} approved successfully!`);
                                       window.location.reload();
                                     } else {
-                                      alert("Failed to approve deliveryman.");
+                                      alert("Failed to approve deliveryman. Please check admin permissions.");
                                     }
                                   } catch {
                                     alert("Approval request failed.");
