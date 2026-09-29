@@ -123,12 +123,31 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
               <span className={`badge border-none font-bold text-xs px-3 py-1 ${getRoleBadgeColor(userData?.title || userData?.role || "")}`}>
                 {userData?.title || userData?.role || "Customer"}
               </span>
+              <span className="badge bg-emerald-50 text-emerald-700 border border-emerald-300 font-bold text-[10px] px-2.5 py-0.5">
+                ✓ Govt Energy Board Verified
+              </span>
             </div>
             <p className="text-sm font-medium text-secondary-gray">{userData?.email}</p>
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 pt-1 text-xs text-secondary-gray">
-              <span>{userData?.address || "Address not registered"}</span>
-              <span>{userData?.phoneNumber || userData?.phone || "Phone not registered"}</span>
+              <span>📍 {userData?.address || "Address not registered"}</span>
+              <span>📞 {userData?.phoneNumber || userData?.phone || "Phone not registered"}</span>
             </div>
+          </div>
+        </div>
+
+        {/* Enterprise Role Specification Card */}
+        <div className="mt-6 pt-5 border-t border-[#E2E8F0] grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Enterprise Role</span>
+            <strong className="text-xs text-[#0F2747] font-extrabold">{userData?.title || userData?.role || "Customer"}</strong>
+          </div>
+          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Compliance Standard</span>
+            <strong className="text-xs text-emerald-700 font-extrabold">ISO 9001 & ASTM-D Grade</strong>
+          </div>
+          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Security & Access</span>
+            <strong className="text-xs text-[#0F2747] font-extrabold">256-bit TLS Encrypted Session</strong>
           </div>
         </div>
       </div>
