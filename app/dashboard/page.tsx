@@ -2162,6 +2162,8 @@ export default function Dashboard() {
                             userData={user}
                             orders={orders}
                             products={products}
+                            availableSuppliers={availableSuppliers}
+                            availableDealers={availableDealers}
                             auditTrail={auditTrail}
                             setActiveTab={setActiveTab}
                             onOpenCart={() => setIsCartModalOpen(true)}
