@@ -663,6 +663,25 @@ export default function Home() {
                     </Link>
                 </div>
             </div>
+
+            {/* Public FAQ Section Banner */}
+            <div className="w-full mb-12 bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 text-left shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div>
+                    <span className="badge bg-[#0F2747] text-[#F59E0B] font-bold text-xs uppercase px-2.5 py-1 mb-2">
+                        Help & Compliance
+                    </span>
+                    <h2 className="text-lg sm:text-xl font-bold text-[#1E293B]">Have Questions Regarding Procurement or e-POD?</h2>
+                    <p className="text-xs text-[#64748B] mt-1 max-w-xl leading-relaxed">
+                        Read our public knowledge base covering Euro V diesel specs, HazMat transport protocols, Platts wholesale pricing, and 4-digit PIN delivery receipts.
+                    </p>
+                </div>
+                <Link
+                    href="/faq"
+                    className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] font-bold text-xs rounded-xl px-5 py-2.5 border-none shrink-0"
+                >
+                    View All FAQs →
+                </Link>
+            </div>
         </div>
     );
 }

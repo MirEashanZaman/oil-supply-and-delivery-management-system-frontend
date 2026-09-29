@@ -131,7 +131,6 @@ function runRAGInference(query: string): { answer: string; docTitles: string[] }
     const qLower = query.toLowerCase().trim();
     if (qLower.length < 3) return null;
 
-    // Direct question or topic match
     const isExplicitInquiry = 
         qLower.includes("?") ||
         qLower.startsWith("what") ||
@@ -205,7 +204,6 @@ export async function POST(request: Request) {
 
         const newMessagesList: ChatMessage[] = [messageData];
 
-        // Run RAG Inference if message is not from Bot itself
         if (sender !== "PetroBot AI (RAG Assistant)") {
             const ragResult = runRAGInference(message);
             if (ragResult) {
@@ -251,4 +249,3 @@ export async function POST(request: Request) {
         );
     }
 }
-

@@ -60,6 +60,15 @@ export default function Navigation() {
                         About Us
                     </Link>
                     <Link
+                        href="/faq"
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${isActive("/faq")
+                                ? "bg-[#163860] text-[#F59E0B] font-bold"
+                                : "text-slate-200 hover:bg-[#163860]/70 hover:text-white"
+                            }`}
+                    >
+                        FAQ
+                    </Link>
+                    <Link
                         href="/contact"
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${isActive("/contact")
                                 ? "bg-[#163860] text-[#F59E0B] font-bold"
@@ -146,6 +155,13 @@ export default function Navigation() {
                         className={`px-3 py-2 rounded-lg text-sm font-semibold transition ${isActive("/about") ? "bg-[#163860] text-[#F59E0B] font-bold" : "text-slate-200"}`}
                     >
                         About Us
+                    </Link>
+                    <Link
+                        href="/faq"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`px-3 py-2 rounded-lg text-sm font-semibold transition ${isActive("/faq") ? "bg-[#163860] text-[#F59E0B] font-bold" : "text-slate-200"}`}
+                    >
+                        FAQ
                     </Link>
                     <Link
                         href="/contact"
