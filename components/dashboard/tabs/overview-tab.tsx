@@ -571,22 +571,34 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 
         <div className="space-y-4">
           <div className="grid grid-cols-6 sm:grid-cols-12 gap-2 sm:gap-3 items-end h-48 sm:h-56 pt-4 pb-2 px-2 bg-slate-50 rounded-2xl border border-slate-200">
-            {monthlyAnalyticsData.map((data) => (
-              <div key={data.month} className="flex flex-col items-center h-full justify-end group">
-                <div className="text-[10px] font-bold text-slate-500 mb-1 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">
-                  ${(data.revenue / 1000).toFixed(0)}k
+            {monthlyAnalyticsData.map((data) => {
+              const formattedValue = data.revenue >= 1000
+                ? `$${(data.revenue / 1000).toFixed(1)}k`
+                : `$${Math.round(data.revenue)}`;
+
+              return (
+                <div key={data.month} className="flex flex-col items-center h-full justify-end group relative">
+                  {/* Floating tooltip on hover */}
+                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#0F2747] text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-lg opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-30 whitespace-nowrap border border-white/20">
+                    <span className="text-[#F59E0B]">{formattedValue}</span>
+                    <span className="text-slate-300 ml-1">({data.volumeLiters.toLocaleString()} L)</span>
+                  </div>
+
+                  <div className="text-[10px] font-bold text-slate-500 mb-1 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">
+                    {formattedValue}
+                  </div>
+                  <div className="w-full max-w-[28px] bg-slate-200 rounded-t-lg overflow-hidden flex flex-col justify-end h-full">
+                    <div
+                      style={{ height: `${data.barHeightPercent}%` }}
+                      className="w-full bg-gradient-to-t from-[#0F2747] to-[#1E3A8A] group-hover:from-[#F59E0B] group-hover:to-[#D97706] transition-all rounded-t-md"
+                    />
+                  </div>
+                  <span className="text-[10px] sm:text-xs font-bold text-slate-600 mt-2">
+                    {data.month}
+                  </span>
                 </div>
-                <div className="w-full max-w-[28px] bg-slate-200 rounded-t-lg overflow-hidden flex flex-col justify-end h-full">
-                  <div
-                    style={{ height: `${data.barHeightPercent}%` }}
-                    className="w-full bg-gradient-to-t from-[#0F2747] to-[#1E3A8A] group-hover:from-[#F59E0B] group-hover:to-[#D97706] transition-all rounded-t-md"
-                  />
-                </div>
-                <span className="text-[10px] sm:text-xs font-bold text-slate-600 mt-2">
-                  {data.month}
-                </span>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
