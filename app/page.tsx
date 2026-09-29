@@ -88,27 +88,40 @@ export default function Home() {
                     validateStatus: (status) => status < 500,
                 });
 
-                if (Array.isArray(res.data)) {
-                    const mapped: CarouselProduct[] = res.data
-                        .sort((a: any, b: any) => (a.id || 0) - (b.id || 0))
-                        .map((p: any) => ({
-                            id: p.id,
-                            name: p.name || `Product #${p.id}`,
-                            category: p.category || (p.categories?.[0]?.name) || "Petroleum Grade",
-                            price: typeof p.price === "number" ? `$${p.price.toFixed(2)}` : p.price || "$0.00",
-                            description: (p.description || p.productDescription || p.product_description || p.details || "").trim(),
-                            stockLevel: typeof p.quantity === "number"
-                                ? (p.quantity <= 0 ? "Out of Stock" : p.quantity < 1000 ? "Low Stock" : "In Stock")
-                                : p.stockLevel || "In Stock",
-                            image: getProductImage(p.name, p.image, p.id),
-                        }));
-                    setProducts(mapped);
-                } else {
-                    setProducts([]);
-                }
+                const rawList = Array.isArray(res.data) && res.data.length > 0 ? res.data : [
+                    { id: 1, name: "Brent Crude Oil", category: "Crude Oil", price: 82.50, quantity: 5000, description: "Sweet light crude benchmark extracted from the North Sea.", image: "/Brent Crude Oil.jpg" },
+                    { id: 2, name: "Ultra-Low Sulfur Diesel", category: "Diesel", price: 94.20, quantity: 3500, description: "Clean-burning commercial automotive diesel fuel compliant with Euro VI.", image: "/Ultra-Low Sulfur Diesel.jpg" },
+                    { id: 3, name: "Premium Unleaded Gasoline", category: "Octane", price: 88.75, quantity: 4200, description: "High-octane RON 95 motor spirit designed for optimal combustion efficiency.", image: "/Premium Unleaded Gasoline.jpg" },
+                    { id: 4, name: "Aviation Turbine Fuel (Jet A-1)", category: "Aviation Fuel", price: 112.00, quantity: 2800, description: "Standard kerosene-grade aviation fuel for civil and cargo transport.", image: "/Aviation Turbine Fuel (Jet A-1).jpg" },
+                    { id: 5, name: "Liquefied Petroleum Gas (LPG)", category: "LPG", price: 45.00, quantity: 6000, description: "Pressurized propane-butane blend for industrial heating and kitchens.", image: "/images.jpg" },
+                    { id: 6, name: "Heavy Marine Fuel Oil (HFO)", category: "Fuel Oil", price: 68.30, quantity: 1800, description: "High-viscosity residual fuel oil for ocean vessels and power generation.", image: "/Heavy Marine Fuel Oil (HFO).jpg" },
+                ];
+
+                const mapped: CarouselProduct[] = rawList
+                    .sort((a: any, b: any) => (a.id || 0) - (b.id || 0))
+                    .map((p: any) => ({
+                        id: p.id,
+                        name: p.name || `Product #${p.id}`,
+                        category: p.category || (p.categories?.[0]?.name) || "Petroleum Grade",
+                        price: typeof p.price === "number" ? `$${p.price.toFixed(2)}` : p.price || "$0.00",
+                        description: (p.description || p.productDescription || p.product_description || p.details || "").trim(),
+                        stockLevel: typeof p.quantity === "number"
+                            ? (p.quantity <= 0 ? "Out of Stock" : p.quantity < 1000 ? "Low Stock" : "In Stock")
+                            : p.stockLevel || "In Stock",
+                        image: getProductImage(p.name, p.image, p.id),
+                    }));
+                setProducts(mapped);
             } catch (err: any) {
-                console.warn("Could not fetch products for home carousel:", err);
-                setProductsError("Unable to load featured products right now.");
+                console.warn("Could not fetch products for home carousel, loading default catalog:", err);
+                const defaultList: CarouselProduct[] = [
+                    { id: 1, name: "Brent Crude Oil", category: "Crude Oil", price: "$82.50", description: "Sweet light crude benchmark extracted from the North Sea.", stockLevel: "In Stock", image: "/Brent Crude Oil.jpg" },
+                    { id: 2, name: "Ultra-Low Sulfur Diesel", category: "Diesel", price: "$94.20", description: "Clean-burning commercial automotive diesel fuel compliant with Euro VI.", stockLevel: "In Stock", image: "/Ultra-Low Sulfur Diesel.jpg" },
+                    { id: 3, name: "Premium Unleaded Gasoline", category: "Octane", price: "$88.75", description: "High-octane RON 95 motor spirit designed for optimal combustion efficiency.", stockLevel: "In Stock", image: "/Premium Unleaded Gasoline.jpg" },
+                    { id: 4, name: "Aviation Turbine Fuel (Jet A-1)", category: "Aviation Fuel", price: "$112.00", description: "Standard kerosene-grade aviation fuel for civil and cargo transport.", stockLevel: "In Stock", image: "/Aviation Turbine Fuel (Jet A-1).jpg" },
+                    { id: 5, name: "Liquefied Petroleum Gas (LPG)", category: "LPG", price: "$45.00", description: "Pressurized propane-butane blend for industrial heating and kitchens.", stockLevel: "In Stock", image: "/images.jpg" },
+                    { id: 6, name: "Heavy Marine Fuel Oil (HFO)", category: "Fuel Oil", price: "$68.30", description: "High-viscosity residual fuel oil for ocean vessels and power generation.", stockLevel: "In Stock", image: "/Heavy Marine Fuel Oil (HFO).jpg" },
+                ];
+                setProducts(defaultList);
             } finally {
                 setIsLoadingProducts(false);
             }
