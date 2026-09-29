@@ -102,15 +102,14 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
           const val = Number(String(ord.totalAmount ?? 0).replace(/[$,\s]/g, "")) || 0;
           monthRevenue += val;
           monthVolumeLiters += (Number(ord.quantity ?? 1) || 1) * 1000;
+        } else if (!ord.createdAt && selectedAnalyticsYear === new Date().getFullYear() && index === new Date().getMonth()) {
+          // If order has no createdAt date, attribute it directly to current month
+          monthOrders++;
+          const val = Number(String(ord.totalAmount ?? 0).replace(/[$,\s]/g, "")) || 0;
+          monthRevenue += val;
+          monthVolumeLiters += (Number(ord.quantity ?? 1) || 1) * 1000;
         }
       });
-
-      if (orders.length > 0 && monthOrders === 0 && index <= new Date().getMonth()) {
-        const simulatedMultiplier = ((index * 7 + 13) % 10) / 10 + 0.4;
-        monthRevenue = Math.round((totalSpentOrRevenue / 12) * simulatedMultiplier);
-        monthVolumeLiters = Math.round((totalVolumeLiters / 12) * simulatedMultiplier);
-        monthOrders = Math.max(1, Math.round(orders.length / 12 * simulatedMultiplier));
-      }
 
       return {
         month,
@@ -123,9 +122,9 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
     const maxMonthRev = Math.max(...baseMonthly.map((m) => m.revenue), 1);
     return baseMonthly.map((m) => ({
       ...m,
-      barHeightPercent: Math.max(12, Math.round((m.revenue / maxMonthRev) * 100)),
+      barHeightPercent: m.revenue > 0 ? Math.max(12, Math.round((m.revenue / maxMonthRev) * 100)) : 0,
     }));
-  }, [orders, selectedAnalyticsYear, totalSpentOrRevenue, totalVolumeLiters]);
+  }, [orders, selectedAnalyticsYear]);
 
   const currentMonthRevenue = monthlyAnalyticsData[new Date().getMonth()]?.revenue || (totalSpentOrRevenue * 0.15);
   const currentMonthVolume = monthlyAnalyticsData[new Date().getMonth()]?.volumeLiters || (totalVolumeLiters * 0.15);
