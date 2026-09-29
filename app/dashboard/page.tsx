@@ -2333,7 +2333,7 @@ export default function Dashboard() {
                                 setEditUserForm({
                                     name: u.name || u.userName || u.username || "",
                                     email: u.email || "",
-                                    role: u.title || u.role || "Customer",
+                                    role: normalizeRole(u.title || u.role || "Customer"),
                                     phone: u.phone || u.phoneNumber || "",
                                     address: u.address || "",
                                 });
