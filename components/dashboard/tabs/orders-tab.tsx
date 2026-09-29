@@ -37,6 +37,7 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
   const isAdmin = userData?.role === "Admin" || userData?.title === "Admin";
   const isSupplier = userData?.role === "Supplier" || userData?.title === "Supplier";
   const isDealer = userData?.role === "Dealer" || userData?.title === "Dealer";
+  const isDeliveryman = userData?.role === "Deliveryman" || userData?.title === "Deliveryman" || (userData?.role || "").toLowerCase().includes("delivery");
 
   React.useEffect(() => {
     setReviews(getStoredReviews());
@@ -91,16 +92,20 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
       <h1 className="text-2xl font-extrabold text-dark-slate mb-2">
         {isCustomer
           ? "My Order History & Live Tracking"
-          : isAdmin
-            ? "Global Order Control & Deletion"
-            : "Fulfill Customer & Dealer Orders"}
+          : isDeliveryman
+            ? "Nearby Delivery Dispatch & Transit Radar"
+            : isAdmin
+              ? "Global Order Control & Deletion"
+              : "Fulfill Customer & Dealer Orders"}
       </h1>
       <p className="text-sm text-secondary-gray mb-6">
         {isCustomer
           ? "View past orders, delivery channel selections, payment invoices, and real-time status updates."
-          : isAdmin
-            ? "Admins can delete orders, but cannot update any order details or status."
-            : "Confirm or reject retail/wholesale orders, schedule deliveries, and dispatch email updates to buyers."}
+          : isDeliveryman
+            ? "View and accept nearby order dispatch requests based on your location. Complete deliveries once fuel transit is finished."
+            : isAdmin
+              ? "Admins can delete orders, but cannot update any order details or status."
+              : "Confirm or reject retail/wholesale orders, schedule deliveries, and dispatch email updates to buyers."}
       </p>
 
       {loadingOrders ? (
@@ -138,9 +143,9 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
             const isOutForDelivery = status === "out for delivery";
             const isScheduled = status === "scheduled" || status === "in transit" || status === "in-transit";
             const canSelectStatus = isConfirmed || isProcessing || isScheduled || isOutForDelivery;
-            const canCustomerMarkDelivered = !isDelivered && !isCancelled && !isRejected &&
-              ["confirmed", "processing", "out for delivery", "scheduled", "in transit", "in-transit"].includes(status);
             const existingReview = reviews[item.id];
+            const distanceKm = (item as any).distanceKm;
+            const transitMinutes = (item as any).estimatedTransitMinutes;
 
             return (
               <div
@@ -159,13 +164,21 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
                           ? "bg-red-100 text-error-red border border-red-200"
                           : isDelivered
                             ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
-                            : isScheduled
-                              ? "bg-teal-100 text-teal-800 border border-teal-200"
-                              : "bg-blue-50 text-primary border border-blue-100"
+                            : isOutForDelivery
+                              ? "bg-amber-100 text-amber-800 border border-amber-200"
+                              : isScheduled
+                                ? "bg-teal-100 text-teal-800 border border-teal-200"
+                                : "bg-blue-50 text-primary border border-blue-100"
                         }`}
                     >
                       {item.status ? item.status.toUpperCase() : "PENDING"}
                     </span>
+                    {distanceKm !== undefined && (
+                      <span className="flex items-center gap-1 text-[11px] font-bold text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded border border-sky-200">
+                        <span>📍 {distanceKm} km away</span>
+                        {transitMinutes && <span className="text-slate-500 font-medium">({transitMinutes} mins)</span>}
+                      </span>
+                    )}
                     {isDelivered && existingReview && (
                       <span className="flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
                         <span>★ {existingReview.rating}/5</span>
@@ -229,6 +242,41 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
                         </button>
                       )}
                     </div>
+                  ) : isDeliveryman ? (
+                    <div className="flex flex-wrap items-center gap-2">
+                      {isDelivered ? (
+                        <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3.5 py-2 rounded-lg border border-emerald-300 flex items-center gap-1.5">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                          <span>Delivered</span>
+                        </span>
+                      ) : isOutForDelivery ? (
+                        onUpdateOrderStatus && (
+                          <button
+                            onClick={() => onUpdateOrderStatus(item.id, "delivered")}
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Delivery Complete</span>
+                          </button>
+                        )
+                      ) : (
+                        onUpdateOrderStatus && (
+                          <button
+                            onClick={() => onUpdateOrderStatus(item.id, "out for delivery")}
+                            className="bg-[#0F2747] hover:bg-[#1E3A8A] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            <span>Accept Order</span>
+                          </button>
+                        )
+                      )}
+                    </div>
                   ) : isCustomer ? (
                     <>
                       {isDelivered ? (
@@ -252,14 +300,6 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
                               Track Delivery
                             </button>
                           )}
-                          {canCustomerMarkDelivered && onUpdateOrderStatus && (
-                            <button
-                              onClick={() => onUpdateOrderStatus(item.id, "delivered")}
-                              className="bg-emerald-600 text-white text-xs font-semibold px-4 py-2 rounded-xl hover:bg-emerald-700 transition-colors cursor-pointer"
-                            >
-                              Mark Delivered
-                            </button>
-                          )}
                           {onCancelOrder && (
                             <button
                               onClick={() => onCancelOrder(item.id)}
@@ -274,11 +314,11 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
                   ) : (
                     <div className="flex flex-wrap items-center gap-2">
                       {isDelivered ? (
-                        <span className="bg-green-100 text-green-700 text-xs font-bold px-3.5 py-2 rounded-lg border border-green-300 flex items-center gap-1.5">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-600" viewBox="0 0 20 20" fill="currentColor">
+                        <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3.5 py-2 rounded-lg border border-emerald-300 flex items-center gap-1.5">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                           </svg>
-                          <span>Delivery Complete</span>
+                          <span>Delivered</span>
                         </span>
                       ) : isRejected ? (
                         <span className="bg-red-100 text-red-700 text-xs font-bold px-3 py-2 rounded-lg border border-red-300">
@@ -294,7 +334,6 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
                           <option value="pending">Pending</option>
                           <option value="confirmed">Confirmed</option>
                           <option value="processing">Processing</option>
-                          <option value="out for delivery">Out for Delivery</option>
                           <option value="cancelled">Cancelled</option>
                           <option value="rejected">Rejected</option>
                         </select>
