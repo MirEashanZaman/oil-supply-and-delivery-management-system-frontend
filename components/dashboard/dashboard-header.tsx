@@ -51,7 +51,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           {getTabTitle()}
         </h1>
         <p className="text-xs text-slate-500">
-          Welcome back, <span className="text-slate-800 font-semibold">{userData?.name || "User"}</span> ({userData?.role})
+          Welcome back, <span className="text-slate-800 font-semibold">{userData?.name || userData?.userName || "User"}.</span> ({userData?.role})
         </p>
       </div>
 
