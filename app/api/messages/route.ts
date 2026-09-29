@@ -25,22 +25,10 @@ function getRequestedChannel(channel?: string | null) {
 
 export async function GET(request: Request) {
     try {
-        const { searchParams } = new URL(request.url);
-        const requestedChannel = getRequestedChannel(searchParams.get("channel"));
         const messages = await readStoredMessages();
-        const filteredMessages = requestedChannel === "oil-supply-chat"
-            ? messages
-            : messages.filter((message) => {
-                const messageChannel = normalizeChannel(message.channel);
-                return messageChannel === requestedChannel || (
-                    requestedChannel !== "oil-supply-chat" &&
-                    messageChannel === "oil-supply-chat"
-                );
-            });
-
         return NextResponse.json({
             success: true,
-            data: filteredMessages,
+            data: messages,
         });
     } catch (err: any) {
         console.error("Error reading saved messages:", err);
