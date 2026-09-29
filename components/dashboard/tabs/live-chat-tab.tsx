@@ -15,7 +15,7 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
   const [selectedTopic, setSelectedTopic] = useState("General Support");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const channelName = getRoleBasedChannel(userData?.title || userData?.role || "customer");
+  const channelName = "oil-supply-chat";
 
   useEffect(() => {
     const loadStoredMessages = async () => {
@@ -37,29 +37,24 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
 
     const pollTimer = window.setInterval(() => {
       loadStoredMessages();
-    }, 4000);
+    }, 3000);
 
     const pusher = getPusherClient();
     if (!pusher) {
       return () => window.clearInterval(pollTimer);
     }
 
-    const subscriptions = [channelName].map((name) => {
-      const channel = pusher.subscribe(name);
-      channel.bind("new-message", (data: ChatMessage) => {
-        setMessages((prev) => [...prev.filter((m) => m.id !== data.id), data].slice(-100));
-      });
-      return channel;
+    const channel = pusher.subscribe(channelName);
+    channel.bind("new-message", (data: ChatMessage) => {
+      setMessages((prev) => [...prev.filter((m) => m.id !== data.id), data].slice(-100));
     });
 
     return () => {
       window.clearInterval(pollTimer);
-      subscriptions.forEach((channel) => {
-        channel.unbind_all();
-        channel.unsubscribe();
-      });
+      channel.unbind_all();
+      channel.unsubscribe();
     };
-  }, [channelName, userData?.email]);
+  }, [userData?.email]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
