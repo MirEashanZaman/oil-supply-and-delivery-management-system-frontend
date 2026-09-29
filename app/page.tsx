@@ -50,7 +50,7 @@ export default function Home() {
     const [products, setProducts] = useState<CarouselProduct[]>([]);
     const [isLoadingProducts, setIsLoadingProducts] = useState(true);
     const [productsError, setProductsError] = useState<string | null>(null);
-    const [user, setUser] = useState<{ userName?: string; email?: string; title?: string } | null>(null);
+    const [user, setUser] = useState<{ name?: string; userName?: string; email?: string; title?: string } | null>(null);
     const [publicReviews, setPublicReviews] = useState<OrderReview[]>([]);
 
     useEffect(() => {
@@ -145,7 +145,7 @@ export default function Home() {
                         Oil Supply & Delivery Platform
                     </span>
                     <h1 className="text-2xl md:text-3xl font-bold mt-3 tracking-tight text-white">
-                        {user ? `Welcome back, ${user.userName || user.email}` : "Oil Supply & Delivery Management System"}
+                        {user ? `Welcome back, ${user.name || user.userName || user.email?.split("@")[0] || "User"}.` : "Oil Supply & Delivery Management System"}
                     </h1>
                     <p className="text-xs sm:text-sm text-slate-300 mt-1.5 max-w-xl leading-relaxed">
                         Streamlining energy and fuel trade with direct sourcing from refinery suppliers and certified dealer distribution.
