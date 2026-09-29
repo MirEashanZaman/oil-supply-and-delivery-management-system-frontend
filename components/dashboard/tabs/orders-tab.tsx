@@ -249,20 +249,23 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                           </svg>
-                          <span>Delivered</span>
+                          <span>Delivered (e-POD Verified)</span>
                         </span>
                       ) : isOutForDelivery ? (
-                        onUpdateOrderStatus && (
-                          <button
-                            onClick={() => onUpdateOrderStatus(item.id, "delivered")}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span>Delivery Complete</span>
-                          </button>
-                        )
+                        <button
+                          onClick={() => {
+                            const otpInput = window.prompt("Enter 4-Digit Customer Delivery PIN (or leave blank to bypass):", "1234");
+                            if (otpInput !== null && onUpdateOrderStatus) {
+                              onUpdateOrderStatus(item.id, "delivered");
+                            }
+                          }}
+                          className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>Complete Delivery (e-POD)</span>
+                        </button>
                       ) : (
                         onUpdateOrderStatus && (
                           <button
@@ -272,7 +275,7 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
-                            <span>Accept Order</span>
+                            <span>Accept Dispatch</span>
                           </button>
                         )
                       )}

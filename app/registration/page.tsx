@@ -287,13 +287,13 @@ export default function Registration() {
 
                                 <div className="form-control w-full">
                                     <label className="label pb-1" htmlFor="username">
-                                        <span className="label-text font-semibold text-[#1E293B]">Username</span>
+                                        <span className="label-text font-semibold text-[#1E293B]">Full Name / Driver Name</span>
                                     </label>
                                     <input
                                         id="username"
                                         type="text"
                                         value={username}
-                                        placeholder="Enter your username"
+                                        placeholder="Enter your full name"
                                         onChange={(e) => setUsername(e.target.value)}
                                         className={`input input-bordered w-full bg-[#FFFFFF] text-[#1E293B] border-[#CBD5E1] focus:border-[#0F2747] focus:outline-none rounded-xl ${errors.username ? "border-[#DC2626]" : ""}`}
                                     />
@@ -302,6 +302,62 @@ export default function Registration() {
                                     )}
                                 </div>
                             </div>
+
+                            {title === "Deliveryman" && (
+                                <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
+                                    <div className="flex items-center gap-2">
+                                        <span className="badge bg-[#0F2747] text-white text-[10px] font-bold">Driver Credentials</span>
+                                        <span className="text-xs font-bold text-[#0F2747]">Fleet & HazMat Compliance</span>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <div className="form-control w-full">
+                                            <label className="label pb-1">
+                                                <span className="label-text text-xs font-semibold text-[#1E293B]">Vehicle / Tanker Type</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="vehicleType"
+                                                defaultValue="Tanker Lorry (20,000L)"
+                                                placeholder="e.g. Heavy Tanker Lorry (20,000L)"
+                                                className="input input-bordered input-sm w-full bg-[#FFFFFF] text-[#1E293B] border-[#CBD5E1] focus:border-[#0F2747] rounded-xl text-xs"
+                                            />
+                                        </div>
+                                        <div className="form-control w-full">
+                                            <label className="label pb-1">
+                                                <span className="label-text text-xs font-semibold text-[#1E293B]">Vehicle Registration Number</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="vehicleRegistrationNumber"
+                                                placeholder="e.g. DHAKA-METRO-DA-11-2049"
+                                                className="input input-bordered input-sm w-full bg-[#FFFFFF] text-[#1E293B] border-[#CBD5E1] focus:border-[#0F2747] rounded-xl text-xs"
+                                            />
+                                        </div>
+                                        <div className="form-control w-full">
+                                            <label className="label pb-1">
+                                                <span className="label-text text-xs font-semibold text-[#1E293B]">Commercial Driving License No</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="drivingLicenseNumber"
+                                                placeholder="e.g. DL-88392019"
+                                                className="input input-bordered input-sm w-full bg-[#FFFFFF] text-[#1E293B] border-[#CBD5E1] focus:border-[#0F2747] rounded-xl text-xs"
+                                            />
+                                        </div>
+                                        <div className="form-control w-full">
+                                            <label className="label pb-1">
+                                                <span className="label-text text-xs font-semibold text-[#1E293B]">HazMat Safety Certificate No</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="hazmatCertNumber"
+                                                placeholder="e.g. HAZMAT-PETRO-2026"
+                                                className="input input-bordered input-sm w-full bg-[#FFFFFF] text-[#1E293B] border-[#CBD5E1] focus:border-[#0F2747] rounded-xl text-xs"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="form-control w-full">
