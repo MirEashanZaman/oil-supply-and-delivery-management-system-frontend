@@ -62,7 +62,7 @@ export default function Login() {
 
         try {
             const signInEmail = result.data.email;
-            const roles = ["admin", "customer", "dealer", "supplier"];
+            const roles = ["admin", "customer", "dealer", "supplier", "deliveryman"];
             let loginSuccess = false;
             let matchedRole = "Customer";
             let lastErrorMessage = "";
@@ -152,6 +152,8 @@ export default function Login() {
                         fetchUrl = `${API_ENDPOINT}/supplier/getallsupplier`;
                     } else if (rolePath === "dealer") {
                         fetchUrl = `${API_ENDPOINT}/dealer/all`;
+                    } else if (rolePath === "deliveryman") {
+                        fetchUrl = `${API_ENDPOINT}/deliveryman/all`;
                     } else if (rolePath === "admin") {
                         fetchUrl = `${API_ENDPOINT}/admin/getallusers`;
                     }
