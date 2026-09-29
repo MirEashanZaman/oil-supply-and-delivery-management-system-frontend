@@ -169,7 +169,11 @@ export default function Registration() {
             );
 
             if (res.status === 200 || res.status === 201) {
-                setSuccessMessage("Registration successful! Redirecting to login page...");
+                if (result.data.title === "Deliveryman") {
+                    setSuccessMessage("Deliveryman registration submitted successfully! Your account is pending administrator approval before you can log in. Redirecting...");
+                } else {
+                    setSuccessMessage("Registration successful! Redirecting to login page...");
+                }
 
                 setUsername("");
                 setEmail("");
@@ -183,7 +187,7 @@ export default function Registration() {
 
                 setTimeout(() => {
                     router.push("/login");
-                }, 2000);
+                }, 3000);
             } else if (res.status === 409) {
                 setErrors({
                     email: `An account with this email (${result.data.email}) already exists. There can be only one account per email address.`,
@@ -274,6 +278,7 @@ export default function Registration() {
                                         <option value="Customer">Customer</option>
                                         <option value="Supplier">Supplier</option>
                                         <option value="Dealer">Dealer</option>
+                                        <option value="Deliveryman">Deliveryman (Delivery Personnel)</option>
                                     </select>
                                     {errors.title && (
                                         <span className="text-[#DC2626] text-xs font-medium mt-1">{errors.title}</span>
