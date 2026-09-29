@@ -726,6 +726,38 @@ export default function Dashboard() {
             } catch (err) {
                 console.warn("Failed to fetch customer orders:", err);
             }
+        } else if (r === "deliveryman") {
+            try {
+                const myAddr = user?.address || "";
+                const res = await axios.get(`${apiBase}/deliveryman/orders/nearby?address=${encodeURIComponent(myAddr)}&radius=80`, {
+                    withCredentials: true,
+                    validateStatus: (status) => status < 500,
+                });
+                if (res.status === 200 && Array.isArray(res.data)) {
+                    setOrders(res.data.map((o: any) => {
+                        const normalizedOrder = normalizeOrderFields({
+                            id: o.orderId,
+                            quantity: o.quantity || 1,
+                            status: o.status || "pending",
+                            address: o.destinationAddress,
+                            deliveryAddress: o.destinationAddress,
+                            customerName: o.customerName,
+                            customerEmail: o.customerEmail,
+                            customerPhone: o.customerPhone,
+                            product: { id: 1, name: o.productName },
+                            distanceKm: o.distanceKm,
+                            estimatedTransitMinutes: o.estimatedTransitMinutes,
+                            deliverymanId: o.assignedDeliverymanId,
+                        });
+                        return {
+                            ...normalizedOrder,
+                            totalAmount: resolveOrderTotal(normalizedOrder),
+                        };
+                    }));
+                }
+            } catch (err) {
+                console.warn("Failed to fetch deliveryman nearby orders:", err);
+            }
         } else {
             try {
                 const res = await axios.get(`${apiBase}/customer/getallcustomer`, { withCredentials: true, validateStatus: (status) => status < 500 });
@@ -1311,14 +1343,20 @@ export default function Dashboard() {
         if (!user) return;
         const role = getRolePath(user.title || user.role);
         const normalizedStatus = status.trim().toLowerCase();
-        const allowedStatuses = role === "customer"
-            ? ["delivered"]
+        
+        if (normalizedStatus === "delivered" && role !== "deliveryman") {
+            alert("Only assigned delivery personnel can mark an order as delivered.");
+            return;
+        }
+
+        const allowedStatuses = role === "deliveryman"
+            ? ["out for delivery", "delivered"]
             : ["pending", "confirmed", "processing", "out for delivery", "cancelled", "rejected"];
 
         if (!allowedStatuses.includes(normalizedStatus)) {
             alert(
-                role === "customer"
-                    ? "Customers can only mark orders as delivered."
+                role === "deliveryman"
+                    ? "Delivery personnel can only accept orders or complete delivery."
                     : "Suppliers and dealers can update order statuses except delivered."
             );
             return;
@@ -1335,16 +1373,28 @@ export default function Dashboard() {
 
         try {
             const deliveredAt = normalizedStatus === "delivered" ? new Date().toISOString() : undefined;
+            let updateUrl = `${apiBase}/${role}/confirmorder/${orderId}`;
+            let payload: any = {
+                status: normalizedStatus,
+                ...(deliveredAt ? { deliveryDate: deliveredAt, delivery_date: deliveredAt } : {}),
+            };
+
+            if (role === "deliveryman") {
+                if (normalizedStatus === "delivered") {
+                    updateUrl = `${apiBase}/deliveryman/orders/${orderId}/complete`;
+                } else {
+                    updateUrl = `${apiBase}/deliveryman/orders/${orderId}/accept`;
+                }
+                payload = { deliverymanId: user.id };
+            }
+
             const res = await axios.put(
-                `${apiBase}/${role}/confirmorder/${orderId}`,
-                {
-                    status: normalizedStatus,
-                    ...(deliveredAt ? { deliveryDate: deliveredAt, delivery_date: deliveredAt } : {}),
-                },
+                updateUrl,
+                payload,
                 { withCredentials: true, validateStatus: (status) => status < 500 }
             );
             if (res.status === 200 || res.status === 204) {
-                const nextStatus = normalizedStatus === "delivered" ? "Delivered" : status;
+                const nextStatus = normalizedStatus === "delivered" ? "Delivered" : normalizedStatus === "out for delivery" ? "Out for Delivery" : status;
                 setOrders((currentOrders) => currentOrders.map((order) => (
                     order.id === orderId ? { ...order, status: nextStatus, ...(deliveredAt ? { deliveryDate: deliveredAt } : {}) } : order
                 )));
@@ -1365,7 +1415,7 @@ export default function Dashboard() {
                 }
                 alert(`Order marked as ${nextStatus} successfully!`);
             } else {
-                const serverMessage = res.data?.message || `Order update failed (${res.status}) at /${role}/confirmorder/${orderId}.`;
+                const serverMessage = res.data?.message || `Order update failed (${res.status}) at ${updateUrl}.`;
                 alert(
                     res.status === 401
                         ? "Your session has expired. Please login again and retry."
