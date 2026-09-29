@@ -225,7 +225,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
       );
     }
 
-    return pool
+    const rawList = pool
       .map((partner) => {
         const pCoords = getCoordinates(partner.address);
         const distanceKm = calcHaversine(cCoords.lat, cCoords.lng, pCoords.lat, pCoords.lng);
@@ -236,9 +236,15 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
           transitMins,
         };
       })
-      .filter((p) => p.distanceKm <= selectedRadiusKm)
-      .sort((a, b) => a.distanceKm - b.distanceKm);
-  }, [availableSuppliers, availableDealers, searchLocationQuery, userData?.address, selectedRadiusKm]);
+      .filter((p) => p.distanceKm <= selectedRadiusKm);
+
+    if (isDealer) {
+      // For Dealers: prioritize nearby Refinery Suppliers for wholesale bulk sourcing
+      return rawList.filter((p) => p.role === "Supplier").sort((a, b) => a.distanceKm - b.distanceKm);
+    }
+
+    return rawList.sort((a, b) => a.distanceKm - b.distanceKm);
+  }, [availableSuppliers, availableDealers, searchLocationQuery, userData?.address, selectedRadiusKm, isDealer]);
 
   const lifecycleStages = [
     {
@@ -412,14 +418,16 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-bold text-[#0F2747]">
-                Nearby Supplier & Dealer Proximity Radar
+                {isDealer ? "Nearby Refinery Supplier Detection Radar" : "Nearby Supplier & Dealer Proximity Radar"}
               </h3>
               <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-[#16A34A] text-white">
                 Haversine Algorithm Active
               </span>
             </div>
             <p className="text-xs text-secondary-gray mt-0.5">
-              Geodesic distance calculation detecting certified refinery depots and licensed dealer stations near your location.
+              {isDealer
+                ? "Geodesic distance calculation detecting certified petroleum refinery terminals and bulk dispatch depots near your station."
+                : "Geodesic distance calculation detecting certified refinery depots and licensed dealer stations near your location."}
             </p>
           </div>
 
@@ -523,7 +531,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                     onClick={() => setActiveTab("products")}
                     className="btn btn-xs bg-[#0F2747] hover:bg-[#163860] text-white font-bold rounded-lg text-[10px]"
                   >
-                    Order Fuel →
+                    {isDealer ? "Source Wholesale →" : "Order Fuel →"}
                   </button>
                 </div>
               </div>
