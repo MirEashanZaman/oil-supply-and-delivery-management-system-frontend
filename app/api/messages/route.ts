@@ -38,15 +38,9 @@ export async function GET(request: Request) {
                 );
             });
 
-        const sorted = [...filteredMessages].sort((a, b) => {
-            const timeA = parseInt(a.id.split("_")[1] || "0", 10);
-            const timeB = parseInt(b.id.split("_")[1] || "0", 10);
-            return timeA - timeB;
-        });
-
         return NextResponse.json({
             success: true,
-            data: sorted.slice(-100),
+            data: filteredMessages,
         });
     } catch (err: any) {
         console.error("Error reading saved messages:", err);
