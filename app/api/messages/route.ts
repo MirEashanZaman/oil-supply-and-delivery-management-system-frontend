@@ -39,27 +39,41 @@ export async function GET(request: Request) {
     }
 }
 
+let GLOBAL_MESSAGES_CACHE: ChatMessage[] | null = null;
+
 async function readStoredMessages(): Promise<ChatMessage[]> {
+    if (GLOBAL_MESSAGES_CACHE && GLOBAL_MESSAGES_CACHE.length > 0) {
+        return [...GLOBAL_MESSAGES_CACHE];
+    }
     try {
         const fileText = await fs.readFile(MESSAGES_FILE, "utf8");
         const parsed = JSON.parse(fileText);
 
         if (!Array.isArray(parsed)) {
+            GLOBAL_MESSAGES_CACHE = [];
             return [];
         }
 
-        return parsed.map((message: any) => ({
+        const normalized = parsed.map((message: any) => ({
             ...message,
             channel: normalizeChannel(message.channel),
         }));
+        GLOBAL_MESSAGES_CACHE = normalized;
+        return [...normalized];
     } catch {
+        GLOBAL_MESSAGES_CACHE = [];
         return [];
     }
 }
 
 async function writeStoredMessages(messages: ChatMessage[]) {
-    await fs.mkdir(path.dirname(MESSAGES_FILE), { recursive: true });
-    await fs.writeFile(MESSAGES_FILE, JSON.stringify(messages, null, 2), "utf8");
+    GLOBAL_MESSAGES_CACHE = [...messages];
+    try {
+        await fs.mkdir(path.dirname(MESSAGES_FILE), { recursive: true });
+        await fs.writeFile(MESSAGES_FILE, JSON.stringify(messages, null, 2), "utf8");
+    } catch (err) {
+        console.warn("Write to messages.json file fallback:", err);
+    }
 }
 
 interface KnowledgeDoc {

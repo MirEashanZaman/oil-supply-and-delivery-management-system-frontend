@@ -22,7 +22,12 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
       try {
         const res = await axios.get(`/api/messages?channel=${encodeURIComponent(channelName)}`);
         if (res.data?.success && Array.isArray(res.data?.data)) {
-          setMessages(res.data.data);
+          const serverList: ChatMessage[] = res.data.data;
+          setMessages((prev) => {
+            const serverIds = new Set(serverList.map((m) => m.id));
+            const localPending = prev.filter((m) => !serverIds.has(m.id) && m.id.startsWith("msg_"));
+            return [...serverList, ...localPending].slice(-100);
+          });
         }
       } catch (err) {
         console.warn("Failed to load live chat history:", err);
