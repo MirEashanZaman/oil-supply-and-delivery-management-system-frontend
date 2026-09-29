@@ -129,34 +129,19 @@ const PETROLEUM_KNOWLEDGE_BASE: KnowledgeDoc[] = [
 
 function runRAGInference(query: string): { answer: string; docTitles: string[] } | null {
     const qLower = query.toLowerCase().trim();
-    if (qLower.length < 3) return null;
-
-    const isExplicitInquiry = 
-        qLower.includes("?") ||
-        qLower.startsWith("what") ||
-        qLower.startsWith("how") ||
-        qLower.startsWith("is ") ||
-        qLower.startsWith("can ") ||
-        qLower.startsWith("tell me") ||
-        qLower.startsWith("help") ||
-        qLower.includes("rag") ||
-        qLower.includes("bot") ||
-        qLower.includes("@bot");
+    if (!qLower) return null;
 
     const matchedDocs = PETROLEUM_KNOWLEDGE_BASE.filter((doc) => {
         return (
             doc.keywords.some((k) => qLower.includes(k)) ||
-            doc.title.toLowerCase().split(" ").some((w) => w.length > 3 && qLower.includes(w))
+            doc.title.toLowerCase().split(" ").some((w) => w.length > 3 && qLower.includes(w)) ||
+            doc.content.toLowerCase().split(" ").some((w) => w.length > 4 && qLower.includes(w))
         );
     });
 
-    if (matchedDocs.length === 0 && !isExplicitInquiry) {
-        return null;
-    }
-
     if (matchedDocs.length === 0) {
         return {
-            answer: `I am the PetroBot AI Assistant (RAG Pipeline). I can provide real-time verified specifications on Fuel Standards (ULSD Euro V, Octane 95), HazMat Safety Protocols, Platts Wholesale Pricing, and e-POD PIN Verification. How can I assist your dispatch?`,
+            answer: `Hello! I am your 24/7 PetroBot AI Assistant (RAG Pipeline). Received your message: "${query}". You can ask me about Fuel Standards (ULSD Euro V, Octane 95/98), HazMat Tanker Safety, Platts Wholesale Pricing, or e-POD PIN Verification. How can I assist your logistics today?`,
             docTitles: ["Petroleum Knowledge Base v2.4"],
         };
     }
