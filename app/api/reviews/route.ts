@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { API_ENDPOINT } from "@/lib/api";
+import { API_ENDPOINT, fetchWithTimeout } from "@/lib/api";
 import { promises as fs } from "fs";
 import path from "path";
 
@@ -25,9 +25,9 @@ async function writeStoredReviewsFile(reviews: any[]): Promise<void> {
 
 export async function GET() {
   try {
-    const response = await fetch(`${API_ENDPOINT}/review/list`, {
+    const response = await fetchWithTimeout(`${API_ENDPOINT}/review/list`, {
       cache: "no-store",
-    });
+    }, 4000);
     if (response.ok) {
       const data = await response.json();
       if (Array.isArray(data) && data.length > 0) {
