@@ -22,7 +22,8 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
       try {
         const res = await axios.get(`/api/messages?channel=${encodeURIComponent(channelName)}`);
         if (res.data?.success && Array.isArray(res.data?.data)) {
-          setMessages(res.data.data.slice(0, 50));
+          // Keep chronological order (oldest to newest, latest at bottom)
+          setMessages(res.data.data);
         }
       } catch (err) {
         console.warn("Failed to load live chat history:", err);
@@ -47,7 +48,7 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
     const subscriptions = [channelName].map((name) => {
       const channel = pusher.subscribe(name);
       channel.bind("new-message", (data: ChatMessage) => {
-        setMessages((prev) => [data, ...prev.filter((m) => m.id !== data.id)].slice(0, 50));
+        setMessages((prev) => [...prev.filter((m) => m.id !== data.id), data].slice(-100));
       });
       return channel;
     });
@@ -82,6 +83,7 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
     };
 
     setInputMessage("");
+    setMessages((prev) => [...prev.filter((m) => m.id !== payload.id), payload].slice(-100));
 
     try {
       const res = await axios.post("/api/messages", {
@@ -95,11 +97,17 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
 
       if (res.data?.success && res.data?.data) {
         const newMsg = res.data.data;
-        setMessages((prev) => [newMsg, ...prev.filter((m) => m.id !== newMsg.id)].slice(0, 50));
+        const botReply = res.data.botReply;
+        setMessages((prev) => {
+          let updated = [...prev.filter((m) => m.id !== newMsg.id && m.id !== payload.id), newMsg];
+          if (botReply) {
+            updated = [...updated.filter((m) => m.id !== botReply.id), botReply];
+          }
+          return updated.slice(-100);
+        });
       }
     } catch (err) {
       console.warn("Live chat send fallback:", err);
-      setMessages((prev) => [payload, ...prev.filter((m) => m.id !== payload.id)].slice(0, 50));
     }
   };
 

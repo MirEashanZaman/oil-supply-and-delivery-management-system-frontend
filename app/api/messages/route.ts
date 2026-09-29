@@ -38,9 +38,16 @@ export async function GET(request: Request) {
                 );
             });
 
+        // Always return in chronological sequence (oldest first, latest at bottom)
+        const sorted = [...filteredMessages].sort((a, b) => {
+            const timeA = parseInt(a.id.split("_")[1] || "0", 10);
+            const timeB = parseInt(b.id.split("_")[1] || "0", 10);
+            return timeA - timeB;
+        });
+
         return NextResponse.json({
             success: true,
-            data: filteredMessages.slice(0, 50),
+            data: sorted.slice(-100),
         });
     } catch (err: any) {
         console.error("Error reading saved messages:", err);
@@ -208,7 +215,7 @@ export async function POST(request: Request) {
             const ragResult = runRAGInference(message);
             if (ragResult) {
                 const botMessage: ChatMessage = {
-                    id: `msg_bot_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+                    id: `msg_bot_${Date.now() + 1}_${Math.random().toString(36).substring(2, 7)}`,
                     sender: "PetroBot AI (RAG Assistant)",
                     email: "petrobot@oilsupply.internal",
                     role: "AI Compliance Officer",
@@ -217,11 +224,11 @@ export async function POST(request: Request) {
                     timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
                     channel: normalizedChannel,
                 };
-                newMessagesList.unshift(botMessage);
+                newMessagesList.push(botMessage);
             }
         }
 
-        const updatedMessages = [...newMessagesList, ...normalizedExistingMessages].slice(0, 200);
+        const updatedMessages = [...normalizedExistingMessages, ...newMessagesList].slice(-200);
         await writeStoredMessages(updatedMessages);
 
         const pusherServer = getPusherServer();
