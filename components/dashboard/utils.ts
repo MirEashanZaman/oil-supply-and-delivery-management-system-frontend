@@ -111,11 +111,13 @@ export const getRolePath = (title?: string): string => {
     if (t.includes("admin")) return "admin";
     if (t.includes("supplier")) return "supplier";
     if (t.includes("dealer")) return "dealer";
+    if (t.includes("delivery") || t.includes("driver") || t.includes("rider")) return "deliveryman";
     return "customer";
 };
 
 export const normalizeRole = (role?: string): string => {
     const path = getRolePath(role);
+    if (path === "deliveryman") return "Deliveryman";
     return path.charAt(0).toUpperCase() + path.slice(1);
 };
 
@@ -130,6 +132,7 @@ export const getAllUsersUrl = (title?: string): string => {
     if (r === "admin") return `${API_ENDPOINT}/admin/getalladmin`;
     if (r === "supplier") return `${API_ENDPOINT}/supplier/getallsupplier`;
     if (r === "dealer") return `${API_ENDPOINT}/dealer/all`;
+    if (r === "deliveryman") return `${API_ENDPOINT}/deliveryman/all`;
     return `${API_ENDPOINT}/customer/getallcustomer`;
 };
 
@@ -138,6 +141,7 @@ export const getRoleBadgeColor = (role?: string): string => {
     if (r.includes("admin")) return "bg-purple-100 text-purple-800 border-purple-200";
     if (r.includes("supplier")) return "bg-blue-100 text-blue-800 border-blue-200";
     if (r.includes("dealer")) return "bg-amber-100 text-amber-800 border-amber-200";
+    if (r.includes("delivery") || r.includes("driver")) return "bg-orange-100 text-orange-800 border-orange-200";
     return "bg-emerald-100 text-emerald-800 border-emerald-200";
 };
 
