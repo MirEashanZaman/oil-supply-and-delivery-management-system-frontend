@@ -25,6 +25,7 @@ export async function checkEmailUniqueness(email: string): Promise<EmailUniquene
                 ...(resAll.data.admins || []).map((u: any) => ({ ...u, roleName: "Admin" })),
                 ...(resAll.data.dealers || []).map((u: any) => ({ ...u, roleName: "Dealer" })),
                 ...(resAll.data.suppliers || []).map((u: any) => ({ ...u, roleName: "Supplier" })),
+                ...(resAll.data.deliverymen || []).map((u: any) => ({ ...u, roleName: "Deliveryman" })),
             ];
 
             const match = allUsers.find(
