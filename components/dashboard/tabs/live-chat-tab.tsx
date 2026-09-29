@@ -22,7 +22,6 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
       try {
         const res = await axios.get(`/api/messages?channel=${encodeURIComponent(channelName)}`);
         if (res.data?.success && Array.isArray(res.data?.data)) {
-          // Keep chronological order (oldest to newest, latest at bottom)
           setMessages(res.data.data);
         }
       } catch (err) {

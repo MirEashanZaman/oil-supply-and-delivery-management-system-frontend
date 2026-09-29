@@ -38,7 +38,6 @@ export async function GET(request: Request) {
                 );
             });
 
-        // Always return in chronological sequence (oldest first, latest at bottom)
         const sorted = [...filteredMessages].sort((a, b) => {
             const timeA = parseInt(a.id.split("_")[1] || "0", 10);
             const timeB = parseInt(b.id.split("_")[1] || "0", 10);
