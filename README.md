@@ -1,56 +1,60 @@
-This is a [Next.js](https://nextjs.org) project for the oil supply and delivery management platform.
+# Oil Supply & Delivery Management System (Frontend)
+
+Next.js enterprise web application for the Oil Supply & Delivery Management Platform, featuring real-time telematics dispatch radar, automated petroleum tax invoicing, e-POD compliance, and AI-driven inventory forecasting.
+
+---
+
+## Core Capabilities & Features
+
+### 1. Automated Petroleum Tax Invoicing & Bill of Lading (BOL)
+- Generates official petroleum tax invoices and e-POD Bills of Lading formatted to international standards (ISO 9001:2015 & OIML R 117-1).
+- Itemizes base barrel volume, HazMat handling surcharges, and energy VAT with dual-signature custody transfer verification.
+- Direct native browser PDF printing and digital record archiving.
+
+### 2. Live Fleet GPS Radar & IoT Telematics Monitoring
+- Interactive multi-layer Leaflet GIS tracking with depot-to-destination corridor routing.
+- Real-time IoT sensor telemetry strip displaying:
+  - Road tanker speed (KM/H) & remaining ETA.
+  - Cargo fuel temperature in Celsius with thermal stability status.
+  - Vessel tank pressure (Bar) and digital Coriolis flowmeter rate (LPM).
+  - Tanker ullage fill percentage.
+
+### 3. Cryptographic Audit Trail & Compliance Ledger
+- Real-time client ledger displaying SHA-256 block-linked transaction logs.
+- Immutable logging of SAGA 2-Phase commits, e-POD PIN match events, and HazMat tanker inspection clearances.
+
+### 4. AI Predictive Fuel Inventory & Smart Replenishment Engine
+- Live depot burn-rate monitor calculating daily retail consumption, seasonality factors, and Platts pricing trends.
+- Automated safety-threshold alert with 1-click wholesale refinery procurement reordering.
+
+### 5. Multi-Role RBAC Dashboard
+- Dedicated role workflows for **Customers**, **Dealers**, **Suppliers**, **Delivery Personnel**, and **Admins**.
+- Real-time Pusher chat and non-user automated support response pipeline.
+
+---
 
 ## Getting Started
 
-Install dependencies:
-
 ```bash
+# Install dependencies
 npm install
-```
 
-Run the development server:
-
-```bash
+# Run development server
 npm run dev
+
+# Production build validation
+npm run build
 ```
 
-Open http://localhost:5000 to view the app.
+---
 
-## Environment Configuration
+## Environment Variables
 
-Create a local environment file from the example template:
-
-```bash
-copy .env.example .env.local
-```
-
-Then set the actual values for your backend and app URL:
+Create `.env.local` based on `.env.example`:
 
 ```env
 NEXT_PUBLIC_API_ENDPOINT=http://localhost:8000
 NEXT_PUBLIC_APP_URL=http://localhost:5000
-NEXT_PUBLIC_PUSHER_KEY=
+NEXT_PUBLIC_PUSHER_KEY=your_pusher_key
 NEXT_PUBLIC_PUSHER_CLUSTER=ap1
 ```
-
-For production deployment, set the same variables in your hosting environment or platform secrets. Do not hardcode live API URLs into the source code.
-
-## Deployment Notes
-
-- Use HTTPS for production.
-- Set `NEXT_PUBLIC_API_ENDPOINT` to the live backend domain.
-- Set `NEXT_PUBLIC_APP_URL` to the live frontend domain.
-- Keep Pusher keys in environment variables, not in the repository.
-- For local network testing, use the LAN IP value and keep the allowed dev origin list aligned in `next.config.ts`.
-
-## Production Build
-
-```bash
-npm run build
-```
-
-## Deploy on Vercel
-
-The app can be deployed to Vercel by setting the environment variables in the project dashboard before build.
-
-Check the official Next.js deployment guide for more details: https://nextjs.org/docs/app/building-your-application/deploying
