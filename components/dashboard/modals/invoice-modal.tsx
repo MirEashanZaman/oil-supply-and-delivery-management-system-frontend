@@ -28,12 +28,12 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({ order, userData, onC
       <div className="flex w-full max-w-4xl max-h-[95vh] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl border border-slate-200 animate-fadeIn">
         <div className="flex items-center justify-between border-b border-slate-200 bg-slate-900 px-6 py-4 text-white print:hidden">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500 font-black text-slate-950">
-              ⚡
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500 font-black text-slate-950 text-xs">
+              BOL
             </div>
             <div>
               <h2 id="invoice-title" className="text-base font-black tracking-tight text-white">Petroleum Tax Invoice & Bill of Lading</h2>
-              <p className="text-xs text-slate-400">Order #{order.id} · Official e-POD Certified Record</p>
+              <p className="text-xs text-slate-400">Order #{order.id} | Official e-POD Certified Record</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -43,7 +43,7 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({ order, userData, onC
               className="flex items-center gap-1.5 rounded-lg bg-amber-500 px-3.5 py-1.5 text-xs font-bold text-slate-950 hover:bg-amber-400 transition-colors cursor-pointer"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
               </svg>
               <span>Print / Save PDF</span>
             </button>
@@ -52,7 +52,7 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({ order, userData, onC
               onClick={onClose}
               className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white cursor-pointer"
             >
-              ✕
+              X
             </button>
           </div>
         </div>
@@ -117,7 +117,7 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({ order, userData, onC
                     <p className="font-bold text-slate-900">{order.product?.name || "Refined Fuel Petroleum Distillate"}</p>
                     <p className="text-[11px] text-slate-500">UN1202 / Class 3 Flammable Liquid (Bulk Road Tanker)</p>
                   </td>
-                  <td className="p-3 text-center text-slate-600 font-mono">34.2° API · Class 3</td>
+                  <td className="p-3 text-center text-slate-600 font-mono">34.2 API | Class 3</td>
                   <td className="p-3 text-right font-bold text-slate-900">{order.quantity} units</td>
                   <td className="p-3 text-right text-slate-700">
                     ${order.quantity > 0 ? (Number(baseRate) / order.quantity).toFixed(2) : "0.00"}
@@ -131,11 +131,9 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({ order, userData, onC
           <div className="flex flex-col sm:flex-row justify-between items-start gap-4 pt-2">
             <div className="w-full sm:w-1/2 space-y-2 text-xs">
               <div className="rounded-lg bg-emerald-50 p-3 border border-emerald-200 text-emerald-900">
-                <p className="font-bold flex items-center gap-1.5">
-                  <span>🛡️ Electronic Proof of Delivery (e-POD) Cryptographic Seal</span>
-                </p>
+                <p className="font-bold">Electronic Proof of Delivery (e-POD) Cryptographic Seal</p>
                 <p className="text-[11px] text-emerald-800 mt-1">
-                  Tanker flowmeter reading calibrated at 15°C temperature compensation. Custody transfer confirmed and logged with SAGA transaction integrity.
+                  Tanker flowmeter reading calibrated at 15C temperature compensation. Custody transfer confirmed and logged with SAGA transaction integrity.
                 </p>
               </div>
               <div className="border border-slate-200 rounded-lg p-3 space-y-1 text-slate-600 text-[11px]">
@@ -192,7 +190,7 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({ order, userData, onC
             className="rounded-lg bg-[#0F2747] px-4 py-2 text-xs font-bold text-white hover:bg-[#163860] transition-colors cursor-pointer flex items-center gap-1.5"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
             </svg>
             <span>Print Invoice</span>
           </button>
