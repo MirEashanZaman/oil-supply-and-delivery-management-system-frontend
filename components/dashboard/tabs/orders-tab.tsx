@@ -219,7 +219,6 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
                     Order Details
                   </button>
 
-                  {/* Invoice / Bill of Lading Download Button for Delivered Orders */}
                   {isDelivered && (
                     <button
                       type="button"
@@ -233,7 +232,6 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
                     </button>
                   )}
 
-                  {/* Review Button for any delivered order (visible for all non-admin users) */}
                   {!isAdmin && isDelivered && (
                     <button
                       type="button"
@@ -596,7 +594,6 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
         </div>
       )}
 
-      {/* Petroleum Tax Invoice & Bill of Lading Modal */}
       {invoiceOrder && (
         <InvoiceModal
           order={invoiceOrder}
