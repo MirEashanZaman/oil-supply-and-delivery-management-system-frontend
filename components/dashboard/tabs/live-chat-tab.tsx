@@ -119,7 +119,7 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
         <div className="h-80 sm:h-96 overflow-y-auto bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 sm:p-4 space-y-2.5 sm:space-y-3 mb-3 sm:mb-4 w-full">
           {messages.map((m) => {
             const isMe = m.email === userData?.email;
-            const isBot = m.sender.includes("PetroBot") || m.role?.includes("AI");
+            const isBot = m.sender.includes("Automated Support") || m.sender.includes("PetroBot") || m.role?.includes("Auto-Reply") || m.role?.includes("AI");
             return (
               <div
                 key={m.id}

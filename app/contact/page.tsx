@@ -303,7 +303,7 @@ export default function ContactInfo() {
                                 </div>
                                 <div className="space-y-3">
                                     {liveMessages.map((msg) => {
-                                        const isBot = msg.sender.includes("PetroBot") || msg.role?.includes("AI");
+                                        const isBot = msg.sender.includes("Automated Support") || msg.sender.includes("PetroBot") || msg.role?.includes("Auto-Reply") || msg.role?.includes("AI");
                                         return (
                                             <div
                                                 key={msg.id}
