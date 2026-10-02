@@ -92,7 +92,6 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
         )}
       </div>
 
-      {/* Predictive Inventory & Stock Depletion Intelligence Banner */}
       <div className="rounded-2xl bg-gradient-to-r from-[#0F2747] to-[#1E3A8A] p-5 text-white shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2 flex-wrap">
