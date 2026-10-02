@@ -427,14 +427,13 @@ export const AdminMonitoringTab: React.FC<AdminMonitoringTabProps> = ({
         </div>
       )}
 
-      {/* Enterprise Cryptographic Audit Trail Ledger */}
       <div className="bg-white border border-[#E2E8F0] p-5 rounded-2xl shadow-sm space-y-4">
         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
           <div>
             <div className="flex items-center gap-2">
               <span className="text-base font-black text-dark-slate">Enterprise Cryptographic Audit Trail & Compliance Ledger</span>
               <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded border border-emerald-300 uppercase">
-                SHA-256 Chained · Tamper-Evident
+                SHA-256 Chained | Tamper-Evident
               </span>
             </div>
             <p className="text-xs text-secondary-gray mt-0.5">
