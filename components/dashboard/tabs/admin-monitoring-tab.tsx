@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { SystemUser } from "../types";
 import { getRoleBadgeColor } from "../utils";
 import { API_ENDPOINT } from "@/lib/api";
+import { getStoredAuditLogs } from "@/lib/audit-logger";
 
 interface AdminMonitoringTabProps {
   users: SystemUser[];
@@ -425,6 +426,63 @@ export const AdminMonitoringTab: React.FC<AdminMonitoringTabProps> = ({
           </div>
         </div>
       )}
+
+      {/* Enterprise Cryptographic Audit Trail Ledger */}
+      <div className="bg-white border border-[#E2E8F0] p-5 rounded-2xl shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-base font-black text-dark-slate">Enterprise Cryptographic Audit Trail & Compliance Ledger</span>
+              <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded border border-emerald-300 uppercase">
+                SHA-256 Chained · Tamper-Evident
+              </span>
+            </div>
+            <p className="text-xs text-secondary-gray mt-0.5">
+              Immutable record of all SAGA 2-phase commits, e-POD verifications, HazMat inspections, and admin role events.
+            </p>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto rounded-xl border border-[#E2E8F0]">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-[#F8FAFC] text-secondary-gray font-bold border-b border-[#E2E8F0]">
+              <tr>
+                <th className="py-2.5 px-3">Event ID</th>
+                <th className="py-2.5 px-3">Action Type</th>
+                <th className="py-2.5 px-3">Entity & Target</th>
+                <th className="py-2.5 px-3">Actor & Role</th>
+                <th className="py-2.5 px-3">Details & Audit Payload</th>
+                <th className="py-2.5 px-3 font-mono">Hash Verification</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#E2E8F0]">
+              {getStoredAuditLogs().map((log) => (
+                <tr key={log.id} className="hover:bg-[#F8FAFC]/70">
+                  <td className="py-2.5 px-3 font-mono font-bold text-dark-slate">{log.id}</td>
+                  <td className="py-2.5 px-3">
+                    <span className="bg-sky-100 text-sky-800 px-2 py-0.5 rounded text-[10px] font-bold">
+                      {log.action}
+                    </span>
+                  </td>
+                  <td className="py-2.5 px-3 font-bold text-dark-slate">{log.entity} #{log.entityId}</td>
+                  <td className="py-2.5 px-3">
+                    <p className="font-bold text-dark-slate">{log.actor}</p>
+                    <p className="text-[10px] text-secondary-gray">{log.role}</p>
+                  </td>
+                  <td className="py-2.5 px-3 text-slate-600 max-w-xs truncate" title={log.details}>
+                    {log.details}
+                  </td>
+                  <td className="py-2.5 px-3">
+                    <span className="font-mono text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                      {log.hash.slice(0, 16)}...
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };
