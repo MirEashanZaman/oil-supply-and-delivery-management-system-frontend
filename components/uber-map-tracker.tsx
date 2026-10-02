@@ -100,10 +100,16 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
     const [gpsSpeed, setGpsSpeed] = useState<number>(48);
     const [gpsHeading, setGpsHeading] = useState<number>(195);
     const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
-    const [backendTrackingStatus, setBackendTrackingStatus] = useState<string>("");
+    const [backendTrackingStatus, setBackendTrackingStatus] = useState<string>("IN TRANSIT");
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
     const [callAlert, setCallAlert] = useState<string | null>(null);
     const [simProgress, setSimProgress] = useState<number>(45);
+
+    // Live IoT Tanker Sensor Telematics
+    const [fuelTempCelsius, setFuelTempCelsius] = useState<number>(22.4);
+    const [tankPressureBar, setTankPressureBar] = useState<number>(1.85);
+    const [flowRateLpm, setFlowRateLpm] = useState<number>(185);
+    const [ullagePercent, setUllagePercent] = useState<number>(94.6);
 
     const mapContainerRef = useRef<HTMLDivElement | null>(null);
     const leafletMapRef = useRef<LeafletType.Map | null>(null);
@@ -660,8 +666,8 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
                         </button>
                     </div>
 
-                    { }
-                    <div className="p-3.5 bg-[#0B1329] border-t border-[#1E293B] space-y-2">
+                    {/* Bottom Status & Metrics Strip */}
+                    <div className="p-3.5 bg-[#0B1329] border-t border-[#1E293B] space-y-2.5">
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                             <div className="bg-[#1E293B] p-2 rounded-xl border border-[#334155]">
                                 <span className="text-[10px] text-slate-400 uppercase font-semibold block">Live Speed</span>
@@ -678,6 +684,26 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
                             <div className="bg-[#1E293B] p-2 rounded-xl border border-[#334155]">
                                 <span className="text-[10px] text-slate-400 uppercase font-semibold block">GPS Fix</span>
                                 <span className="text-sm font-black text-emerald-400 font-mono">3D DGPS (±{gpsAccuracy}m)</span>
+                            </div>
+                        </div>
+
+                        {/* IoT Cargo & HazMat Sensors */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center pt-1 border-t border-[#1E293B]/70">
+                            <div className="bg-[#131F38] p-1.5 rounded-lg border border-sky-900/50">
+                                <span className="text-[9px] text-sky-300 uppercase font-bold block">🌡️ Cargo Temp</span>
+                                <span className="text-xs font-black text-white font-mono">{fuelTempCelsius}°C <span className="text-[9px] text-emerald-400">(Norm)</span></span>
+                            </div>
+                            <div className="bg-[#131F38] p-1.5 rounded-lg border border-sky-900/50">
+                                <span className="text-[9px] text-sky-300 uppercase font-bold block">⚖️ Tank Pressure</span>
+                                <span className="text-xs font-black text-amber-300 font-mono">{tankPressureBar} Bar</span>
+                            </div>
+                            <div className="bg-[#131F38] p-1.5 rounded-lg border border-sky-900/50">
+                                <span className="text-[9px] text-sky-300 uppercase font-bold block">⛽ Flowmeter</span>
+                                <span className="text-xs font-black text-sky-300 font-mono">{flowRateLpm} LPM</span>
+                            </div>
+                            <div className="bg-[#131F38] p-1.5 rounded-lg border border-sky-900/50">
+                                <span className="text-[9px] text-sky-300 uppercase font-bold block">📊 Ullage / Volume</span>
+                                <span className="text-xs font-black text-emerald-300 font-mono">{ullagePercent}% Full</span>
                             </div>
                         </div>
                     </div>
