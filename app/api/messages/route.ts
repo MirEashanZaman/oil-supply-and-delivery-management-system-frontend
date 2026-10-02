@@ -19,11 +19,7 @@ function normalizeChannel(channel?: string | null) {
     return trimmed;
 }
 
-function getRequestedChannel(channel?: string | null) {
-    return normalizeChannel(channel);
-}
-
-export async function GET(request: Request) {
+export async function GET() {
     try {
         const messages = await readStoredMessages();
         return NextResponse.json({
@@ -163,7 +159,7 @@ export async function POST(request: Request) {
     try {
         const body = await request.json();
         const { sender, email, role, topic, message, channel } = body;
-        const normalizedChannel = getRequestedChannel(channel || "oil-supply-chat");
+        const normalizedChannel = normalizeChannel(channel || "oil-supply-chat");
 
         if (!message || !message.trim()) {
             return NextResponse.json(
