@@ -70,16 +70,16 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
   });
 
   return (
-    <div className="w-full text-left animate-fadeIn">
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
+    <div className="w-full text-left animate-fadeIn space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-[#1E293B]">
-            {isSupplier ? "My Supply Portfolio" : "My Stock Inventory"}
+            {isSupplier ? "My Supply Portfolio" : "My Stock Inventory & Forecasts"}
           </h1>
           <p className="text-sm text-[#64748B]">
             {isSupplier
               ? "Manage petroleum products you actively distribute to Dealers and direct Customers."
-              : "Manage products posted by you (permanent) or actively linked to your Dealer stock catalog."}
+              : "Monitor fuel depot storage levels, dynamic burn rate forecasting, and automatic procurement reorders."}
           </p>
         </div>
         {onOpenPostProductModal && (
@@ -90,6 +90,39 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
             <span>+</span> Post Product Lot
           </button>
         )}
+      </div>
+
+      {/* Predictive Inventory & Stock Depletion Intelligence Banner */}
+      <div className="rounded-2xl bg-gradient-to-r from-[#0F2747] to-[#1E3A8A] p-5 text-white shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="rounded bg-amber-400 px-2 py-0.5 text-[10px] font-black uppercase text-slate-950">
+              AI Forecast Engine
+            </span>
+            <span className="text-xs font-bold text-sky-200">
+              Depot Burn-Rate Monitor: <strong className="text-white">Active</strong>
+            </span>
+          </div>
+          <h3 className="text-base font-extrabold text-white">Automated Petroleum Replenishment Predictor</h3>
+          <p className="text-xs text-slate-300 max-w-xl">
+            Calculates daily retail consumption, seasonality factors, and Platts price spikes to recommend batch replenishment before reserve falls below the 15% safety threshold.
+          </p>
+        </div>
+        <div className="flex items-center gap-3 bg-white/10 backdrop-blur-xs p-3 rounded-xl border border-white/20 text-xs">
+          <div>
+            <p className="text-[10px] text-slate-300 uppercase font-bold">Recommended Action</p>
+            <p className="font-extrabold text-amber-300">Reserve ULSD Diesel 500 BBL</p>
+          </div>
+          {onWholesaleOrder && displayList.length > 0 && (
+            <button
+              type="button"
+              onClick={() => onWholesaleOrder(displayList[0])}
+              className="rounded-lg bg-amber-400 px-3 py-1.5 font-bold text-slate-950 hover:bg-amber-300 transition-colors cursor-pointer text-xs"
+            >
+              1-Click Reorder
+            </button>
+          )}
+        </div>
       </div>
 
       {filteredInventory.length === 0 ? (
