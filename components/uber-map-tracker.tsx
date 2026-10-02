@@ -687,22 +687,21 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
                             </div>
                         </div>
 
-                        {/* IoT Cargo & HazMat Sensors */}
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center pt-1 border-t border-[#1E293B]/70">
                             <div className="bg-[#131F38] p-1.5 rounded-lg border border-sky-900/50">
-                                <span className="text-[9px] text-sky-300 uppercase font-bold block">🌡️ Cargo Temp</span>
+                                <span className="text-[9px] text-sky-300 uppercase font-bold block">Cargo Temp</span>
                                 <span className="text-xs font-black text-white font-mono">{fuelTempCelsius}°C <span className="text-[9px] text-emerald-400">(Norm)</span></span>
                             </div>
                             <div className="bg-[#131F38] p-1.5 rounded-lg border border-sky-900/50">
-                                <span className="text-[9px] text-sky-300 uppercase font-bold block">⚖️ Tank Pressure</span>
+                                <span className="text-[9px] text-sky-300 uppercase font-bold block">Tank Pressure</span>
                                 <span className="text-xs font-black text-amber-300 font-mono">{tankPressureBar} Bar</span>
                             </div>
                             <div className="bg-[#131F38] p-1.5 rounded-lg border border-sky-900/50">
-                                <span className="text-[9px] text-sky-300 uppercase font-bold block">⛽ Flowmeter</span>
+                                <span className="text-[9px] text-sky-300 uppercase font-bold block">Flowmeter</span>
                                 <span className="text-xs font-black text-sky-300 font-mono">{flowRateLpm} LPM</span>
                             </div>
                             <div className="bg-[#131F38] p-1.5 rounded-lg border border-sky-900/50">
-                                <span className="text-[9px] text-sky-300 uppercase font-bold block">📊 Ullage / Volume</span>
+                                <span className="text-[9px] text-sky-300 uppercase font-bold block">Ullage / Volume</span>
                                 <span className="text-xs font-black text-emerald-300 font-mono">{ullagePercent}% Full</span>
                             </div>
                         </div>
