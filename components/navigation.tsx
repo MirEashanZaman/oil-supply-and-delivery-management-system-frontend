@@ -77,6 +77,15 @@ export default function Navigation() {
                     >
                         Contact
                     </Link>
+                    <Link
+                        href="/terms"
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${isActive("/terms")
+                                ? "bg-[#163860] text-[#F59E0B] font-bold"
+                                : "text-slate-200 hover:bg-[#163860]/70 hover:text-white"
+                            }`}
+                    >
+                        Terms
+                    </Link>
 
                     {user && (
                         <Link
@@ -169,6 +178,13 @@ export default function Navigation() {
                         className={`px-3 py-2 rounded-lg text-sm font-semibold transition ${isActive("/contact") ? "bg-[#163860] text-[#F59E0B] font-bold" : "text-slate-200"}`}
                     >
                         Contact
+                    </Link>
+                    <Link
+                        href="/terms"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`px-3 py-2 rounded-lg text-sm font-semibold transition ${isActive("/terms") ? "bg-[#163860] text-[#F59E0B] font-bold" : "text-slate-200"}`}
+                    >
+                        Terms & Conditions
                     </Link>
                     {user && (
                         <Link
