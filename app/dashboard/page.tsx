@@ -52,7 +52,14 @@ const ProfileTab = dynamic(() => import("@/components/dashboard/tabs/profile-tab
 export default function Dashboard() {
     const router = useRouter();
     const [user, setUser] = useState<UserData | null>(null);
-    const [activeTab, setActiveTab] = useState<DashboardTab>("products");
+    const [activeTab, setActiveTabState] = useState<DashboardTab>("products");
+
+    const setActiveTab = (tab: DashboardTab) => {
+        setActiveTabState(tab);
+        try {
+            localStorage.setItem("dashboard_active_tab", tab);
+        } catch {}
+    };
     const [products, setProducts] = useState<Product[]>([]);
     const [productsLoading, setProductsLoading] = useState(false);
     const [customInventory, setCustomInventory] = useState<Product[]>([]);
@@ -381,6 +388,12 @@ export default function Dashboard() {
             setDeliveryAddress(parsed.address || "Dhaka, Bangladesh");
             setCardHolder(parsed.userName || parsed.name || parsed.email?.split("@")[0]);
             if (parsed.status) setSupplierOperationalStatus(parsed.status);
+
+            const savedTab = localStorage.getItem("dashboard_active_tab") as DashboardTab | null;
+            if (savedTab) {
+                setActiveTabState(savedTab);
+            }
+
             fetchFullProfile(parsed.email, parsed.title || parsed.role);
             fetchSourcingParties();
         } catch (e) {
