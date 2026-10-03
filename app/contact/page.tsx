@@ -92,8 +92,13 @@ export default function ContactInfo() {
 
             if (res.data?.success && res.data?.data) {
                 const newMsg = res.data.data;
+                const botReply = res.data.botReply;
                 setLiveMessages((prev) => {
-                    return [...prev.filter((m) => m.id !== newMsg.id && m.id !== optimisticMsg.id), newMsg].slice(-10);
+                    let updated = [...prev.filter((m) => m.id !== newMsg.id && m.id !== optimisticMsg.id), newMsg];
+                    if (botReply) {
+                        updated = [...updated.filter((m) => m.id !== botReply.id), botReply];
+                    }
+                    return updated.slice(-15);
                 });
             }
             setSubmitted(true);
