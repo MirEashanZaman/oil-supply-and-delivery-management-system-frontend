@@ -297,7 +297,7 @@ export default function Registration() {
 
                                 <div className="form-control w-full">
                                     <label className="label pb-1" htmlFor="username">
-                                        <span className="label-text font-semibold text-[#1E293B]">Full Name / Driver Name</span>
+                                        <span className="label-text font-semibold text-[#1E293B]">Full Name</span>
                                     </label>
                                     <input
                                         id="username"
