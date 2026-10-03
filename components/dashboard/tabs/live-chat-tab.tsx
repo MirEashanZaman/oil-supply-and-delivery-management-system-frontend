@@ -20,7 +20,7 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
   useEffect(() => {
     const loadStoredMessages = async () => {
       try {
-        const res = await axios.get(`/api/messages?channel=${encodeURIComponent(channelName)}`);
+        const res = await axios.get(`/api/messages?channel=${encodeURIComponent(channelName)}&t=${Date.now()}`);
         if (res.data?.success && Array.isArray(res.data?.data)) {
           const serverList: ChatMessage[] = res.data.data;
           setMessages((prev) => {
@@ -33,10 +33,6 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
         console.warn("Failed to load live chat history:", err);
       }
     };
-
-    if (!userData) {
-      return;
-    }
 
     loadStoredMessages();
 
@@ -59,7 +55,7 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
       channel.unbind_all();
       channel.unsubscribe();
     };
-  }, [userData?.email]);
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
