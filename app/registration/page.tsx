@@ -538,7 +538,7 @@ export default function Registration() {
                             </div>
 
                             <div className="form-control w-full pt-1">
-                                <label className="label cursor-pointer justify-start gap-2.5 p-0">
+                                <label className="label cursor-pointer items-start justify-start gap-3 p-0 max-w-full">
                                     <input
                                         type="checkbox"
                                         checked={acceptTerms}
@@ -552,15 +552,15 @@ export default function Registration() {
                                                 });
                                             }
                                         }}
-                                        className="checkbox checkbox-sm checkbox-warning rounded-md border-slate-400"
+                                        className="checkbox checkbox-sm checkbox-warning rounded-md border-slate-400 mt-0.5 shrink-0"
                                     />
-                                    <span className="label-text text-xs text-[#1E293B]">
+                                    <span className="label-text text-xs text-[#1E293B] leading-relaxed break-words flex-1">
                                         I have read and agree to the{" "}
                                         <a
                                             href="/terms"
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-[#0F2747] font-bold underline hover:text-primary"
+                                            className="text-[#0F2747] font-bold underline hover:text-primary inline"
                                         >
                                             Terms & Conditions
                                         </a>{" "}
@@ -568,7 +568,7 @@ export default function Registration() {
                                     </span>
                                 </label>
                                 {errors.terms && (
-                                    <span className="text-[#DC2626] text-xs font-medium mt-1">{errors.terms}</span>
+                                    <span className="text-[#DC2626] text-xs font-medium mt-1 break-words">{errors.terms}</span>
                                 )}
                             </div>
 
