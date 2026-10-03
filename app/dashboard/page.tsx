@@ -168,28 +168,47 @@ export default function Dashboard() {
             setPromoFixedDiscount(0);
             return;
         }
+
+        const activeSubtotal = isMultiCheckout ? cartSubtotal : (checkoutProduct ? checkoutProduct.numericPrice * orderQuantity : 0);
+        if (activeSubtotal <= 0) {
+            setPromoError("Cannot apply promo code to an empty cart or zero total.");
+            return;
+        }
+
         if (clean === "OIL10" || clean === "ENERGY10") {
             setAppliedPromo(clean);
             setPromoDiscountRate(0.10);
             setPromoFixedDiscount(0);
             setPromoError(null);
         } else if (clean === "PETRO20" || clean === "SAVE20") {
+            if (activeSubtotal < 100) {
+                setPromoError("PETRO20 requires a minimum order subtotal of $100.00 USD.");
+                return;
+            }
             setAppliedPromo(clean);
             setPromoDiscountRate(0.20);
             setPromoFixedDiscount(0);
             setPromoError(null);
         } else if (clean === "FLAT100" || clean === "BONUS100") {
+            if (activeSubtotal < 250) {
+                setPromoError("FLAT100 requires a minimum order subtotal of $250.00 USD.");
+                return;
+            }
             setAppliedPromo(clean);
             setPromoDiscountRate(0);
             setPromoFixedDiscount(100);
             setPromoError(null);
         } else if (clean === "WELCOME50") {
+            if (activeSubtotal < 150) {
+                setPromoError("WELCOME50 requires a minimum order subtotal of $150.00 USD.");
+                return;
+            }
             setAppliedPromo(clean);
             setPromoDiscountRate(0);
             setPromoFixedDiscount(50);
             setPromoError(null);
         } else {
-            setPromoError("Invalid promo code. Try OIL10, PETRO20, or WELCOME50");
+            setPromoError("Invalid promo code. Valid codes: OIL10 (10% off), PETRO20 (20% off min $100), WELCOME50 ($50 off min $150), FLAT100 ($100 off min $250).");
         }
     };
 
