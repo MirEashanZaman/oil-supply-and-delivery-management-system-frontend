@@ -119,62 +119,74 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
         <p className="text-xs text-secondary-gray mb-3 sm:mb-4">Direct WebSocket line across Refineries, Dealers, and Transport Fleets.</p>
 
         <div className="h-80 sm:h-96 overflow-y-auto bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 sm:p-4 space-y-2.5 sm:space-y-3 mb-3 sm:mb-4 w-full">
-          {messages.map((m) => {
-            const isMe = m.email === userData?.email;
-            const isBot = m.sender.includes("Automated Support") || m.sender.includes("PetroBot") || m.role?.includes("Auto-Reply") || m.role?.includes("AI");
-            return (
-              <div
-                key={m.id}
-                className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border text-xs transition-all w-full max-w-full break-words ${
-                  isBot
-                    ? "bg-gradient-to-r from-[#0F2747]/10 via-[#F59E0B]/10 to-[#0F2747]/5 border-[#F59E0B]/40 shadow-sm"
-                    : isMe
-                      ? "bg-[#0F2747]/5 border-[#0F2747]/20"
-                      : "bg-white border-[#E2E8F0]"
-                }`}
-              >
-                <div className="flex items-center justify-between gap-1.5 mb-1 flex-wrap">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="font-bold text-[#1E293B] text-xs sm:text-sm flex items-center gap-1">
-                      {isBot && <span className="text-[#D97706]">🤖</span>}
-                      {m.sender}
-                    </span>
-                    <span
-                      className={`badge text-[9px] sm:text-[10px] font-bold uppercase border-none px-1.5 sm:px-2 py-0.5 ${
-                        isBot
-                          ? "bg-[#D97706] text-white shadow-xs"
-                          : m.role === "Supplier"
-                          ? "bg-[#0F2747] text-[#F59E0B]"
-                          : m.role === "Dealer"
-                            ? "bg-[#F59E0B]/20 text-[#D97706]"
-                            : m.role === "Admin"
-                              ? "bg-[#16A34A]/20 text-[#16A34A]"
-                              : "bg-[#64748B]/15 text-[#1E293B]"
-                        }`}
-                    >
-                      {m.role || "User"}
-                    </span>
-                    {isMe && (
-                      <span className="badge bg-[#16A34A] text-white text-[8px] sm:text-[9px] font-bold border-none px-1.5 py-0.5">
-                        You
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-[9px] sm:text-[10px] text-[#64748B] font-mono">{m.timestamp}</span>
-                </div>
-                <div className="mb-1.5">
-                  <span
-                    className={`inline-block text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-md ${
-                      isBot ? "text-[#B45309] bg-[#FDE68A]" : "text-[#0F2747] bg-[#0F2747]/10"
-                    }`}
-                  >
-                    {m.topic}
-                  </span>
-                </div>
-                <p className="text-[#1E293B] text-xs sm:text-sm leading-relaxed whitespace-pre-wrap break-words">{m.message}</p>
+          {messages.length === 0 ? (
+            <div className="h-full flex flex-col items-center justify-center text-center p-6 text-[#64748B]">
+              <div className="w-12 h-12 rounded-full bg-[#0F2747]/10 flex items-center justify-center text-[#0F2747] font-bold text-lg mb-2">
+                💬
               </div>
-            );
-          })}
+              <p className="text-sm font-bold text-[#1E293B]">No dispatch messages yet</p>
+              <p className="text-xs text-[#64748B] max-w-sm mt-1">
+                Start the conversation by selecting a topic and typing a message below.
+              </p>
+            </div>
+          ) : (
+            messages.map((m) => {
+              const isMe = m.email === userData?.email;
+              const isBot = m.sender.includes("Automated Support") || m.sender.includes("PetroBot") || m.role?.includes("Auto-Reply") || m.role?.includes("AI");
+              return (
+                <div
+                  key={m.id}
+                  className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border text-xs transition-all w-full max-w-full break-words ${
+                    isBot
+                      ? "bg-gradient-to-r from-[#0F2747]/10 via-[#F59E0B]/10 to-[#0F2747]/5 border-[#F59E0B]/40 shadow-sm"
+                      : isMe
+                        ? "bg-[#0F2747]/5 border-[#0F2747]/20"
+                        : "bg-white border-[#E2E8F0]"
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-1.5 mb-1 flex-wrap">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="font-bold text-[#1E293B] text-xs sm:text-sm flex items-center gap-1">
+                        {isBot && <span className="text-[#D97706]">🤖</span>}
+                        {m.sender}
+                      </span>
+                      <span
+                        className={`badge text-[9px] sm:text-[10px] font-bold uppercase border-none px-1.5 sm:px-2 py-0.5 ${
+                          isBot
+                            ? "bg-[#D97706] text-white shadow-xs"
+                            : m.role === "Supplier"
+                            ? "bg-[#0F2747] text-[#F59E0B]"
+                            : m.role === "Dealer"
+                              ? "bg-[#F59E0B]/20 text-[#D97706]"
+                              : m.role === "Admin"
+                                ? "bg-[#16A34A]/20 text-[#16A34A]"
+                                : "bg-[#64748B]/15 text-[#1E293B]"
+                          }`}
+                      >
+                        {m.role || "User"}
+                      </span>
+                      {isMe && (
+                        <span className="badge bg-[#16A34A] text-white text-[8px] sm:text-[9px] font-bold border-none px-1.5 py-0.5">
+                          You
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[9px] sm:text-[10px] text-[#64748B] font-mono">{m.timestamp}</span>
+                  </div>
+                  <div className="mb-1.5">
+                    <span
+                      className={`inline-block text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-md ${
+                        isBot ? "text-[#B45309] bg-[#FDE68A]" : "text-[#0F2747] bg-[#0F2747]/10"
+                      }`}
+                    >
+                      {m.topic}
+                    </span>
+                  </div>
+                  <p className="text-[#1E293B] text-xs sm:text-sm leading-relaxed whitespace-pre-wrap break-words">{m.message}</p>
+                </div>
+              );
+            })
+          )}
           <div ref={messagesEndRef} />
         </div>
 
