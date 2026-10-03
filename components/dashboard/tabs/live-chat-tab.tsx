@@ -17,16 +17,47 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
 
   const channelName = "oil-supply-chat";
 
+  const STORAGE_KEY = "persistent_chat_messages_v1";
+
   useEffect(() => {
+    try {
+      const cached = localStorage.getItem(STORAGE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setMessages(parsed);
+        }
+      }
+    } catch {}
+
     const loadStoredMessages = async () => {
       try {
         const res = await axios.get(`/api/messages?channel=${encodeURIComponent(channelName)}&t=${Date.now()}`);
         if (res.data?.success && Array.isArray(res.data?.data)) {
           const serverList: ChatMessage[] = res.data.data;
           setMessages((prev) => {
-            const serverIds = new Set(serverList.map((m) => m.id));
-            const localPending = prev.filter((m) => !serverIds.has(m.id) && m.id.startsWith("msg_"));
-            return [...serverList, ...localPending].slice(-100);
+            const combinedMap = new Map<string, ChatMessage>();
+            // Load stored local messages first
+            try {
+              const cached = localStorage.getItem(STORAGE_KEY);
+              if (cached) {
+                const parsed: ChatMessage[] = JSON.parse(cached);
+                if (Array.isArray(parsed)) {
+                  parsed.forEach((m) => combinedMap.set(m.id, m));
+                }
+              }
+            } catch {}
+
+            // Merge current state
+            prev.forEach((m) => combinedMap.set(m.id, m));
+            // Merge server messages
+            serverList.forEach((m) => combinedMap.set(m.id, m));
+
+            const merged = Array.from(combinedMap.values()).slice(-200);
+            try {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+            } catch {}
+            return merged;
           });
         }
       } catch (err) {
@@ -47,7 +78,13 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
 
     const channel = pusher.subscribe(channelName);
     channel.bind("new-message", (data: ChatMessage) => {
-      setMessages((prev) => [...prev.filter((m) => m.id !== data.id), data].slice(-100));
+      setMessages((prev) => {
+        const next = [...prev.filter((m) => m.id !== data.id), data].slice(-200);
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        } catch {}
+        return next;
+      });
     });
 
     return () => {
@@ -78,7 +115,13 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
     };
 
     setInputMessage("");
-    setMessages((prev) => [...prev.filter((m) => m.id !== payload.id), payload].slice(-100));
+    setMessages((prev) => {
+      const next = [...prev.filter((m) => m.id !== payload.id), payload].slice(-200);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      } catch {}
+      return next;
+    });
 
     try {
       const res = await axios.post("/api/messages", {
@@ -100,7 +143,11 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
           if (botReply) {
             updated = [...updated.filter((m) => m.id !== botReply.id), botReply];
           }
-          return updated.slice(-100);
+          const finalSlice = updated.slice(-200);
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(finalSlice));
+          } catch {}
+          return finalSlice;
         });
       }
     } catch (err) {
