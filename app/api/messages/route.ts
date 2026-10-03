@@ -102,40 +102,13 @@ export async function POST(request: Request) {
             channel: normalizeChannel(message.channel),
         }));
 
-        const newMessagesList: ChatMessage[] = [messageData];
-
-        const normalizedRole = (role || "").trim().toLowerCase();
-        const isUnauthorizedOrGuest =
-            !role ||
-            normalizedRole.includes("inquiry") ||
-            normalizedRole.includes("guest") ||
-            normalizedRole.includes("anonymous") ||
-            sender === "Anonymous User" ||
-            normalizedRole === "customer inquiry";
-
-        if (sender !== "Automated Support System" && isUnauthorizedOrGuest) {
-            const botMessage: ChatMessage = {
-                id: `msg_bot_${Date.now() + 1}_${Math.random().toString(36).substring(2, 7)}`,
-                sender: "Automated Support System",
-                email: "support@oilsupply.internal",
-                role: "Support Auto-Reply",
-                topic: "Inquiry Acknowledgment",
-                message: "Your message has been received successfully. Our team will review your inquiry and get back to you soon.",
-                timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-                channel: normalizedChannel,
-            };
-            newMessagesList.push(botMessage);
-        }
-
-        const updatedMessages = [...normalizedExistingMessages, ...newMessagesList].slice(-200);
+        const updatedMessages = [...normalizedExistingMessages, messageData].slice(-200);
         await writeStoredMessages(updatedMessages);
 
         const pusherServer = getPusherServer();
         if (pusherServer) {
             try {
-                for (const msg of newMessagesList) {
-                    await pusherServer.trigger(normalizedChannel, "new-message", msg);
-                }
+                await pusherServer.trigger(normalizedChannel, "new-message", messageData);
             } catch (pusherErr) {
                 console.warn("Pusher server trigger error (falling back to persisted message):", pusherErr);
             }
@@ -144,7 +117,6 @@ export async function POST(request: Request) {
         return NextResponse.json({
             success: true,
             data: messageData,
-            botReply: newMessagesList.length > 1 ? newMessagesList[1] : null,
             status: "Message processed successfully",
         });
     } catch (err: any) {
