@@ -38,9 +38,6 @@ export async function GET() {
 let GLOBAL_MESSAGES_CACHE: ChatMessage[] | null = null;
 
 async function readStoredMessages(): Promise<ChatMessage[]> {
-    if (GLOBAL_MESSAGES_CACHE && GLOBAL_MESSAGES_CACHE.length > 0) {
-        return [...GLOBAL_MESSAGES_CACHE];
-    }
     try {
         const fileText = await fs.readFile(MESSAGES_FILE, "utf8");
         const parsed = JSON.parse(fileText);
@@ -57,6 +54,9 @@ async function readStoredMessages(): Promise<ChatMessage[]> {
         GLOBAL_MESSAGES_CACHE = normalized;
         return [...normalized];
     } catch {
+        if (GLOBAL_MESSAGES_CACHE && GLOBAL_MESSAGES_CACHE.length > 0) {
+            return [...GLOBAL_MESSAGES_CACHE];
+        }
         GLOBAL_MESSAGES_CACHE = [];
         return [];
     }
