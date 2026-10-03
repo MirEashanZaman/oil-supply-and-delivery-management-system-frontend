@@ -53,7 +53,7 @@ export default function ContactInfo() {
         });
 
         channel.bind("new-message", (data: ChatMessage) => {
-            setLiveMessages((prev) => [...prev.filter((m) => m.id !== data.id), data].slice(-10));
+            setLiveMessages((prev) => [...prev.filter((m) => m.id !== data.id), data].slice(-20));
         });
 
         return () => {
