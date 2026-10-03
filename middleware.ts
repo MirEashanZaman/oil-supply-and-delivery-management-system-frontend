@@ -8,7 +8,6 @@ interface RateLimitBucket {
 
 const ipMap = new Map<string, RateLimitBucket>();
 
-// Clean up old entries every 5 minutes
 if (typeof setInterval !== 'undefined') {
   setInterval(() => {
     const now = Date.now();
@@ -21,16 +20,15 @@ if (typeof setInterval !== 'undefined') {
 }
 
 export function middleware(request: NextRequest) {
-  // Only rate-limit API routes
   if (request.nextUrl.pathname.startsWith('/api')) {
     const ip =
       request.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
       '127.0.0.1';
 
     const now = Date.now();
-    const windowMs = 60 * 1000; // 1 minute
+    const windowMs = 60 * 1000;
     const isMessagesPost = request.nextUrl.pathname.startsWith('/api/messages') && request.method === 'POST';
-    const limit = isMessagesPost ? 30 : 120; // 30 messages/min or 120 general api req/min
+    const limit = isMessagesPost ? 30 : 120;
 
     const clientData = ipMap.get(ip);
 
@@ -68,3 +66,4 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: ['/api/:path*'],
 };
+
