@@ -6,7 +6,7 @@
     "role": "Supplier",
     "topic": "Logistics Dispatch",
     "message": "hi",
-    "timestamp": "11:25 PM",
+    "timestamp": "05:45 PM",
     "channel": "oil-supply-chat"
   },
   {
@@ -16,7 +16,7 @@
     "role": "Customer",
     "topic": "Delivery Status",
     "message": "Received",
-    "timestamp": "11:28 PM",
+    "timestamp": "05:48 PM",
     "channel": "oil-supply-chat"
   },
   {
@@ -26,7 +26,7 @@
     "role": "Dealer",
     "topic": "General Support",
     "message": "hi",
-    "timestamp": "11:38 PM",
+    "timestamp": "05:52 PM",
     "channel": "oil-supply-chat"
   },
   {
@@ -36,7 +36,7 @@
     "role": "Customer",
     "topic": "General Support",
     "message": "hi",
-    "timestamp": "11:43 PM",
+    "timestamp": "05:58 PM",
     "channel": "oil-supply-chat"
   },
   {
@@ -46,7 +46,7 @@
     "role": "Admin",
     "topic": "Order Dispatch",
     "message": "yes",
-    "timestamp": "11:44 PM",
+    "timestamp": "06:02 PM",
     "channel": "oil-supply-chat"
   },
   {
@@ -56,7 +56,7 @@
     "role": "Supplier",
     "topic": "General Support",
     "message": "abcde",
-    "timestamp": "11:47 PM",
+    "timestamp": "06:05 PM",
     "channel": "oil-supply-chat"
   },
   {
@@ -66,7 +66,7 @@
     "role": "Customer",
     "topic": "General Support",
     "message": "abcde",
-    "timestamp": "11:49 PM",
+    "timestamp": "06:08 PM",
     "channel": "oil-supply-chat"
   },
   {
@@ -76,7 +76,7 @@
     "role": "Admin",
     "topic": "General Support",
     "message": "abcde",
-    "timestamp": "11:51 PM",
+    "timestamp": "06:10 PM",
     "channel": "oil-supply-chat"
   },
   {
@@ -86,7 +86,7 @@
     "role": "Customer",
     "topic": "General Support",
     "message": "HELLO",
-    "timestamp": "11:59 PM",
+    "timestamp": "06:12 PM",
     "channel": "oil-supply-chat"
   },
   {
@@ -96,17 +96,7 @@
     "role": "Customer",
     "topic": "General Support",
     "message": "Sazzad Sir",
-    "timestamp": "04:14 PM",
-    "channel": "oil-supply-chat"
-  },
-  {
-    "id": "msg_1789506476787_n9tt2",
-    "sender": "Mir Eashan Zaman",
-    "email": "eshan.zaman570@gmail.com",
-    "role": "Customer",
-    "topic": "General Support",
-    "message": "abcd",
-    "timestamp": "03:07 AM",
+    "timestamp": "06:14 PM",
     "channel": "oil-supply-chat"
   }
 ]
