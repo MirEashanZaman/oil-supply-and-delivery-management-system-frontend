@@ -91,6 +91,7 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
         role: payload.role,
         topic: payload.topic,
         message: payload.message,
+        timestamp: payload.timestamp,
         channel: payload.channel,
       });
 
