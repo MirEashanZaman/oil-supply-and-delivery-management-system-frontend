@@ -86,6 +86,7 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
 
     try {
       const res = await axios.post("/api/messages", {
+        id: payload.id,
         sender: payload.sender,
         email: payload.email,
         role: payload.role,
