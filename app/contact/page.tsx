@@ -299,15 +299,20 @@ export default function ContactInfo() {
                             </div>
                         </div>
 
-                        {liveMessages.length > 0 && (
-                            <div className="card bg-[#FFFFFF] shadow-sm border border-[#E2E8F0] rounded-2xl p-6">
-                                <div className="flex items-center justify-between mb-4 border-b border-[#E2E8F0] pb-3">
-                                    <div className="flex items-center gap-2">
-                                        <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-ping"></span>
-                                        <h3 className="font-bold text-sm text-[#1E293B]">Recent Dispatches (PusherJS Real-Time Feed)</h3>
-                                    </div>
-                                    <span className="text-[11px] text-[#64748B] font-mono">channel: oil-supply-chat</span>
+                        <div className="card bg-[#FFFFFF] shadow-sm border border-[#E2E8F0] rounded-2xl p-6">
+                            <div className="flex items-center justify-between mb-4 border-b border-[#E2E8F0] pb-3">
+                                <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-ping"></span>
+                                    <h3 className="font-bold text-sm text-[#1E293B]">Recent Dispatches (PusherJS Real-Time Feed)</h3>
                                 </div>
+                                <span className="text-[11px] text-[#64748B] font-mono">channel: oil-supply-chat</span>
+                            </div>
+                            {liveMessages.length === 0 ? (
+                                <div className="py-8 text-center bg-[#F8FAFC] border border-dashed border-[#CBD5E1] rounded-xl">
+                                    <p className="text-xs font-semibold text-[#475569]">No public dispatches yet.</p>
+                                    <p className="text-[11px] text-[#94A3B8] mt-1">Submit your message above to start a live inquiry.</p>
+                                </div>
+                            ) : (
                                 <div className="space-y-3">
                                     {liveMessages.map((msg) => {
                                         const isBot = msg.sender.includes("Automated Support") || msg.sender.includes("PetroBot") || msg.role?.includes("Auto-Reply") || msg.role?.includes("AI");
@@ -335,8 +340,8 @@ export default function ContactInfo() {
                                         );
                                     })}
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
