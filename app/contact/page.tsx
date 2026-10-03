@@ -21,7 +21,7 @@ export default function ContactInfo() {
     useEffect(() => {
         const loadStoredMessages = async () => {
             try {
-                const res = await axios.get("/api/messages?channel=oil-supply-chat");
+                const res = await axios.get(`/api/messages?channel=oil-supply-chat&t=${Date.now()}`);
                 if (res.data?.success && Array.isArray(res.data?.data)) {
                     const serverList: ChatMessage[] = res.data.data;
                     setLiveMessages((prev) => {
