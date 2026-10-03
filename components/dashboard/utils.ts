@@ -10,6 +10,24 @@ export const PRODUCT_IMAGE_MAP: Record<number, string> = {
 };
 
 export const getProductImage = (name?: string, img?: string, id?: number | string): string => {
+    if (img && typeof img === "string" && img.trim() !== "") {
+        const trimmed = img.trim();
+        if (
+            trimmed.startsWith("data:") ||
+            trimmed.startsWith("blob:") ||
+            trimmed.startsWith("http://") ||
+            trimmed.startsWith("https://")
+        ) {
+            return trimmed;
+        }
+        if (trimmed.startsWith("/uploads/")) {
+            return `${API_ENDPOINT}${trimmed}`;
+        }
+        if (trimmed.startsWith("/") && trimmed !== "/Brent Crude Oil.jpg") {
+            return trimmed;
+        }
+    }
+
     if (typeof window !== "undefined") {
         try {
             if (id) {
@@ -25,19 +43,6 @@ export const getProductImage = (name?: string, img?: string, id?: number | strin
                 }
             }
         } catch {
-        }
-    }
-
-    if (img && typeof img === "string" && img.trim() !== "") {
-        const trimmed = img.trim();
-        if (
-            trimmed.startsWith("data:") ||
-            trimmed.startsWith("blob:") ||
-            trimmed.startsWith("http://") ||
-            trimmed.startsWith("https://") ||
-            (trimmed.startsWith("/") && trimmed !== "/Brent Crude Oil.jpg")
-        ) {
-            return trimmed;
         }
     }
 
