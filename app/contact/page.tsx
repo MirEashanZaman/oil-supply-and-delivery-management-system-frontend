@@ -87,6 +87,7 @@ export default function ContactInfo() {
                 topic,
                 message: trimmedMsg,
                 role: "Customer Inquiry",
+                timestamp: optimisticMsg.timestamp,
                 channel: "oil-supply-chat",
             });
 
