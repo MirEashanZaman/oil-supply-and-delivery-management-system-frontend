@@ -172,21 +172,21 @@ export default function FAQPage() {
                     )}
                 </div>
 
-                <div className="p-6 bg-white border border-[#E2E8F0] rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div>
+                <div className="p-5 sm:p-6 bg-white border border-[#E2E8F0] rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="w-full sm:w-auto">
                         <h3 className="font-bold text-sm text-[#1E293B]">Still have questions?</h3>
                         <p className="text-xs text-[#64748B] mt-0.5">Our support engineers and PetroBot AI assistant are available 24/7.</p>
                     </div>
-                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto shrink-0">
                         <Link
                             href="/contact"
-                            className="btn bg-[#0F2747] hover:bg-[#163860] text-white btn-sm px-4 rounded-xl font-bold border-none w-full sm:w-auto"
+                            className="btn bg-[#0F2747] hover:bg-[#163860] text-white btn-sm px-4 rounded-xl font-bold border-none w-full sm:w-auto text-center justify-center"
                         >
                             Contact Support
                         </Link>
                         <Link
                             href="/registration"
-                            className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] btn-sm px-4 rounded-xl font-bold border-none w-full sm:w-auto"
+                            className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] btn-sm px-4 rounded-xl font-bold border-none w-full sm:w-auto text-center justify-center"
                         >
                             Join Platform
                         </Link>
