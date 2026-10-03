@@ -1931,10 +1931,16 @@ export default function Dashboard() {
                 }
 
                 let response;
+                const roleName = (user.title || user.role || "").toLowerCase();
+                const displayName = updated.userName || user.userName || user.name || "";
+
                 if (updated.photoFile) {
                     const formData = new FormData();
-                    formData.append("userName", updated.userName || user.userName || user.name || "");
-                    formData.append("username", updated.userName || user.userName || user.name || "");
+                    if (roleName.includes("customer")) {
+                        formData.append("username", displayName);
+                    } else {
+                        formData.append("userName", displayName);
+                    }
                     formData.append("phoneNumber", phone);
                     if (updated.address !== undefined) formData.append("address", updated.address);
                     else if (user.address) formData.append("address", user.address);
@@ -1956,11 +1962,15 @@ export default function Dashboard() {
                     );
                 } else {
                     const payload: any = {
-                        userName: updated.userName || user.userName || user.name,
-                        username: updated.userName || user.userName || user.name,
                         phoneNumber: phone,
                         address: updated.address !== undefined ? updated.address : user.address,
                     };
+
+                    if (roleName.includes("customer")) {
+                        payload.username = displayName;
+                    } else {
+                        payload.userName = displayName;
+                    }
 
                     if (updated.password && updated.password.trim().length > 0) {
                         payload.password = updated.password.trim();
