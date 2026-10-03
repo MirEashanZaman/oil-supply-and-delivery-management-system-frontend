@@ -42,31 +42,30 @@ export async function GET() {
     }
 }
 
-let GLOBAL_MESSAGES_CACHE: ChatMessage[] | null = null;
+let GLOBAL_MESSAGES_CACHE: ChatMessage[] = [];
 
 async function readStoredMessages(): Promise<ChatMessage[]> {
     try {
         const fileText = await fs.readFile(MESSAGES_FILE, "utf8");
         const parsed = JSON.parse(fileText);
 
-        if (!Array.isArray(parsed)) {
-            GLOBAL_MESSAGES_CACHE = [];
-            return [];
+        if (Array.isArray(parsed)) {
+            const normalized = parsed.map((message: any) => ({
+                ...message,
+                channel: normalizeChannel(message.channel),
+            }));
+            GLOBAL_MESSAGES_CACHE = [...normalized];
+            return [...normalized];
         }
-
-        const normalized = parsed.map((message: any) => ({
-            ...message,
-            channel: normalizeChannel(message.channel),
-        }));
-        GLOBAL_MESSAGES_CACHE = normalized;
-        return [...normalized];
     } catch {
-        if (GLOBAL_MESSAGES_CACHE && GLOBAL_MESSAGES_CACHE.length > 0) {
-            return [...GLOBAL_MESSAGES_CACHE];
-        }
-        GLOBAL_MESSAGES_CACHE = [];
-        return [];
+        // file doesn't exist or read error, check in-memory cache
     }
+
+    if (GLOBAL_MESSAGES_CACHE && GLOBAL_MESSAGES_CACHE.length > 0) {
+        return [...GLOBAL_MESSAGES_CACHE];
+    }
+
+    return [];
 }
 
 async function writeStoredMessages(messages: ChatMessage[]) {
