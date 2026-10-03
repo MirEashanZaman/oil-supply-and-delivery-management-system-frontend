@@ -23,7 +23,12 @@ export default function ContactInfo() {
             try {
                 const res = await axios.get("/api/messages?channel=oil-supply-chat");
                 if (res.data?.success && Array.isArray(res.data?.data)) {
-                    setLiveMessages(res.data.data.slice(-10));
+                    const serverList: ChatMessage[] = res.data.data;
+                    setLiveMessages((prev) => {
+                        const serverIds = new Set(serverList.map((m) => m.id));
+                        const localPending = prev.filter((m) => !serverIds.has(m.id) && m.id.startsWith("msg_"));
+                        return [...serverList, ...localPending].slice(-15);
+                    });
                 }
             } catch (err) {
                 console.warn("Failed to load saved chat history:", err);
