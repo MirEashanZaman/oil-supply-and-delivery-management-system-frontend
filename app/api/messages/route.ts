@@ -75,7 +75,7 @@ async function writeStoredMessages(messages: ChatMessage[]) {
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { sender, email, role, topic, message, channel, timestamp: clientTimestamp } = body;
+        const { id: clientId, sender, email, role, topic, message, channel, timestamp: clientTimestamp } = body;
         const normalizedChannel = normalizeChannel(channel || "oil-supply-chat");
 
         if (!message || !message.trim()) {
@@ -90,7 +90,7 @@ export async function POST(request: Request) {
             : new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
         const messageData: ChatMessage = {
-            id: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+            id: (typeof clientId === "string" && clientId.trim()) ? clientId.trim() : `msg_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
             sender: sender?.trim() || "Anonymous User",
             email: email?.trim() || "user@oilsupply.com",
             role: role?.trim() || "Customer",
