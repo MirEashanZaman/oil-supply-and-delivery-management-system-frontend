@@ -77,14 +77,14 @@ export default function FAQPage() {
             <MyNavigation />
 
             <div className="w-full max-w-5xl mt-6 space-y-6 text-left">
-                <div className="card bg-gradient-to-r from-[#0F2747] to-[#1E3A8A] text-white p-6 sm:p-10 rounded-2xl shadow-md border border-[#163860]">
+                <div className="bg-gradient-to-r from-[#0F2747] to-[#1E3A8A] !text-white p-6 sm:p-10 rounded-2xl shadow-md border border-[#163860]">
                     <span className="badge bg-[#F59E0B] text-[#1E293B] font-bold text-xs uppercase px-3 py-1 mb-2">
                         Public Knowledge Base
                     </span>
-                    <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+                    <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white !text-white">
                         Got Questions? We Have Answers.
                     </h1>
-                    <p className="text-slate-200 text-xs sm:text-sm mt-2 max-w-2xl leading-relaxed">
+                    <p className="text-slate-200 !text-slate-200 text-xs sm:text-sm mt-2 max-w-2xl leading-relaxed">
                         Find verified details regarding wholesale fuel procurement, tanker telemetry, ISO safety compliance, and the Electronic Proof of Delivery (e-POD) process.
                     </p>
 
