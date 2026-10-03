@@ -113,30 +113,7 @@ export async function POST(request: Request) {
             channel: normalizeChannel(message.channel),
         }));
 
-        const normalizedRole = (role || "").trim().toLowerCase();
-        const isGuestOrInquiry =
-            !role ||
-            normalizedRole.includes("inquiry") ||
-            normalizedRole.includes("guest") ||
-            normalizedRole.includes("anonymous") ||
-            sender === "Anonymous User" ||
-            normalizedRole === "customer inquiry";
-
         const newMessagesList: ChatMessage[] = [messageData];
-
-        if (sender !== "Automated Support System" && isGuestOrInquiry) {
-            const botMessage: ChatMessage = {
-                id: `msg_bot_${Date.now() + 1}_${Math.random().toString(36).substring(2, 7)}`,
-                sender: "Automated Support System",
-                email: "support@oilsupply.internal",
-                role: "Support Auto-Reply",
-                topic: topic?.trim() || "Inquiry Acknowledgment",
-                message: "Your message has been received successfully. Our dispatch team will review your inquiry and get back to you shortly.",
-                timestamp: effectiveTimestamp,
-                channel: normalizedChannel,
-            };
-            newMessagesList.push(botMessage);
-        }
 
         const updatedMessages = [...normalizedExistingMessages, ...newMessagesList].slice(-200);
         await writeStoredMessages(updatedMessages);
