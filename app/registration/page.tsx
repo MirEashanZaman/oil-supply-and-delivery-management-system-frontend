@@ -40,6 +40,7 @@ type RegistrationErrors = {
     photo?: string;
     password?: string;
     confirmPassword?: string;
+    terms?: string;
     form?: string;
 };
 
@@ -53,6 +54,7 @@ export default function Registration() {
     const [photo, setPhoto] = useState<File | null>(null);
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [acceptTerms, setAcceptTerms] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [errors, setErrors] = useState<RegistrationErrors>({});
@@ -122,7 +124,15 @@ export default function Registration() {
                 const path = issue.path[0] as keyof RegistrationErrors;
                 formattedErrors[path] = issue.message;
             });
+            if (!acceptTerms) {
+                formattedErrors.terms = "You must agree to the Terms & Conditions to register.";
+            }
             setErrors(formattedErrors);
+            return;
+        }
+
+        if (!acceptTerms) {
+            setErrors((prev) => ({ ...prev, terms: "You must agree to the Terms & Conditions to register." }));
             return;
         }
 
@@ -527,7 +537,42 @@ export default function Registration() {
                                 </div>
                             </div>
 
-                            <div className="pt-3">
+                            <div className="form-control w-full pt-1">
+                                <label className="label cursor-pointer justify-start gap-2.5 p-0">
+                                    <input
+                                        type="checkbox"
+                                        checked={acceptTerms}
+                                        onChange={(e) => {
+                                            setAcceptTerms(e.target.checked);
+                                            if (e.target.checked) {
+                                                setErrors((prev) => {
+                                                    const updated = { ...prev };
+                                                    delete updated.terms;
+                                                    return updated;
+                                                });
+                                            }
+                                        }}
+                                        className="checkbox checkbox-sm checkbox-warning rounded-md border-slate-400"
+                                    />
+                                    <span className="label-text text-xs text-[#1E293B]">
+                                        I have read and agree to the{" "}
+                                        <a
+                                            href="/terms"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-[#0F2747] font-bold underline hover:text-primary"
+                                        >
+                                            Terms & Conditions
+                                        </a>{" "}
+                                        and HazMat compliance policies.
+                                    </span>
+                                </label>
+                                {errors.terms && (
+                                    <span className="text-[#DC2626] text-xs font-medium mt-1">{errors.terms}</span>
+                                )}
+                            </div>
+
+                            <div className="pt-2">
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
