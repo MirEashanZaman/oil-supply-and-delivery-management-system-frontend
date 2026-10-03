@@ -28,7 +28,7 @@ export function middleware(request: NextRequest) {
     const now = Date.now();
     const windowMs = 60 * 1000;
     const isMessagesPost = request.nextUrl.pathname.startsWith('/api/messages') && request.method === 'POST';
-    const limit = isMessagesPost ? 10 : 30;
+    const limit = isMessagesPost ? 15 : 60;
 
     const clientData = ipMap.get(ip);
 
