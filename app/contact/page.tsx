@@ -87,6 +87,7 @@ export default function ContactInfo() {
 
         try {
             const res = await axios.post("/api/messages", {
+                id: optimisticMsg.id,
                 sender: trimmedName,
                 email: trimmedEmail,
                 topic,
