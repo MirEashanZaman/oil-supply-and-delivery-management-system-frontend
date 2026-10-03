@@ -661,6 +661,19 @@ export const CheckoutPaymentModal: React.FC<CheckoutPaymentModalProps> = ({
                         </span>
                     </button>
                 </div>
+
+                <p className="text-[11px] text-center text-[#64748B] pt-1">
+                    By confirming this order, you agree to our{" "}
+                    <a
+                        href="/terms"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#0F2747] font-bold underline hover:text-primary"
+                    >
+                        Terms of Supply & Delivery
+                    </a>{" "}
+                    and 4-digit e-POD custody transfer protocols.
+                </p>
             </div>
         </div>
     );
