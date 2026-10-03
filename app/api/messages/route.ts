@@ -125,7 +125,7 @@ export async function POST(request: Request) {
                 role: "Support Auto-Reply",
                 topic: topic?.trim() || "Inquiry Acknowledgment",
                 message: "Your message has been received successfully. Our dispatch team will review your inquiry and get back to you shortly.",
-                timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                timestamp: effectiveTimestamp,
                 channel: normalizedChannel,
             };
             newMessagesList.push(botMessage);
