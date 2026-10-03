@@ -230,9 +230,9 @@ export default function Registration() {
             <MyHeader name="Registration" message="Create your account for the Oil Supply & Delivery Management System" />
             <MyNavigation />
 
-            <div className="mt-6 w-full max-w-2xl">
-                <div className="card bg-[#FFFFFF] shadow-md border border-[#E2E8F0] rounded-2xl">
-                    <div className="card-body p-6 sm:p-8">
+            <div className="mt-4 sm:mt-6 w-full max-w-2xl px-3 sm:px-0">
+                <div className="card bg-[#FFFFFF] shadow-md border border-[#E2E8F0] rounded-2xl w-full">
+                    <div className="card-body p-4 sm:p-8">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="p-3 bg-[#0F2747]/10 text-[#0F2747] rounded-xl">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -537,8 +537,8 @@ export default function Registration() {
                                 </div>
                             </div>
 
-                            <div className="form-control w-full pt-1">
-                                <label className="label cursor-pointer items-start justify-start gap-3 p-0 max-w-full">
+                            <div className="w-full pt-2">
+                                <label className="flex items-start gap-3 cursor-pointer select-none max-w-full">
                                     <input
                                         type="checkbox"
                                         checked={acceptTerms}
@@ -554,13 +554,13 @@ export default function Registration() {
                                         }}
                                         className="checkbox checkbox-sm checkbox-warning rounded-md border-slate-400 mt-0.5 shrink-0"
                                     />
-                                    <span className="label-text text-xs text-[#1E293B] leading-relaxed break-words flex-1">
+                                    <span className="text-xs text-[#1E293B] leading-relaxed break-words flex-1 min-w-0">
                                         I have read and agree to the{" "}
                                         <a
                                             href="/terms"
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-[#0F2747] font-bold underline hover:text-primary inline"
+                                            className="text-[#0F2747] font-bold underline hover:text-primary inline break-words"
                                         >
                                             Terms & Conditions
                                         </a>{" "}
@@ -568,7 +568,7 @@ export default function Registration() {
                                     </span>
                                 </label>
                                 {errors.terms && (
-                                    <span className="text-[#DC2626] text-xs font-medium mt-1 break-words">{errors.terms}</span>
+                                    <p className="text-[#DC2626] text-xs font-medium mt-1.5 break-words">{errors.terms}</p>
                                 )}
                             </div>
 
