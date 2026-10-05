@@ -230,7 +230,7 @@ export default function Home() {
                     </div>
                 )}
 
-                <div className="carousel w-full rounded-2xl shadow-md overflow-hidden relative bg-black h-[360px] md:h-[420px] border border-[#E2E8F0]">
+                <div className="carousel w-full rounded-2xl shadow-md overflow-hidden relative bg-[#0F2747] h-[360px] md:h-[420px] border border-[#E2E8F0]">
                     {isLoadingProducts ? (
                         Array.from({ length: 3 }).map((_, index) => (
                             <div
