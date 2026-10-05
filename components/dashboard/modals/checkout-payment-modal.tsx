@@ -227,13 +227,24 @@ export const CheckoutPaymentModal: React.FC<CheckoutPaymentModalProps> = ({
                                                 <p className="text-xs text-secondary-gray">{checkoutProduct.price}</p>
                                             </div>
                                             <div className="text-right">
-                                                <label className="block text-xs font-bold text-dark-slate mb-1">Quantity</label>
+                                                <label className="block text-xs font-bold text-dark-slate mb-1">
+                                                    Quantity {checkoutProduct.quantity !== undefined ? `(Stock: ${checkoutProduct.quantity})` : ""}
+                                                </label>
                                                 <input
                                                     type="number"
                                                     min="1"
-                                                    max="100"
+                                                    max={checkoutProduct.quantity !== undefined ? String(checkoutProduct.quantity) : "100"}
                                                     value={orderQuantity}
-                                                    onChange={(e) => setOrderQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                                                    onChange={(e) => {
+                                                        const val = parseInt(e.target.value) || 1;
+                                                        const stock = Number(checkoutProduct.quantity ?? checkoutProduct.stock ?? 100);
+                                                        if (val > stock) {
+                                                            alert("Not enough stock");
+                                                            setOrderQuantity(Math.max(1, stock));
+                                                        } else {
+                                                            setOrderQuantity(Math.max(1, val));
+                                                        }
+                                                    }}
                                                     className="w-20 p-1.5 border border-secondary-gray rounded-lg text-center font-bold bg-white text-dark-slate outline-none"
                                                 />
                                             </div>
