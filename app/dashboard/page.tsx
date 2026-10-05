@@ -1408,6 +1408,22 @@ export default function Dashboard() {
         setIsCartModalOpen(false);
         setCheckoutProduct(null);
         if (user && user.id) fetchOrders(user.id, user.title);
+
+        // Broadcast order confirmation message to Live Chat & RabbitMQ
+        if (user) {
+            const orderNotice = `[RabbitMQ Message Event] Order #${createdOrderId || "Confirmed"} placed successfully for ${user.userName || user.name || "Customer"}. Delivery scheduled to ${deliveryAddress || user.address || "Hub"}.`;
+            axios.post("/api/messages", {
+                id: `msg_order_${Date.now()}`,
+                sender: "RabbitMQ Dispatcher",
+                email: "system@oilsupply.com",
+                role: "System Broker",
+                topic: "Order Notifications",
+                message: orderNotice,
+                timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                channel: "oil-supply-chat",
+            }).catch(() => {});
+        }
+
         setActiveTab("orders");
         if (createdOrderId) handleTrackOrder(createdOrderId);
     };
