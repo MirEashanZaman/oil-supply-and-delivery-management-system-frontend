@@ -649,6 +649,18 @@ export default function Dashboard() {
                 const match = searchRes.data.user;
                 const r = searchRes.data.role || "customer";
                 const storedProfile = JSON.parse(localStorage.getItem("user") || "null") as Partial<UserData> | null;
+                const matchFilename = match.filename || match.photo || match.photoUrl || match.image || match.imageUrl;
+                let resolvedPhotoUrl = storedProfile?.photoUrl;
+                if (matchFilename && typeof matchFilename === "string") {
+                    if (matchFilename.startsWith("data:") || matchFilename.startsWith("http://") || matchFilename.startsWith("https://")) {
+                        resolvedPhotoUrl = matchFilename;
+                    } else {
+                        resolvedPhotoUrl = `/api/profile-image/${encodeURIComponent(matchFilename)}`;
+                    }
+                } else if (!resolvedPhotoUrl || (!resolvedPhotoUrl.startsWith("data:") && !resolvedPhotoUrl.startsWith("/api/profile-image") && !resolvedPhotoUrl.startsWith("http"))) {
+                    resolvedPhotoUrl = undefined;
+                }
+
                 const fullUser: UserData = {
                     id: match.id,
                     email: match.email,
@@ -660,10 +672,7 @@ export default function Dashboard() {
                     title: normalizeRole(match.title || r),
                     role: normalizeRole(match.title || r),
                     status: match.status || "active",
-                    photoUrl: (match.filename ? `/api/profile-image/${encodeURIComponent(match.filename)}` : undefined)
-                        || (storedProfile?.photoUrl?.startsWith("data:") || storedProfile?.photoUrl?.startsWith("/api/profile-image")
-                            ? storedProfile.photoUrl
-                            : undefined),
+                    photoUrl: resolvedPhotoUrl,
                 };
                 setUser(fullUser);
                 localStorage.setItem("user", JSON.stringify(fullUser));
