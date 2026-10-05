@@ -969,7 +969,7 @@ export default function Dashboard() {
             if (res.status === 200 || res.status === 201) {
                 const orderId = res.data?.id || `ORD-WS-${Date.now()}`;
                 const orderNotice = `[RabbitMQ Message Event] Wholesale Order #${orderId} for ${quantity} unit(s) of ${wholesaleProduct.name} placed by Dealer ${user.userName || user.name || "Dealer"}.`;
-                axios.post("/api/messages", {
+                const chatMsg = {
                     id: `msg_wholesale_${Date.now()}`,
                     sender: "RabbitMQ Wholesale Broker",
                     email: user.email || "dealer@oilsupply.com",
@@ -978,7 +978,12 @@ export default function Dashboard() {
                     message: orderNotice,
                     timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
                     channel: "oil-supply-chat",
-                }).catch(() => {});
+                };
+                try {
+                    const cached = JSON.parse(localStorage.getItem("persistent_chat_messages_v1") || "[]");
+                    localStorage.setItem("persistent_chat_messages_v1", JSON.stringify([...cached, chatMsg].slice(-200)));
+                } catch {}
+                axios.post("/api/messages", chatMsg).catch(() => {});
 
                 alert("Wholesale order placed successfully.");
                 setWholesaleProduct(null);
@@ -1365,6 +1370,24 @@ export default function Dashboard() {
                 if (createdIds.length > 0) {
                     handleClearCart();
                     clearPaymentDetails();
+                    
+                    const orderNotice = `[RabbitMQ Message Event] Consolidated Multi-Product Order (${createdIds.join(", ")}) placed successfully for ${user.userName || user.name || "Customer"}. Delivery scheduled to ${destination}.`;
+                    const chatMsg = {
+                        id: `msg_multi_${Date.now()}`,
+                        sender: "RabbitMQ Broker",
+                        email: "system@oilsupply.com",
+                        role: "System Broker",
+                        topic: "Order Notifications",
+                        message: orderNotice,
+                        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                        channel: "oil-supply-chat",
+                    };
+                    try {
+                        const cached = JSON.parse(localStorage.getItem("persistent_chat_messages_v1") || "[]");
+                        localStorage.setItem("persistent_chat_messages_v1", JSON.stringify([...cached, chatMsg].slice(-200)));
+                    } catch {}
+                    axios.post("/api/messages", chatMsg).catch(() => {});
+
                     setTimeout(() => {
                         setSandboxStep("success");
                         fetchOrders(user.id, user.title);
@@ -1396,12 +1419,30 @@ export default function Dashboard() {
 
             const orderRes = await axios.post(`${apiBase}/customer/${user.id}/orders`, orderPayload, { withCredentials: true, validateStatus: (status) => status < 500 });
             if (orderRes.status === 200 || orderRes.status === 201) {
-                const createdId = orderRes.data?.id || orderRes.data?.order?.id || null;
+                const createdId = orderRes.data?.id || orderRes.data?.order?.id || `ORD-${Date.now()}`;
                 setCreatedOrderId(createdId);
                 if (createdId) {
                     saveLocalOrderDetails(createdId, { deliveryAddress: destination, createdAt: new Date().toISOString() });
                 }
                 clearPaymentDetails();
+
+                const orderNotice = `[RabbitMQ Message Event] Order #${createdId} placed successfully for ${user.userName || user.name || "Customer"}. Delivery scheduled to ${destination}.`;
+                const chatMsg = {
+                    id: `msg_order_${Date.now()}`,
+                    sender: "RabbitMQ Broker",
+                    email: "system@oilsupply.com",
+                    role: "System Broker",
+                    topic: "Order Notifications",
+                    message: orderNotice,
+                    timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                    channel: "oil-supply-chat",
+                };
+                try {
+                    const cached = JSON.parse(localStorage.getItem("persistent_chat_messages_v1") || "[]");
+                    localStorage.setItem("persistent_chat_messages_v1", JSON.stringify([...cached, chatMsg].slice(-200)));
+                } catch {}
+                axios.post("/api/messages", chatMsg).catch(() => {});
+
                 setTimeout(() => {
                     setSandboxStep("success");
                     fetchOrders(user.id, user.title);
