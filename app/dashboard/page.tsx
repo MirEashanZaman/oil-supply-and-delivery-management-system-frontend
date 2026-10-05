@@ -413,17 +413,26 @@ export default function Dashboard() {
 
         try {
             const parsed = JSON.parse(storedUser);
-            setUser(parsed);
+            const userRole = normalizeRole(parsed.title || parsed.role || "Customer");
+            setUser({ ...parsed, role: userRole, title: userRole });
             setDeliveryAddress(parsed.address || "Dhaka, Bangladesh");
             setCardHolder(parsed.userName || parsed.name || parsed.email?.split("@")[0]);
             if (parsed.status) setSupplierOperationalStatus(parsed.status);
 
             const savedTab = localStorage.getItem("dashboard_active_tab") as DashboardTab | null;
             if (savedTab) {
-                setActiveTabState(savedTab);
+                if (savedTab === "admin-monitoring" && userRole !== "Admin") {
+                    setActiveTabState("overview");
+                } else if (savedTab === "inventory" && userRole !== "Dealer" && userRole !== "Supplier") {
+                    setActiveTabState("overview");
+                } else {
+                    setActiveTabState(savedTab);
+                }
+            } else {
+                setActiveTabState("overview");
             }
 
-            fetchFullProfile(parsed.email, parsed.title || parsed.role);
+            fetchFullProfile(parsed.email, userRole);
             fetchSourcingParties();
         } catch (e) {
             console.error("Error parsing user data:", e);
@@ -2510,7 +2519,7 @@ export default function Dashboard() {
                         />
                     )}
 
-                    {activeTab === "admin-monitoring" && (
+                    {activeTab === "admin-monitoring" && (user.role === "Admin" || user.title === "Admin") && (
                         <AdminMonitoringTab
                             users={allMergedUsers}
                             loadingUsers={false}
