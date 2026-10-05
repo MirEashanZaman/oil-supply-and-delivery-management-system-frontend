@@ -87,8 +87,26 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
       });
     });
 
+    const handleLocalUpdate = (e: any) => {
+      const newMsg = e?.detail;
+      if (newMsg) {
+        setMessages((prev) => {
+          const next = [...prev.filter((m) => m.id !== newMsg.id), newMsg].slice(-200);
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+          } catch {}
+          return next;
+        });
+      } else {
+        loadStoredMessages();
+      }
+    };
+
+    window.addEventListener("local_chat_update", handleLocalUpdate);
+
     return () => {
       window.clearInterval(pollTimer);
+      window.removeEventListener("local_chat_update", handleLocalUpdate);
       channel.unbind_all();
       channel.unsubscribe();
     };
