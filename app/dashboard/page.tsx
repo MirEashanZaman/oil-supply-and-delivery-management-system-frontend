@@ -316,6 +316,19 @@ export default function Dashboard() {
             return;
         }
 
+        const availableStock = Number(product.quantity ?? product.stock ?? 0);
+        if (availableStock <= 0) {
+            alert("Not enough stock");
+            return;
+        }
+
+        const existingIndex = cartItems.findIndex((ci) => ci.product.id === product.id);
+        const currentInCart = existingIndex >= 0 ? cartItems[existingIndex].quantity : 0;
+        if (currentInCart + quantity > availableStock) {
+            alert("Not enough stock");
+            return;
+        }
+
         const config = getProductSourcingConfig(product, availableSuppliers, availableDealers);
         const normalizedSourcing = config.canChooseBetweenSupplierAndDealer ? (sourcing === "supplier" || sourcing === "dealer" ? sourcing : config.defaultSourcingChoice) : "supplier";
         const defaultParty = normalizedSourcing === "supplier"
@@ -323,7 +336,6 @@ export default function Dashboard() {
             : (config.allowedDealers[0]?.id ?? availableDealers[0]?.id ?? 1);
         const defaultDest = deliveryAddress.trim() || user?.address || "Main Operational Hub";
 
-        const existingIndex = cartItems.findIndex((ci) => ci.product.id === product.id);
         let updated: CartItem[];
 
         if (existingIndex >= 0) {
@@ -343,6 +355,14 @@ export default function Dashboard() {
         if (newQty <= 0) {
             updateCartState(cartItems.filter((ci) => ci.product.id !== productId));
             return;
+        }
+        const item = cartItems.find((ci) => ci.product.id === productId);
+        if (item) {
+            const availableStock = Number(item.product.quantity ?? item.product.stock ?? 0);
+            if (availableStock <= 0 || newQty > availableStock) {
+                alert("Not enough stock");
+                return;
+            }
         }
         updateCartState(cartItems.map((ci) => (ci.product.id === productId ? { ...ci, quantity: newQty } : ci)));
     };
@@ -366,6 +386,15 @@ export default function Dashboard() {
             alert("Your delivery cart is empty.");
             return;
         }
+
+        for (const item of cartItems) {
+            const stock = Number(item.product.quantity ?? item.product.stock ?? 0);
+            if (stock <= 0 || item.quantity > stock) {
+                alert("Not enough stock");
+                return;
+            }
+        }
+
         setIsMultiCheckout(true);
         setCheckoutProduct(cartItems[0].product);
         const firstDeliveryAddress = cartItems[0].deliveryAddress?.trim();
@@ -869,6 +898,12 @@ export default function Dashboard() {
             return;
         }
 
+        const availableStock = Number(product.quantity ?? product.stock ?? 0);
+        if (availableStock <= 0) {
+            alert("Not enough stock");
+            return;
+        }
+
         const config = getProductSourcingConfig(product, availableSuppliers, availableDealers);
 
         setCheckoutProduct(product);
@@ -896,6 +931,12 @@ export default function Dashboard() {
         if (!user?.id || !wholesaleProduct) return;
 
         const quantity = Number(wholesaleQuantity);
+        const availableStock = Number(wholesaleProduct.quantity ?? wholesaleProduct.stock ?? 0);
+        if (availableStock <= 0 || quantity > availableStock) {
+            alert("Not enough stock");
+            return;
+        }
+
         const supplierId = wholesaleProduct.supplier?.id || wholesaleProduct.user?.id;
         if (!supplierId || !quantity || quantity <= 0) {
             alert("A supplier and valid wholesale quantity are required.");
@@ -1187,6 +1228,23 @@ export default function Dashboard() {
 
     const handleLaunchSandboxGateway = () => {
         if (!user || !user.id || (!checkoutProduct && !isMultiCheckout)) return;
+
+        if (isMultiCheckout) {
+            for (const item of cartItems) {
+                const stock = Number(item.product.quantity ?? item.product.stock ?? 0);
+                if (stock <= 0 || item.quantity > stock) {
+                    alert("Not enough stock");
+                    return;
+                }
+            }
+        } else if (checkoutProduct) {
+            const stock = Number(checkoutProduct.quantity ?? checkoutProduct.stock ?? 0);
+            if (stock <= 0 || orderQuantity > stock) {
+                alert("Not enough stock");
+                return;
+            }
+        }
+
         setSandboxTxnId((isMultiCheckout ? "SANDBOX-MULTI-" : "SB-TXN-") + Math.random().toString(36).substring(2, 9).toUpperCase());
         setSandboxAuthCode("AUTH-" + Math.floor(100000 + Math.random() * 900000));
         setSandboxOtp("123456");
