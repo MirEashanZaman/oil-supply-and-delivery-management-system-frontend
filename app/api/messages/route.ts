@@ -128,6 +128,22 @@ export async function POST(request: Request) {
             }
         }
 
+        // Bridge message to RabbitMQ backend broker queue
+        try {
+            const backendUrl = process.env.NEXT_PUBLIC_API_ENDPOINT || "http://localhost:8000";
+            fetch(`${backendUrl}/rabbitmq/send`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    queue: "customer_messages_queue",
+                    pattern: "chat.message.created",
+                    data: messageData,
+                    sender: messageData.sender,
+                    recipient: messageData.channel,
+                }),
+            }).catch(() => {});
+        } catch {}
+
         return NextResponse.json({
             success: true,
             data: messageData,
