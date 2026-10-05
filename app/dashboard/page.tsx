@@ -657,8 +657,8 @@ export default function Dashboard() {
                     } else {
                         resolvedPhotoUrl = `/api/profile-image/${encodeURIComponent(matchFilename)}`;
                     }
-                } else if (!resolvedPhotoUrl || (!resolvedPhotoUrl.startsWith("data:") && !resolvedPhotoUrl.startsWith("/api/profile-image") && !resolvedPhotoUrl.startsWith("http"))) {
-                    resolvedPhotoUrl = undefined;
+                } else if (storedProfile?.photoUrl) {
+                    resolvedPhotoUrl = storedProfile.photoUrl;
                 }
 
                 const fullUser: UserData = {
