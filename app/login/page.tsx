@@ -136,6 +136,15 @@ export default function Login() {
                 if (searchRes.status === 200 && searchRes.data?.user) {
                     const u = searchRes.data.user;
                     const r = searchRes.data.role || matchedRole;
+                    const matchPhoto = u.filename || u.photo || u.photoUrl || u.image || u.imageUrl;
+                    let resolvedLoginPhoto = userData.photoUrl;
+                    if (matchPhoto && typeof matchPhoto === "string") {
+                        if (matchPhoto.startsWith("data:") || matchPhoto.startsWith("http://") || matchPhoto.startsWith("https://")) {
+                            resolvedLoginPhoto = matchPhoto;
+                        } else {
+                            resolvedLoginPhoto = `/api/profile-image/${encodeURIComponent(matchPhoto)}`;
+                        }
+                    }
                     userData = {
                         id: u.id || userData.id,
                         email: u.email || userData.email,
@@ -143,7 +152,7 @@ export default function Login() {
                         phoneNumber: u.phoneNumber || userData.phoneNumber,
                         address: u.address || userData.address,
                         title: normalizeRole(u.title || r),
-                        photoUrl: u.filename ? `/api/profile-image/${encodeURIComponent(u.filename)}` : userData.photoUrl,
+                        photoUrl: resolvedLoginPhoto,
                     };
                 } else {
                     const rolePath = matchedRole.toLowerCase();
@@ -168,6 +177,15 @@ export default function Login() {
                             (c: any) => c.email === signInEmail
                         );
                         if (matchedUser) {
+                            const matchPhoto = matchedUser.filename || matchedUser.photo || matchedUser.photoUrl || matchedUser.image || matchedUser.imageUrl;
+                            let resolvedLoginPhoto = userData.photoUrl;
+                            if (matchPhoto && typeof matchPhoto === "string") {
+                                if (matchPhoto.startsWith("data:") || matchPhoto.startsWith("http://") || matchPhoto.startsWith("https://")) {
+                                    resolvedLoginPhoto = matchPhoto;
+                                } else {
+                                    resolvedLoginPhoto = `/api/profile-image/${encodeURIComponent(matchPhoto)}`;
+                                }
+                            }
                             userData = {
                                 id: matchedUser.id || userData.id,
                                 email: matchedUser.email,
@@ -175,7 +193,7 @@ export default function Login() {
                                 phoneNumber: matchedUser.phoneNumber || userData.phoneNumber,
                                 address: matchedUser.address || userData.address,
                                 title: normalizeRole(matchedUser.title || matchedRole),
-                                photoUrl: matchedUser.photoUrl || matchedUser.photo || userData.photoUrl,
+                                photoUrl: resolvedLoginPhoto,
                             };
                         }
                     }
