@@ -1385,6 +1385,9 @@ export default function Dashboard() {
                     try {
                         const cached = JSON.parse(localStorage.getItem("persistent_chat_messages_v1") || "[]");
                         localStorage.setItem("persistent_chat_messages_v1", JSON.stringify([...cached, chatMsg].slice(-200)));
+                        if (typeof window !== "undefined") {
+                            window.dispatchEvent(new CustomEvent("local_chat_update", { detail: chatMsg }));
+                        }
                     } catch {}
                     axios.post("/api/messages", chatMsg).catch(() => {});
 
@@ -1440,6 +1443,9 @@ export default function Dashboard() {
                 try {
                     const cached = JSON.parse(localStorage.getItem("persistent_chat_messages_v1") || "[]");
                     localStorage.setItem("persistent_chat_messages_v1", JSON.stringify([...cached, chatMsg].slice(-200)));
+                    if (typeof window !== "undefined") {
+                        window.dispatchEvent(new CustomEvent("local_chat_update", { detail: chatMsg }));
+                    }
                 } catch {}
                 axios.post("/api/messages", chatMsg).catch(() => {});
 
