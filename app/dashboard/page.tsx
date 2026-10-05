@@ -967,6 +967,19 @@ export default function Dashboard() {
             );
 
             if (res.status === 200 || res.status === 201) {
+                const orderId = res.data?.id || `ORD-WS-${Date.now()}`;
+                const orderNotice = `[RabbitMQ Message Event] Wholesale Order #${orderId} for ${quantity} unit(s) of ${wholesaleProduct.name} placed by Dealer ${user.userName || user.name || "Dealer"}.`;
+                axios.post("/api/messages", {
+                    id: `msg_wholesale_${Date.now()}`,
+                    sender: "RabbitMQ Wholesale Broker",
+                    email: user.email || "dealer@oilsupply.com",
+                    role: "Dealer",
+                    topic: "Wholesale Procurement",
+                    message: orderNotice,
+                    timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                    channel: "oil-supply-chat",
+                }).catch(() => {});
+
                 alert("Wholesale order placed successfully.");
                 setWholesaleProduct(null);
                 setWholesaleAddress("");
