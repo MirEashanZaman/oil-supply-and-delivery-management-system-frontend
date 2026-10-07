@@ -22,6 +22,7 @@ body {
   overflow-x: hidden;
   background-color: #F5F7FA;
   color: #1E293B;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   min-width: 0;
   padding-bottom: env(safe-area-inset-bottom);
   -webkit-text-size-adjust: 100%;
