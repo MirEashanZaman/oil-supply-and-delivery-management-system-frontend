@@ -77,7 +77,7 @@ export default function Login() {
                             password: result.data.password,
                         },
                         {
-                            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                            headers: { "Content-Type": "application/json" },
                             withCredentials: true,
                             validateStatus: (status) => status < 500,
                         }
@@ -88,7 +88,9 @@ export default function Login() {
                         apiUserData = response.data;
                         break;
                     } else if (response.status === 401) {
-                        lastErrorMessage = "Invalid email or password. Please check your credentials or register a new account.";
+                        lastErrorMessage = "Invalid email or password. Please verify your credentials or register a new account.";
+                    } else if (response.status === 429) {
+                        lastErrorMessage = response.data?.message || "Too many failed attempts. Please try again shortly.";
                     } else if (response.status === 400 && response.data?.message) {
                         lastErrorMessage = Array.isArray(response.data.message)
                             ? response.data.message.join(", ")
