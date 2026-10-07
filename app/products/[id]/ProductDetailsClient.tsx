@@ -249,7 +249,7 @@ export default function ProductDetails({
                                 </p>
                             </div>
                             <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-lg border border-slate-200 shrink-0">
-                                🔒 Verified completed buyers only
+                                Verified completed buyers only
                             </span>
                         </div>
 
