@@ -594,7 +594,7 @@ export default function Home() {
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
-                            🔒 Only complete order buyers can review
+                            Only complete order buyers can review
                         </span>
                     </div>
                 </div>
