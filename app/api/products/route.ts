@@ -73,7 +73,6 @@ export async function GET() {
         }
         return NextResponse.json(DEFAULT_FALLBACK_PRODUCTS, { status: 200 });
     } catch {
-        // Return default catalog fallback gracefully so home carousel is always populated
         return NextResponse.json(DEFAULT_FALLBACK_PRODUCTS, { status: 200 });
     }
 }
