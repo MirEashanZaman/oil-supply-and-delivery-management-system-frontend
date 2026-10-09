@@ -1,6 +1,6 @@
 {
   "name": "Oil Supply & Delivery Management System",
-  "short_name": "PetroSupply",
+  "short_name": "OSDMS",
   "description": "Enterprise Petroleum & Oil Logistics Supply Chain Platform",
   "start_url": "/dashboard",
   "display": "standalone",
