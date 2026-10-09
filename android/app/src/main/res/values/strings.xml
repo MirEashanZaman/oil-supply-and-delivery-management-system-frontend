@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Oil Supply Delivery</string>
-    <string name="title_activity_main">Oil Supply Delivery</string>
+    <string name="app_name">OSDMS</string>
+    <string name="title_activity_main">OSDMS</string>
     <string name="package_name">com.Eshan.oilsupply</string>
     <string name="custom_url_scheme">com.Eshan.oilsupply</string>
 </resources>
