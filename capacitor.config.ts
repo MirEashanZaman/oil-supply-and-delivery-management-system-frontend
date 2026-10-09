@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.Eshan.oilsupply',
-  appName: 'Oil Supply Delivery',
+  appName: 'OSDMS',
   webDir: 'public',
   ...(process.env.CAPACITOR_SERVER_URL
     ? {
