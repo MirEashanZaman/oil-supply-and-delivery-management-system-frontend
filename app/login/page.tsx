@@ -79,6 +79,7 @@ export default function Login() {
                         {
                             headers: { "Content-Type": "application/json" },
                             withCredentials: true,
+                            timeout: 15000,
                             validateStatus: (status) => status < 500,
                         }
                     );
