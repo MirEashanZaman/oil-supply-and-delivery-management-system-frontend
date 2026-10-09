@@ -5,10 +5,14 @@ export const metadata: Metadata = {
   title: "Oil Supply & Delivery Management System",
   description: "Oil Supply & Delivery Management System - Enterprise Fuel Logistics & Distribution Platform",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/LOGO.png",
+    apple: "/LOGO.png",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "PetroSupply",
+    title: "OSDMS",
   },
 };
 
