@@ -9,7 +9,7 @@ export const DEFAULT_FALLBACK_PRODUCTS = [
         price: 82.50,
         quantity: 5000,
         description: "Sweet light crude benchmark extracted from the North Sea, ideal for refining automotive gasoline and middle distillates.",
-        image: "/Brent Crude Oil.jpg",
+        image: "/Brent Crude Oil.webp",
     },
     {
         id: 2,
@@ -18,7 +18,7 @@ export const DEFAULT_FALLBACK_PRODUCTS = [
         price: 94.20,
         quantity: 3500,
         description: "Clean-burning commercial automotive diesel fuel compliant with Euro VI emission standards for heavy commercial transport fleets.",
-        image: "/Ultra-Low Sulfur Diesel.jpg",
+        image: "/Ultra-Low Sulfur Diesel.webp",
     },
     {
         id: 3,
@@ -27,7 +27,7 @@ export const DEFAULT_FALLBACK_PRODUCTS = [
         price: 88.75,
         quantity: 4200,
         description: "High-octane RON 95 motor spirit designed for modern high-compression engines, delivering optimal combustion efficiency.",
-        image: "/Premium Unleaded Gasoline.jpg",
+        image: "/Premium Unleaded Gasoline.webp",
     },
     {
         id: 4,
@@ -36,7 +36,7 @@ export const DEFAULT_FALLBACK_PRODUCTS = [
         price: 112.00,
         quantity: 2800,
         description: "Standard kerosene-grade aviation fuel formulated with anti-icing and antioxidant additives for international civil aviation.",
-        image: "/Aviation Turbine Fuel (Jet A-1).jpg",
+        image: "/Aviation Turbine Fuel (Jet A-1).webp",
     },
     {
         id: 5,
@@ -45,7 +45,7 @@ export const DEFAULT_FALLBACK_PRODUCTS = [
         price: 45.00,
         quantity: 6000,
         description: "Pressurized propane-butane blend for industrial heating, commercial kitchens, and localized energy distribution grids.",
-        image: "/images.jpg",
+        image: "/images.webp",
     },
     {
         id: 6,
@@ -54,7 +54,7 @@ export const DEFAULT_FALLBACK_PRODUCTS = [
         price: 68.30,
         quantity: 1800,
         description: "High-viscosity residual fuel oil blended specifically for ocean vessel propulsion and heavy thermal power generation.",
-        image: "/Heavy Marine Fuel Oil (HFO).jpg",
+        image: "/Heavy Marine Fuel Oil (HFO).webp",
     },
 ];
 
