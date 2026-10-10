@@ -67,9 +67,10 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
 
     loadStoredMessages();
 
+    // Fast 2-second cross-device polling interval to synchronize between phone and laptop
     const pollTimer = window.setInterval(() => {
       loadStoredMessages();
-    }, 3000);
+    }, 2000);
 
     const pusher = getPusherClient();
     if (!pusher) {
