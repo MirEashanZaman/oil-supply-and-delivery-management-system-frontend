@@ -149,7 +149,7 @@ export default function Home() {
     };
 
     return (
-        <div className="w-full max-w-[1240px] flex flex-col items-center">
+        <main className="w-full max-w-[1240px] flex flex-col items-center" role="main">
             <MyHeader name="Home" message="Centralized petroleum supply, dealer management, and delivery tracking" />
             <MyNavigation />
 
@@ -309,15 +309,17 @@ export default function Home() {
                         </button>
                     </div>
 
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1 z-20 items-center">
                         {HERO_SLIDES.map((_, idx) => (
                             <button
                                 key={idx}
                                 onClick={() => setCurrentHeroSlide(idx)}
-                                className={`w-2.5 h-2.5 rounded-full transition-all cursor-pointer ${idx === currentHeroSlide ? "bg-[#F59E0B] w-7" : "bg-white/50 hover:bg-white"
-                                    }`}
-                                aria-label={`Slide ${idx + 1}`}
-                            />
+                                className="p-2 flex items-center justify-center cursor-pointer focus:outline-none"
+                                aria-label={`Go to slide ${idx + 1}`}
+                            >
+                                <span className={`block h-2.5 rounded-full transition-all ${idx === currentHeroSlide ? "bg-[#F59E0B] w-7" : "bg-white/60 hover:bg-white w-2.5"
+                                    }`} />
+                            </button>
                         ))}
                     </div>
                 </div>
@@ -480,6 +482,8 @@ export default function Home() {
                                                         <div className="card-actions justify-end">
                                                             <Link
                                                                 href={`/products/${product.id}`}
+                                                                tabIndex={-1}
+                                                                aria-hidden="true"
                                                                 className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] btn-xs sm:btn-sm font-bold border-none rounded-xl"
                                                             >
                                                                 View Details
@@ -697,6 +701,6 @@ export default function Home() {
                     View All FAQs →
                 </Link>
             </div>
-        </div>
+        </main>
     );
 }
