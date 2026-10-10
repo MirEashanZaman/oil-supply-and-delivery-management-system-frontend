@@ -6,7 +6,7 @@ import type * as LeafletType from "leaflet";
 import { API_ENDPOINT } from "@/lib/api";
 
 export type TrackingOrderData = {
-    id: number;
+    id: number | string;
     quantity: number;
     status: string;
     address?: string;
@@ -268,12 +268,28 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
             accuracyCircleRef.current = accuracyCircle;
 
             leafletMapRef.current = map;
+
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 250);
+
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 600);
         }
 
         initMap();
 
+        const handleWindowResize = () => {
+            if (leafletMapRef.current) {
+                leafletMapRef.current.invalidateSize();
+            }
+        };
+        window.addEventListener("resize", handleWindowResize);
+
         return () => {
             isMounted = false;
+            window.removeEventListener("resize", handleWindowResize);
             if (leafletMapRef.current) {
                 leafletMapRef.current.remove();
                 leafletMapRef.current = null;
