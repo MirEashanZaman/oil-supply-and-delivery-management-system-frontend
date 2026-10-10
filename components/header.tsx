@@ -5,7 +5,7 @@ export default function MyHeader(props: { name: string; message: string }) {
         <header className="w-full flex flex-col items-center justify-center pt-2 pb-6 text-center">
             <div className="flex items-center gap-3 mb-2">
                 <Image
-                    src="/LOGO.png"
+                    src="/LOGO.webp"
                     alt="Oil Supply & Delivery Management System Logo"
                     width={56}
                     height={56}
