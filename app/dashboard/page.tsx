@@ -66,7 +66,7 @@ export default function Dashboard() {
     const [supplierOperationalStatus, setSupplierOperationalStatus] = useState<string>("active");
 
     const [orders, setOrders] = useState<Order[]>([]);
-    const [trackedOrderId, setTrackedOrderId] = useState<number | null>(null);
+    const [trackedOrderId, setTrackedOrderId] = useState<number | string | null>(null);
     const [isUberMapOpen, setIsUberMapOpen] = useState<boolean>(false);
     const [uberTrackingOrder, setUberTrackingOrder] = useState<Order | null>(null);
 
@@ -128,7 +128,7 @@ export default function Dashboard() {
     const [sandboxAuthCode, setSandboxAuthCode] = useState<string>("");
     const [sandboxLogs, setSandboxProcessingLogs] = useState<string[]>([]);
     const [createdPaymentRecord, setCreatedPaymentRecord] = useState<any>(null);
-    const [createdOrderId, setCreatedOrderId] = useState<number | null>(null);
+    const [createdOrderId, setCreatedOrderId] = useState<number | string | null>(null);
 
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [isCartModalOpen, setIsCartModalOpen] = useState<boolean>(false);
@@ -1313,7 +1313,7 @@ export default function Dashboard() {
         let singleDiscount = 0;
         if (isMultiCheckout) {
             totalAmount = cartTotalAmount;
-        } else {
+        } else if (checkoutProduct) {
             const rawSub = Number((checkoutProduct.numericPrice * orderQuantity).toFixed(2));
             const singleBulkRate = orderQuantity >= 100 ? 0.15 : orderQuantity >= 50 ? 0.10 : orderQuantity >= 20 ? 0.05 : 0;
             const singleBulkDisc = Number((rawSub * singleBulkRate).toFixed(2));
@@ -1422,7 +1422,7 @@ export default function Dashboard() {
                 delivery_address: destination,
                 status: "pending",
                 discount: singleDiscount,
-                product: { id: checkoutProduct.id },
+                product: { id: checkoutProduct?.id || 1 },
                 payment: { paymentReference, paymentMethod: cleanType, amount: totalAmount, status: "completed" },
                 sourceType: sourcingChoice,
             };
@@ -1516,7 +1516,7 @@ export default function Dashboard() {
         if (createdOrderId) handleTrackOrder(createdOrderId);
     };
 
-    const handleTrackOrder = (orderId: number, targetOrder?: Order) => {
+    const handleTrackOrder = (orderId: number | string, targetOrder?: Order) => {
         setTrackedOrderId(orderId);
         const matchedOrder: Order = targetOrder || orders.find((o) => o.id === orderId) || {
             id: orderId,
@@ -1529,7 +1529,7 @@ export default function Dashboard() {
         setIsUberMapOpen(true);
     };
 
-    const handleCancelOrder = async (orderId: number) => {
+    const handleCancelOrder = async (orderId: number | string) => {
         if (!user || !user.id) return;
         if (!window.confirm("Are you sure you want to cancel this order?")) return;
         try {
@@ -1543,7 +1543,7 @@ export default function Dashboard() {
         }
     };
 
-    const handleUpdateOrderStatus = async (orderId: number, status: string) => {
+    const handleUpdateOrderStatus = async (orderId: number | string, status: string) => {
         if (!user) return;
         const role = getRolePath(user.title || user.role);
         const normalizedStatus = status.trim().toLowerCase();
@@ -1647,7 +1647,7 @@ export default function Dashboard() {
         });
     };
 
-    const handleDeleteOrder = async (orderId: number) => {
+    const handleDeleteOrder = async (orderId: number | string) => {
         if (!user) return;
         if (!window.confirm("Are you sure you want to delete this order?")) return;
 
