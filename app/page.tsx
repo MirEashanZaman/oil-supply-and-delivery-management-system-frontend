@@ -555,37 +555,37 @@ export default function Home() {
             <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 text-left">
                 <div className="card bg-[#FFFFFF] p-6 rounded-2xl border border-[#E2E8F0] shadow-sm hover:border-[#0F2747]/40 transition-all">
                     <div className="w-10 h-10 rounded-xl bg-[#0F2747]/10 text-[#0F2747] flex items-center justify-center mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                     </div>
                     <h3 className="font-bold text-base text-[#1E293B] mb-1">Direct Refinery Sourcing</h3>
-                    <p className="text-xs text-[#64748B] leading-relaxed">
+                    <p className="text-xs text-[#475569] leading-relaxed">
                         Refineries post verified fuel inventory directly, eliminating intermediaries and reducing supply chain bottlenecks.
                     </p>
                 </div>
 
                 <div className="card bg-[#FFFFFF] p-6 rounded-2xl border border-[#E2E8F0] shadow-sm hover:border-[#0F2747]/40 transition-all">
                     <div className="w-10 h-10 rounded-xl bg-[#16A34A]/10 text-[#16A34A] flex items-center justify-center mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
                         </svg>
                     </div>
                     <h3 className="font-bold text-base text-[#1E293B] mb-1">Regional Dealer Network</h3>
-                    <p className="text-xs text-[#64748B] leading-relaxed">
+                    <p className="text-xs text-[#475569] leading-relaxed">
                         Licensed dealers procure stock in bulk from suppliers and dispatch localized deliveries to commercial customers.
                     </p>
                 </div>
 
                 <div className="card bg-[#FFFFFF] p-6 rounded-2xl border border-[#E2E8F0] shadow-sm hover:border-[#0F2747]/40 transition-all">
                     <div className="w-10 h-10 rounded-xl bg-[#F59E0B]/15 text-[#D97706] flex items-center justify-center mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
                     </div>
                     <h3 className="font-bold text-base text-[#1E293B] mb-1">Scheduled Tanker Delivery</h3>
-                    <p className="text-xs text-[#64748B] leading-relaxed">
+                    <p className="text-xs text-[#475569] leading-relaxed">
                         Complete shipment tracking with estimated transit times, destination depot validation, and delivery status logs.
                     </p>
                 </div>
@@ -603,12 +603,12 @@ export default function Home() {
                                 Verified Delivery Reviews & Fuel Ratings
                             </h2>
                         </div>
-                        <p className="text-xs text-[#64748B] mt-1">
+                        <p className="text-xs text-[#475569] mt-1">
                             Feedback from commercial buyers, fleet managers, and dealers with confirmed completed deliveries.
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                        <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
                             Only complete order buyers can review
                         </span>
                     </div>
@@ -616,7 +616,7 @@ export default function Home() {
 
                 {publicReviews.length === 0 ? (
                     <div className="bg-white p-8 rounded-2xl border border-[#E2E8F0] text-center shadow-xs">
-                        <p className="text-xs text-slate-500">No verified delivery reviews recorded yet.</p>
+                        <p className="text-xs text-slate-600">No verified delivery reviews recorded yet.</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -627,37 +627,37 @@ export default function Home() {
                             >
                                 <div>
                                     <div className="flex items-center justify-between gap-2 mb-2">
-                                        <div className="flex items-center gap-1.5">
-                                            <div className="flex text-amber-500 text-sm">
+                                        <div className="flex items-center gap-1.5" aria-label={`Rating ${rev.rating} out of 5 stars`}>
+                                            <div className="flex text-amber-500 text-sm" aria-hidden="true">
                                                 {Array.from({ length: 5 }).map((_, idx) => (
-                                                    <span key={idx} className={idx < rev.rating ? "text-amber-500" : "text-slate-200"}>
+                                                    <span key={idx} className={idx < rev.rating ? "text-amber-500" : "text-slate-300"}>
                                                         ★
                                                     </span>
                                                 ))}
                                             </div>
-                                            <span className="text-xs font-bold text-dark-slate">({rev.rating}/5)</span>
+                                            <span className="text-xs font-bold text-[#1E293B]">({rev.rating}/5)</span>
                                         </div>
-                                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
+                                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-emerald-700" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                             </svg>
                                             Verified Delivery #{rev.orderId}
                                         </span>
                                     </div>
 
-                                    <p className="text-xs text-[#1E293B] font-medium leading-relaxed italic bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                    <p className="text-xs text-[#1E293B] font-medium leading-relaxed italic bg-slate-50 p-3 rounded-xl border border-slate-200">
                                         "{rev.comment}"
                                     </p>
                                 </div>
 
-                                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                                <div className="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between text-xs">
                                     <div>
                                         <p className="font-bold text-[#1E293B]">{rev.reviewerName}</p>
-                                        <p className="text-[11px] text-[#64748B]">
+                                        <p className="text-[11px] text-[#475569]">
                                             {rev.reviewerRole || "Commercial Buyer"} · {rev.productName || "Petroleum Grade"}
                                         </p>
                                     </div>
-                                    <span className="text-[10px] text-slate-400 font-medium">
+                                    <span className="text-[10px] text-slate-500 font-medium">
                                         {rev.createdAt ? new Date(rev.createdAt).toLocaleDateString() : "Recent"}
                                     </span>
                                 </div>
