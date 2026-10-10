@@ -8,6 +8,7 @@ import MyNavigation from "@/components/navigation";
 import MyHeader from "@/components/header";
 import { checkEmailUniqueness } from "@/lib/email-checker";
 import { API_ENDPOINT } from "@/lib/api";
+import { convertToWebP } from "@/lib/image-optimizer";
 
 const mobileNumberRegex = /^\+?[1-9][0-9\s\-().]{6,19}$/;
 
@@ -455,7 +456,15 @@ export default function Registration() {
                                     id="photo"
                                     type="file"
                                     accept="image/*"
-                                    onChange={(e) => setPhoto(e.target.files?.[0] || null)}
+                                    onChange={async (e) => {
+                                        const raw = e.target.files?.[0] || null;
+                                        if (raw) {
+                                            const webpFile = await convertToWebP(raw, 800, 800, 0.85);
+                                            setPhoto(webpFile);
+                                        } else {
+                                            setPhoto(null);
+                                        }
+                                    }}
                                     className="file-input file-input-bordered w-full bg-[#FFFFFF] border-[#CBD5E1] text-[#1E293B] rounded-xl"
                                 />
                                 {errors.photo && (

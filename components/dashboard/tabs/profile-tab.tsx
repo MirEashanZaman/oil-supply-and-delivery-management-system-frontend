@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { UserData } from "../types";
 import { getRoleBadgeColor, isValidPhoneNumber } from "../utils";
+import { convertToWebP } from "@/lib/image-optimizer";
 
 interface ProfileTabProps {
   userData: UserData | null;
@@ -37,14 +38,17 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
     }
   }, [userData]);
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawFile = e.target.files?.[0];
+    if (!rawFile) return;
 
-    setPhotoFile(file);
+    // Automatically convert uploaded photo to optimized WebP format
+    const optimizedWebpFile = await convertToWebP(rawFile, 800, 800, 0.85);
+
+    setPhotoFile(optimizedWebpFile);
     const reader = new FileReader();
     reader.onload = () => setPhotoPreview(String(reader.result));
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(optimizedWebpFile);
   };
 
   const handleSave = async (e: React.FormEvent) => {
