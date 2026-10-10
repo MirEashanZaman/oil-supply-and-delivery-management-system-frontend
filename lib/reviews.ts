@@ -2,8 +2,8 @@ import axios from "axios";
 import { API_ENDPOINT } from "./api";
 
 export type OrderReview = {
-  id?: number;
-  orderId: number;
+  id?: number | string;
+  orderId: number | string;
   productId?: number;
   productName?: string;
   rating: number;
@@ -16,7 +16,7 @@ export type OrderReview = {
 
 export const STORAGE_KEY_REVIEWS = "osdms_authentic_order_reviews_v3";
 
-export function getLocalStoredReviews(): Record<number, OrderReview> {
+export function getLocalStoredReviews(): Record<string | number, OrderReview> {
   if (typeof window === "undefined") return {};
   try {
     localStorage.removeItem("osdms_order_reviews");
@@ -41,9 +41,9 @@ export function getLocalStoredReviews(): Record<number, OrderReview> {
   }
 }
 
-export function saveLocalOrderReview(review: OrderReview): Record<number, OrderReview> {
+export function saveLocalOrderReview(review: OrderReview): Record<string | number, OrderReview> {
   const current = getLocalStoredReviews();
-  const updated = { ...current, [review.orderId]: review };
+  const updated = { ...current, [String(review.orderId)]: review };
   if (typeof window !== "undefined") {
     try {
       localStorage.setItem(STORAGE_KEY_REVIEWS, JSON.stringify(updated));
@@ -52,8 +52,8 @@ export function saveLocalOrderReview(review: OrderReview): Record<number, OrderR
   return updated;
 }
 
-export async function fetchAllServerReviews(): Promise<Record<number, OrderReview>> {
-  const map: Record<number, OrderReview> = {};
+export async function fetchAllServerReviews(): Promise<Record<string | number, OrderReview>> {
+  const map: Record<string | number, OrderReview> = {};
   const dummyIds = [101, 104, 109, 115];
 
   const candidateUrls = [
@@ -69,9 +69,9 @@ export async function fetchAllServerReviews(): Promise<Record<number, OrderRevie
       if (Array.isArray(res.data) && res.data.length > 0) {
         res.data.forEach((item: any) => {
           if (item?.orderId && !dummyIds.includes(Number(item.orderId))) {
-            map[Number(item.orderId)] = {
+            map[String(item.orderId)] = {
               id: item.id,
-              orderId: Number(item.orderId),
+              orderId: item.orderId,
               productId: item.productId ? Number(item.productId) : undefined,
               productName: item.productName || "Petroleum Grade",
               rating: Number(item.rating) || 5,
@@ -98,7 +98,7 @@ export async function fetchAllServerReviews(): Promise<Record<number, OrderRevie
   return merged;
 }
 
-export async function submitServerOrderReview(review: OrderReview): Promise<Record<number, OrderReview>> {
+export async function submitServerOrderReview(review: OrderReview): Promise<Record<string | number, OrderReview>> {
   const optimisticMap = saveLocalOrderReview(review);
 
   const payload = {
