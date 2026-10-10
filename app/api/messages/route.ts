@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
 import { getPusherServer, ChatMessage } from "@/lib/pusher";
+import { API_ENDPOINT, fetchWithTimeout } from "@/lib/api";
 
 const MESSAGES_FILE = path.join(process.cwd(), "data", "messages.json");
 
@@ -22,6 +23,49 @@ function normalizeChannel(channel?: string | null) {
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+let GLOBAL_MESSAGES_CACHE: ChatMessage[] = [];
+
+async function readStoredMessages(): Promise<ChatMessage[]> {
+    const combinedMap = new Map<string, ChatMessage>();
+
+    // 1. First check in-memory cache
+    if (Array.isArray(GLOBAL_MESSAGES_CACHE)) {
+        GLOBAL_MESSAGES_CACHE.forEach((m) => {
+            if (m && m.id) combinedMap.set(m.id, { ...m, channel: normalizeChannel(m.channel) });
+        });
+    }
+
+    // 2. Read local file storage
+    try {
+        const fileText = await fs.readFile(MESSAGES_FILE, "utf8");
+        const parsed = JSON.parse(fileText);
+        if (Array.isArray(parsed)) {
+            parsed.forEach((m: any) => {
+                if (m && m.id) combinedMap.set(m.id, { ...m, channel: normalizeChannel(m.channel) });
+            });
+        }
+    } catch {
+        // file might not exist in serverless container
+    }
+
+    // 3. Fetch from backend centralized message broker/API
+    try {
+        const backendRes = await fetchWithTimeout(`${API_ENDPOINT}/rabbitmq/messages`, { cache: "no-store" }, 2500);
+        if (backendRes.ok) {
+            const data = await backendRes.json();
+            if (data?.success && Array.isArray(data?.data)) {
+                data.data.forEach((m: any) => {
+                    if (m && m.id) combinedMap.set(m.id, { ...m, channel: normalizeChannel(m.channel) });
+                });
+            }
+        }
+    } catch {}
+
+    const result = Array.from(combinedMap.values()).slice(-200);
+    GLOBAL_MESSAGES_CACHE = [...result];
+    return result;
+}
+
 export async function GET() {
     try {
         const messages = await readStoredMessages();
@@ -40,32 +84,6 @@ export async function GET() {
             { status: 500 }
         );
     }
-}
-
-let GLOBAL_MESSAGES_CACHE: ChatMessage[] = [];
-
-async function readStoredMessages(): Promise<ChatMessage[]> {
-    try {
-        const fileText = await fs.readFile(MESSAGES_FILE, "utf8");
-        const parsed = JSON.parse(fileText);
-
-        if (Array.isArray(parsed)) {
-            const normalized = parsed.map((message: any) => ({
-                ...message,
-                channel: normalizeChannel(message.channel),
-            }));
-            GLOBAL_MESSAGES_CACHE = [...normalized];
-            return [...normalized];
-        }
-    } catch {
-        // file doesn't exist or read error, check in-memory cache
-    }
-
-    if (GLOBAL_MESSAGES_CACHE && GLOBAL_MESSAGES_CACHE.length > 0) {
-        return [...GLOBAL_MESSAGES_CACHE];
-    }
-
-    return [];
 }
 
 async function writeStoredMessages(messages: ChatMessage[]) {
@@ -130,8 +148,7 @@ export async function POST(request: Request) {
 
         // Bridge message to RabbitMQ backend broker queue
         try {
-            const backendUrl = process.env.NEXT_PUBLIC_API_ENDPOINT || "http://localhost:8000";
-            fetch(`${backendUrl}/rabbitmq/send`, {
+            await fetchWithTimeout(`${API_ENDPOINT}/rabbitmq/send`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -141,7 +158,7 @@ export async function POST(request: Request) {
                     sender: messageData.sender,
                     recipient: messageData.channel,
                 }),
-            }).catch(() => {});
+            }, 3000).catch(() => {});
         } catch {}
 
         return NextResponse.json({
