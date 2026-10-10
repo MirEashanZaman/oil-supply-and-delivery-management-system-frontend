@@ -385,10 +385,14 @@ export default function Home() {
                                     {products.map((product) => (
                                         <div key={`prod-1-${product.id}`} className="marquee-card">
                                             <div className="card bg-[#FFFFFF] w-full shadow-sm border border-[#E2E8F0] overflow-hidden hover:shadow-md transition-all text-left rounded-2xl h-full flex flex-col justify-between">
-                                                <figure className="h-44 sm:h-48 w-full overflow-hidden bg-[#F5F7FA] shrink-0">
+                                                <figure className="h-44 sm:h-48 w-full overflow-hidden bg-[#F5F7FA] shrink-0 relative">
                                                     <img
                                                         src={product.image}
                                                         alt={product.name}
+                                                        width={360}
+                                                        height={192}
+                                                        loading="lazy"
+                                                        decoding="async"
                                                         className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                                                         onError={(e) => {
                                                             e.currentTarget.src = getProductImage(product.name, undefined, product.id);
@@ -401,14 +405,14 @@ export default function Home() {
                                                             <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-[#F5F7FA] border border-[#CBD5E1] text-[#1E293B] truncate max-w-[130px]">
                                                                 {product.category}
                                                             </span>
-                                                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold shrink-0 ${product.stockLevel === "In Stock" ? "bg-[#16A34A] text-white" : product.stockLevel === "Low Stock" ? "bg-[#F59E0B] text-[#1E293B]" : "bg-[#DC2626] text-white"}`}>
+                                                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold shrink-0 ${product.stockLevel === "In Stock" ? "bg-[#16A34A] text-white" : product.stockLevel === "Low Stock" ? "bg-[#D97706] text-white" : "bg-[#DC2626] text-white"}`}>
                                                                 {product.stockLevel}
                                                             </span>
                                                         </div>
                                                         <h3 className="card-title text-sm sm:text-base font-bold text-[#1E293B] mb-1 line-clamp-1">
                                                             {product.name}
                                                         </h3>
-                                                        <p className="text-xs text-[#64748B] line-clamp-2">
+                                                        <p className="text-xs text-[#475569] line-clamp-2">
                                                             {product.description}
                                                         </p>
                                                     </div>
@@ -436,10 +440,14 @@ export default function Home() {
                                     {products.map((product) => (
                                         <div key={`prod-2-${product.id}`} className="marquee-card">
                                             <div className="card bg-[#FFFFFF] w-full shadow-sm border border-[#E2E8F0] overflow-hidden hover:shadow-md transition-all text-left rounded-2xl h-full flex flex-col justify-between">
-                                                <figure className="h-44 sm:h-48 w-full overflow-hidden bg-[#F5F7FA] shrink-0">
+                                                <figure className="h-44 sm:h-48 w-full overflow-hidden bg-[#F5F7FA] shrink-0 relative">
                                                     <img
                                                         src={product.image}
                                                         alt={product.name}
+                                                        width={360}
+                                                        height={192}
+                                                        loading="lazy"
+                                                        decoding="async"
                                                         className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                                                         onError={(e) => {
                                                             e.currentTarget.src = getProductImage(product.name, undefined, product.id);
@@ -452,14 +460,14 @@ export default function Home() {
                                                             <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-[#F5F7FA] border border-[#CBD5E1] text-[#1E293B] truncate max-w-[130px]">
                                                                 {product.category}
                                                             </span>
-                                                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold shrink-0 ${product.stockLevel === "In Stock" ? "bg-[#16A34A] text-white" : product.stockLevel === "Low Stock" ? "bg-[#F59E0B] text-[#1E293B]" : "bg-[#DC2626] text-white"}`}>
+                                                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold shrink-0 ${product.stockLevel === "In Stock" ? "bg-[#16A34A] text-white" : product.stockLevel === "Low Stock" ? "bg-[#D97706] text-white" : "bg-[#DC2626] text-white"}`}>
                                                                 {product.stockLevel}
                                                             </span>
                                                         </div>
                                                         <h3 className="card-title text-sm sm:text-base font-bold text-[#1E293B] mb-1 line-clamp-1">
                                                             {product.name}
                                                         </h3>
-                                                        <p className="text-xs text-[#64748B] line-clamp-2">
+                                                        <p className="text-xs text-[#475569] line-clamp-2">
                                                             {product.description}
                                                         </p>
                                                     </div>
