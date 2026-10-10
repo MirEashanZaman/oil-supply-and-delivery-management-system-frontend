@@ -16,9 +16,9 @@ export default function MyHeader(props: { name: string; message: string }) {
                     <span className="text-xs font-bold uppercase tracking-wider text-[#F59E0B] block">
                         Enterprise Portal
                     </span>
-                    <h2 className="text-lg sm:text-xl font-black text-[#0F2747] leading-tight">
+                    <p className="text-lg sm:text-xl font-black text-[#0F2747] leading-tight">
                         Oil Supply & Delivery Management System
-                    </h2>
+                    </p>
                 </div>
             </div>
 
