@@ -8,10 +8,10 @@ interface OrdersTabProps {
   userData: UserData | null;
   loadingOrders: boolean;
   onOpenLiveTrack: (order: Order) => void;
-  onCancelOrder?: (id: number) => void;
-  onUpdateOrderStatus?: (orderId: number, status: string) => void;
+  onCancelOrder?: (id: number | string) => void;
+  onUpdateOrderStatus?: (orderId: number | string, status: string) => void;
   onEditOrder?: (order: Order) => void;
-  onDeleteOrder?: (id: number) => void;
+  onDeleteOrder?: (id: number | string) => void;
 }
 
 export type { OrderReview };
@@ -29,7 +29,7 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [invoiceOrder, setInvoiceOrder] = useState<Order | null>(null);
   const [reviewingOrder, setReviewingOrder] = useState<Order | null>(null);
-  const [reviews, setReviews] = useState<Record<number, OrderReview>>({});
+  const [reviews, setReviews] = useState<Record<string | number, OrderReview>>({});
   const [rating, setRating] = useState<number>(5);
   const [reviewComment, setReviewComment] = useState<string>("");
   const [reviewSubmitting, setReviewSubmitting] = useState<boolean>(false);
