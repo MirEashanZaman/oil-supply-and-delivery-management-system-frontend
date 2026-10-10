@@ -79,6 +79,24 @@ export default function Home() {
         fetchAllServerReviews().then((liveMap) => {
             setPublicReviews(Object.values(liveMap));
         });
+
+        const handleReviewsUpdate = (e: any) => {
+            if (e?.detail) {
+                setPublicReviews(Object.values(e.detail));
+            } else {
+                fetchAllServerReviews().then((liveMap) => setPublicReviews(Object.values(liveMap)));
+            }
+        };
+
+        window.addEventListener("osdms_reviews_updated", handleReviewsUpdate);
+        const pollReviews = setInterval(() => {
+            fetchAllServerReviews().then((liveMap) => setPublicReviews(Object.values(liveMap)));
+        }, 4000);
+
+        return () => {
+            window.removeEventListener("osdms_reviews_updated", handleReviewsUpdate);
+            clearInterval(pollReviews);
+        };
     }, []);
 
     const handleLogout = () => {
