@@ -5,17 +5,51 @@ import path from "path";
 
 const REVIEWS_FILE = path.join(process.cwd(), "data", "reviews.json");
 
+let GLOBAL_REVIEWS_CACHE: any[] = [];
+
 async function readStoredReviewsFile(): Promise<any[]> {
+  const map = new Map<number, any>();
+
+  // 1. In-memory cache
+  if (Array.isArray(GLOBAL_REVIEWS_CACHE)) {
+    GLOBAL_REVIEWS_CACHE.forEach((r) => {
+      if (r && r.orderId) map.set(Number(r.orderId), r);
+    });
+  }
+
+  // 2. Local file
   try {
     const raw = await fs.readFile(REVIEWS_FILE, "utf-8");
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
+    if (Array.isArray(parsed)) {
+      parsed.forEach((r) => {
+        if (r && r.orderId) map.set(Number(r.orderId), r);
+      });
+    }
+  } catch {}
+
+  // 3. Central database backend
+  try {
+    const response = await fetchWithTimeout(`${API_ENDPOINT}/review/list`, {
+      cache: "no-store",
+    }, 3000);
+    if (response.ok) {
+      const data = await response.json();
+      if (Array.isArray(data) && data.length > 0) {
+        data.forEach((r) => {
+          if (r && r.orderId) map.set(Number(r.orderId), r);
+        });
+      }
+    }
+  } catch {}
+
+  const result = Array.from(map.values());
+  GLOBAL_REVIEWS_CACHE = [...result];
+  return result;
 }
 
 async function writeStoredReviewsFile(reviews: any[]): Promise<void> {
+  GLOBAL_REVIEWS_CACHE = [...reviews];
   try {
     const dir = path.dirname(REVIEWS_FILE);
     await fs.mkdir(dir, { recursive: true });
@@ -23,21 +57,16 @@ async function writeStoredReviewsFile(reviews: any[]): Promise<void> {
   } catch {}
 }
 
-export async function GET() {
-  try {
-    const response = await fetchWithTimeout(`${API_ENDPOINT}/review/list`, {
-      cache: "no-store",
-    }, 4000);
-    if (response.ok) {
-      const data = await response.json();
-      if (Array.isArray(data) && data.length > 0) {
-        return NextResponse.json(data);
-      }
-    }
-  } catch {}
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-  const fileReviews = await readStoredReviewsFile();
-  return NextResponse.json(fileReviews);
+export async function GET() {
+  const reviews = await readStoredReviewsFile();
+  return NextResponse.json(reviews, {
+    headers: {
+      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+    },
+  });
 }
 
 export async function POST(req: NextRequest) {
@@ -46,18 +75,21 @@ export async function POST(req: NextRequest) {
 
     const existing = await readStoredReviewsFile();
     const updated = [
-      ...existing.filter((r) => r.orderId !== body.orderId),
+      ...existing.filter((r) => Number(r.orderId) !== Number(body.orderId)),
       { ...body, createdAt: new Date().toISOString() },
     ];
     await writeStoredReviewsFile(updated);
 
+    // Sync to PostgreSQL backend database
     try {
-      await fetch(`${API_ENDPOINT}/review/submit`, {
+      await fetchWithTimeout(`${API_ENDPOINT}/review/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
-      });
-    } catch {}
+      }, 3000);
+    } catch (e) {
+      console.warn("Backend database review sync notice:", e);
+    }
 
     return NextResponse.json(
       { message: "Review saved successfully", review: body },
