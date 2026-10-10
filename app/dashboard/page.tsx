@@ -1289,7 +1289,8 @@ export default function Dashboard() {
     };
 
     const handleExecuteSandboxAuthorization = async (forceSimulateDecline: boolean = false) => {
-        if (!user || !user.id || !checkoutProduct) return;
+        if (!user) return;
+        if (!isMultiCheckout && !checkoutProduct) return;
 
         setSandboxStep("processing");
         setSandboxProcessingLogs([
@@ -1435,7 +1436,8 @@ export default function Dashboard() {
 
             let createdId: number | string = `ORD-SB-${Date.now()}`;
             try {
-                const orderRes = await axios.post(`${apiBase}/customer/${user.id}/orders`, orderPayload, { withCredentials: true, validateStatus: (status) => status < 500 });
+                const customerId = user.id || 1;
+                const orderRes = await axios.post(`${apiBase}/customer/${customerId}/orders`, orderPayload, { withCredentials: true, validateStatus: (status) => status < 500 });
                 if (orderRes.status === 200 || orderRes.status === 201) {
                     createdId = orderRes.data?.id || orderRes.data?.order?.id || createdId;
                 }
