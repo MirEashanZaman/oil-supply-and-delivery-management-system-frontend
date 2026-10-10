@@ -213,12 +213,13 @@ export default function Home() {
                             <span>Operations Overview</span>
                             <span className="badge bg-[#0F2747] text-[#F59E0B] badge-sm text-[11px] font-bold border-none">Auto-Slide</span>
                         </h2>
-                        <p className="text-xs text-[#64748B]">Integrated energy supply and fleet distribution channels</p>
+                        <p className="text-xs text-[#475569]">Integrated energy supply and fleet distribution channels</p>
                     </div>
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setIsAutoPlay(!isAutoPlay)}
-                            className="btn btn-xs btn-ghost text-xs text-[#64748B] hover:text-[#1E293B] cursor-pointer"
+                            aria-label={isAutoPlay ? "Pause automatic slide transition" : "Play automatic slide transition"}
+                            className="btn btn-xs btn-ghost text-xs text-[#475569] hover:text-[#1E293B] cursor-pointer"
                         >
                             {isAutoPlay ? "Pause" : "Play"}
                         </button>
