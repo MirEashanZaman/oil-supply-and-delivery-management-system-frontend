@@ -55,6 +55,24 @@ export default function ProductDetails({
         fetchAllServerReviews().then((liveMap) => {
             setProductReviews(filterForProduct(liveMap));
         });
+
+        const handleReviewsUpdate = (e: any) => {
+            if (e?.detail) {
+                setProductReviews(filterForProduct(e.detail));
+            } else {
+                fetchAllServerReviews().then((liveMap) => setProductReviews(filterForProduct(liveMap)));
+            }
+        };
+
+        window.addEventListener("osdms_reviews_updated", handleReviewsUpdate);
+        const pollReviews = setInterval(() => {
+            fetchAllServerReviews().then((liveMap) => setProductReviews(filterForProduct(liveMap)));
+        }, 4000);
+
+        return () => {
+            window.removeEventListener("osdms_reviews_updated", handleReviewsUpdate);
+            clearInterval(pollReviews);
+        };
     }, [product]);
 
     useEffect(() => {
