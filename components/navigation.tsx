@@ -45,7 +45,7 @@ export default function Navigation() {
                         href="/"
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${isActive("/")
                                 ? "bg-[#163860] text-[#F59E0B] font-bold"
-                                : "text-slate-200 hover:bg-[#163860]/70 hover:text-white"
+                                : "text-white hover:bg-[#163860]/80 hover:text-[#F59E0B]"
                             }`}
                     >
                         Home
@@ -54,7 +54,7 @@ export default function Navigation() {
                         href="/about"
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${isActive("/about")
                                 ? "bg-[#163860] text-[#F59E0B] font-bold"
-                                : "text-slate-200 hover:bg-[#163860]/70 hover:text-white"
+                                : "text-white hover:bg-[#163860]/80 hover:text-[#F59E0B]"
                             }`}
                     >
                         About Us
@@ -63,7 +63,7 @@ export default function Navigation() {
                         href="/faq"
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${isActive("/faq")
                                 ? "bg-[#163860] text-[#F59E0B] font-bold"
-                                : "text-slate-200 hover:bg-[#163860]/70 hover:text-white"
+                                : "text-white hover:bg-[#163860]/80 hover:text-[#F59E0B]"
                             }`}
                     >
                         FAQ
@@ -72,7 +72,7 @@ export default function Navigation() {
                         href="/contact"
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${isActive("/contact")
                                 ? "bg-[#163860] text-[#F59E0B] font-bold"
-                                : "text-slate-200 hover:bg-[#163860]/70 hover:text-white"
+                                : "text-white hover:bg-[#163860]/80 hover:text-[#F59E0B]"
                             }`}
                     >
                         Contact
@@ -81,7 +81,7 @@ export default function Navigation() {
                         href="/terms"
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${isActive("/terms")
                                 ? "bg-[#163860] text-[#F59E0B] font-bold"
-                                : "text-slate-200 hover:bg-[#163860]/70 hover:text-white"
+                                : "text-white hover:bg-[#163860]/80 hover:text-[#F59E0B]"
                             }`}
                     >
                         Terms
