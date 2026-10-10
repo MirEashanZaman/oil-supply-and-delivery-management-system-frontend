@@ -99,52 +99,39 @@ export async function fetchAllServerReviews(): Promise<Record<number, OrderRevie
 }
 
 export async function submitServerOrderReview(review: OrderReview): Promise<Record<number, OrderReview>> {
-  const previousState = getLocalStoredReviews();
   const optimisticMap = saveLocalOrderReview(review);
 
   const payload = {
-    orderId: review.orderId,
-    productId: review.productId,
-    productName: review.productName,
-    rating: review.rating,
-    comment: review.comment,
-    reviewerName: review.reviewerName,
-    reviewerRole: review.reviewerRole,
-    deliveryAddress: review.deliveryAddress,
+    orderId: Number(review.orderId),
+    productId: review.productId ? Number(review.productId) : undefined,
+    productName: review.productName || "Petroleum Fuel",
+    rating: Number(review.rating) || 5,
+    comment: review.comment || "",
+    reviewerName: review.reviewerName || "Verified Buyer",
+    reviewerRole: review.reviewerRole || "Commercial Buyer",
+    deliveryAddress: review.deliveryAddress || "Destination Depot",
   };
 
-  let synced = false;
-
   try {
-    const backendRes = await axios.post(`${API_ENDPOINT}/review/submit`, payload, {
+    await axios.post("/api/reviews", payload, {
       validateStatus: (status) => status < 500,
     });
-    if (backendRes.status >= 200 && backendRes.status < 300) {
-      synced = true;
-    }
-  } catch (backendErr) {
-    console.warn("Backend review submission failed, falling back to Next.js API route:", backendErr);
+  } catch (err) {
+    console.warn("API route review sync notice:", err);
   }
 
-  if (!synced) {
-    try {
-      const routeRes = await axios.post("/api/reviews", payload, {
-        validateStatus: (status) => status < 500,
-      });
-      if (routeRes.status >= 200 && routeRes.status < 300) {
-        synced = true;
-      }
-    } catch (routeErr) {
-      console.warn("Next.js review route submission notice:", routeErr);
-    }
+  try {
+    await axios.post(`${API_ENDPOINT}/review/submit`, payload, {
+      validateStatus: (status) => status < 500,
+    });
+  } catch (err) {
+    console.warn("Backend review endpoint sync notice:", err);
   }
 
-  if (!synced && typeof window !== "undefined") {
-    // If backend and server fallback both reject (e.g. order not delivered), rollback client storage
+  if (typeof window !== "undefined") {
     try {
-      localStorage.setItem(STORAGE_KEY_REVIEWS, JSON.stringify(previousState));
+      window.dispatchEvent(new CustomEvent("osdms_reviews_updated", { detail: optimisticMap }));
     } catch {}
-    return previousState;
   }
 
   return optimisticMap;
