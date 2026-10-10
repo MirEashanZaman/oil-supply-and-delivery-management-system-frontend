@@ -262,6 +262,7 @@ export default function Home() {
                                     alt={slide.title}
                                     fill
                                     priority={idx === 0}
+                                    quality={80}
                                     sizes="(max-width: 768px) 100vw, 1240px"
                                     className="w-full h-full object-cover brightness-50"
                                 />
