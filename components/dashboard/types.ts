@@ -22,7 +22,7 @@ export type PaymentInfo = {
 };
 
 export type Order = {
-    id: number;
+    id: number | string;
     quantity: number;
     status: string;
     address?: string;
