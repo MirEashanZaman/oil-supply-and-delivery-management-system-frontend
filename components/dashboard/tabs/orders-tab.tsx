@@ -46,6 +46,24 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
     fetchAllServerReviews().then((liveMap) => {
       setReviews(liveMap);
     });
+
+    const handleReviewsUpdate = (e: any) => {
+      if (e?.detail) {
+        setReviews(e.detail);
+      } else {
+        fetchAllServerReviews().then((liveMap) => setReviews(liveMap));
+      }
+    };
+
+    window.addEventListener("osdms_reviews_updated", handleReviewsUpdate);
+    const pollReviews = setInterval(() => {
+      fetchAllServerReviews().then((liveMap) => setReviews(liveMap));
+    }, 4000);
+
+    return () => {
+      window.removeEventListener("osdms_reviews_updated", handleReviewsUpdate);
+      clearInterval(pollReviews);
+    };
   }, []);
 
   const handleOpenReviewModal = (order: Order) => {
