@@ -1,12 +1,12 @@
 import { API_ENDPOINT } from "@/lib/api";
 
 export const PRODUCT_IMAGE_MAP: Record<number, string> = {
-    1: "/Brent Crude Oil.jpg",
-    2: "/Ultra-Low Sulfur Diesel.jpg",
-    3: "/Premium Unleaded Gasoline.jpg",
-    4: "/Aviation Turbine Fuel (Jet A-1).jpg",
-    5: "/images.jpg",
-    6: "/Heavy Marine Fuel Oil (HFO).jpg",
+    1: "/Brent Crude Oil.webp",
+    2: "/Ultra-Low Sulfur Diesel.webp",
+    3: "/Premium Unleaded Gasoline.webp",
+    4: "/Aviation Turbine Fuel (Jet A-1).webp",
+    5: "/images.webp",
+    6: "/Heavy Marine Fuel Oil (HFO).webp",
 };
 
 export const getProductImage = (name?: string, img?: string, id?: number | string): string => {
@@ -23,7 +23,7 @@ export const getProductImage = (name?: string, img?: string, id?: number | strin
         if (trimmed.startsWith("/uploads/")) {
             return `${API_ENDPOINT}${trimmed}`;
         }
-        if (trimmed.startsWith("/") && trimmed !== "/Brent Crude Oil.jpg") {
+        if (trimmed.startsWith("/") && trimmed !== "/Brent Crude Oil.jpg" && trimmed !== "/Brent Crude Oil.webp") {
             return trimmed;
         }
     }
@@ -48,22 +48,22 @@ export const getProductImage = (name?: string, img?: string, id?: number | strin
 
     const lower = (name || "").toLowerCase();
     if (lower.includes("lpg") || lower.includes("liquefied") || lower.includes("cylinder") || lower.includes("propane") || lower.includes("butane")) {
-        return "/images.jpg";
+        return "/images.webp";
     }
     if (lower.includes("diesel") || lower.includes("sulfur") || lower.includes("ulsd") || lower.includes("gasoil")) {
-        return "/Ultra-Low Sulfur Diesel.jpg";
+        return "/Ultra-Low Sulfur Diesel.webp";
     }
     if (lower.includes("gasoline") || lower.includes("petrol") || lower.includes("octane") || lower.includes("unleaded") || lower.includes("mogas")) {
-        return "/Premium Unleaded Gasoline.jpg";
+        return "/Premium Unleaded Gasoline.webp";
     }
     if (lower.includes("jet") || lower.includes("aviation") || lower.includes("turbine") || lower.includes("a-1") || lower.includes("kerosene")) {
-        return "/Aviation Turbine Fuel (Jet A-1).jpg";
+        return "/Aviation Turbine Fuel (Jet A-1).webp";
     }
     if (lower.includes("marine") || lower.includes("bunker") || lower.includes("hfo") || lower.includes("heavy") || lower.includes("fuel oil")) {
-        return "/Heavy Marine Fuel Oil (HFO).jpg";
+        return "/Heavy Marine Fuel Oil (HFO).webp";
     }
     if (lower.includes("crude") || lower.includes("brent") || lower.includes("wti") || lower.includes("raw")) {
-        return "/Brent Crude Oil.jpg";
+        return "/Brent Crude Oil.webp";
     }
 
     if (id !== undefined && id !== null) {
@@ -73,12 +73,12 @@ export const getProductImage = (name?: string, img?: string, id?: number | strin
         }
         if (!isNaN(numId) && numId > 0) {
             const fallbackImages = [
-                "/Brent Crude Oil.jpg",
-                "/Ultra-Low Sulfur Diesel.jpg",
-                "/Premium Unleaded Gasoline.jpg",
-                "/Aviation Turbine Fuel (Jet A-1).jpg",
-                "/images.jpg",
-                "/Heavy Marine Fuel Oil (HFO).jpg",
+                "/Brent Crude Oil.webp",
+                "/Ultra-Low Sulfur Diesel.webp",
+                "/Premium Unleaded Gasoline.webp",
+                "/Aviation Turbine Fuel (Jet A-1).webp",
+                "/images.webp",
+                "/Heavy Marine Fuel Oil (HFO).webp",
             ];
             return fallbackImages[(numId - 1) % fallbackImages.length];
         }
@@ -88,7 +88,7 @@ export const getProductImage = (name?: string, img?: string, id?: number | strin
         return img;
     }
 
-    return "/Brent Crude Oil.jpg";
+    return "/Brent Crude Oil.webp";
 };
 
 export const getProductDescription = (product: any): string => {
