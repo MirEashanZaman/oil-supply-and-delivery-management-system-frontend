@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import axios from "axios";
 import MyHeader from "@/components/header";
 import MyNavigation from "@/components/navigation";
@@ -255,9 +256,12 @@ export default function Home() {
                                         : "opacity-0 translate-x-full z-0"
                                     }`}
                             >
-                                <img
+                                <Image
                                     src={slide.image}
                                     alt={slide.title}
+                                    fill
+                                    priority={idx === 0}
+                                    sizes="(max-width: 768px) 100vw, 1240px"
                                     className="w-full h-full object-cover brightness-50"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent flex flex-col justify-end p-6 md:p-12 text-left text-white">
@@ -347,6 +351,7 @@ export default function Home() {
                                     onClick={() => handleScroll("left")}
                                     className="btn btn-circle btn-xs bg-[#FFFFFF] border border-[#CBD5E1] hover:bg-[#F5F7FA] text-[#1E293B] cursor-pointer"
                                     title="Scroll Left"
+                                    aria-label="Scroll products left"
                                 >
                                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
@@ -356,6 +361,7 @@ export default function Home() {
                                     onClick={() => handleScroll("right")}
                                     className="btn btn-circle btn-xs bg-[#FFFFFF] border border-[#CBD5E1] hover:bg-[#F5F7FA] text-[#1E293B] cursor-pointer"
                                     title="Scroll Right"
+                                    aria-label="Scroll products right"
                                 >
                                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
