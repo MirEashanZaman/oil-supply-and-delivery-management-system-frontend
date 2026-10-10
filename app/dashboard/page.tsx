@@ -792,19 +792,43 @@ export default function Dashboard() {
             if (!id) return;
             try {
                 const res = await axios.get(`${apiBase}/customer/${id}/orders`, { withCredentials: true, validateStatus: (status) => status < 500 });
-                if (res.status === 200 && Array.isArray(res.data)) {
-                    setOrders(res.data.map((o: any) => {
-                        const normalizedOrder = normalizeOrderFields(o);
-                        const computedTotal = resolveOrderTotal(normalizedOrder);
+                const serverOrders = res.status === 200 && Array.isArray(res.data) ? res.data : [];
+                
+                let localOrders: Order[] = [];
+                try {
+                    const rawLocal = localStorage.getItem(`customer_orders_${id}`) || "[]";
+                    localOrders = JSON.parse(rawLocal);
+                    if (!Array.isArray(localOrders)) localOrders = [];
+                } catch {}
 
-                        return {
-                            ...normalizedOrder,
-                            totalAmount: computedTotal,
-                        };
-                    }));
-                }
+                // Merge server and local orders, prioritizing server data and deduplicating by ID
+                const serverIds = new Set(serverOrders.map((o: any) => String(o.id)));
+                const combined = [
+                    ...localOrders.filter((lo) => !serverIds.has(String(lo.id))),
+                    ...serverOrders,
+                ];
+
+                setOrders(combined.map((o: any) => {
+                    const normalizedOrder = normalizeOrderFields(o);
+                    const computedTotal = resolveOrderTotal(normalizedOrder);
+
+                    return {
+                        ...normalizedOrder,
+                        totalAmount: computedTotal,
+                    };
+                }));
             } catch (err) {
                 console.warn("Failed to fetch customer orders:", err);
+                try {
+                    const rawLocal = localStorage.getItem(`customer_orders_${id}`) || "[]";
+                    const localOrders = JSON.parse(rawLocal);
+                    if (Array.isArray(localOrders)) {
+                        setOrders(localOrders.map((o: any) => {
+                            const normalized = normalizeOrderFields(o);
+                            return { ...normalized, totalAmount: resolveOrderTotal(normalized) };
+                        }));
+                    }
+                } catch {}
             }
         } else if (r === "deliveryman") {
             try {
@@ -1469,6 +1493,28 @@ export default function Dashboard() {
             } catch {}
             axios.post("/api/messages", chatMsg).catch(() => {});
 
+            const newlyPlacedOrder: Order = {
+                id: createdId,
+                quantity: orderQuantity,
+                status: "Pending",
+                address: destination,
+                deliveryAddress: destination,
+                createdAt: new Date().toISOString(),
+                totalAmount: totalAmount,
+                product: checkoutProduct ? { id: Number(checkoutProduct.id), name: checkoutProduct.name } : { id: 1, name: "Petroleum Fuel" },
+                customerName: user.userName || user.name || "Customer",
+                customerEmail: user.email,
+            };
+
+            try {
+                const customerId = user.id || 1;
+                const rawLocal = localStorage.getItem(`customer_orders_${customerId}`) || "[]";
+                const parsed = JSON.parse(rawLocal);
+                const updatedList = [newlyPlacedOrder, ...(Array.isArray(parsed) ? parsed : [])];
+                localStorage.setItem(`customer_orders_${customerId}`, JSON.stringify(updatedList));
+                setOrders((prev) => [newlyPlacedOrder, ...prev.filter((o) => String(o.id) !== String(createdId))]);
+            } catch {}
+
             setTimeout(() => {
                 setSandboxStep("success");
                 if (user && user.id) {
@@ -1481,6 +1527,29 @@ export default function Dashboard() {
             setCreatedOrderId(fallbackId);
             saveLocalOrderDetails(fallbackId, { deliveryAddress: destination, createdAt: new Date().toISOString() });
             clearPaymentDetails();
+
+            const newlyPlacedOrder: Order = {
+                id: fallbackId,
+                quantity: orderQuantity,
+                status: "Pending",
+                address: destination,
+                deliveryAddress: destination,
+                createdAt: new Date().toISOString(),
+                totalAmount: totalAmount,
+                product: checkoutProduct ? { id: Number(checkoutProduct.id), name: checkoutProduct.name } : { id: 1, name: "Petroleum Fuel" },
+                customerName: user.userName || user.name || "Customer",
+                customerEmail: user.email,
+            };
+
+            try {
+                const customerId = user.id || 1;
+                const rawLocal = localStorage.getItem(`customer_orders_${customerId}`) || "[]";
+                const parsed = JSON.parse(rawLocal);
+                const updatedList = [newlyPlacedOrder, ...(Array.isArray(parsed) ? parsed : [])];
+                localStorage.setItem(`customer_orders_${customerId}`, JSON.stringify(updatedList));
+                setOrders((prev) => [newlyPlacedOrder, ...prev.filter((o) => String(o.id) !== String(fallbackId))]);
+            } catch {}
+
             setTimeout(() => {
                 setSandboxStep("success");
                 if (user && user.id) {
