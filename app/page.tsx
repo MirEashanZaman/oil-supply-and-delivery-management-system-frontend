@@ -75,7 +75,6 @@ export default function Home() {
         const reviewsMap = getStoredReviews();
         setPublicReviews(Object.values(reviewsMap));
 
-        // Fetch live authentic reviews from central database asynchronously
         fetchAllServerReviews().then((liveMap) => {
             setPublicReviews(Object.values(liveMap));
         });
@@ -603,7 +602,6 @@ export default function Home() {
                 </div>
             </div>
 
-            {/* Public Verified Delivery Reviews Section (Visible to Everyone) */}
             <div className="w-full mb-12 text-left">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-[#E2E8F0] pb-4">
                     <div>
@@ -691,7 +689,6 @@ export default function Home() {
                 </div>
             </div>
 
-            {/* Public FAQ Section Banner */}
             <div className="w-full mb-12 bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 text-left shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div>
                     <span className="badge bg-[#0F2747] text-[#F59E0B] font-bold text-xs uppercase px-2.5 py-1 mb-2">
@@ -706,7 +703,7 @@ export default function Home() {
                     href="/faq"
                     className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] font-bold text-xs rounded-xl px-5 py-2.5 border-none shrink-0"
                 >
-                    View All FAQs →
+                    View All FAQs
                 </Link>
             </div>
         </main>
