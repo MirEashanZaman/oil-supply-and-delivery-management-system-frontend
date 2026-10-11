@@ -1,6 +1,7 @@
-import { connection } from "next/server";
 import ProductDetailsClient from "./ProductDetailsClient";
 import { API_ENDPOINT } from "@/lib/api";
+
+export const revalidate = 60;
 
 type Product = {
     id: number;
@@ -32,19 +33,42 @@ function normalizeProduct(product: any): Product {
     };
 }
 
+export async function generateStaticParams() {
+    try {
+        const response = await fetch(`${API_ENDPOINT}/product/list`, {
+            next: { revalidate: 60 },
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            const products = Array.isArray(responseData)
+                ? responseData
+                : responseData?.products || responseData?.data || responseData?.items || [];
+
+            if (products.length > 0) {
+                return products.map((item: any) => ({
+                    id: String(item.id),
+                }));
+            }
+        }
+    } catch (error) {
+        console.warn("Error pre-generating static params for products:", error);
+    }
+
+    return [{ id: "1" }, { id: "2" }, { id: "3" }, { id: "4" }, { id: "5" }];
+}
+
 export default async function ProductDetailsPage({
     params,
 }: {
     params: Promise<{ id: string }>;
 }) {
-    await connection();
-
     const { id } = await params;
     let product: Product | null = null;
 
     try {
         const response = await fetch(`${API_ENDPOINT}/product/list`, {
-            cache: "no-store",
+            next: { revalidate: 60 },
         });
 
         if (response.ok) {
