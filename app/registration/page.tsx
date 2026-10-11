@@ -227,7 +227,7 @@ export default function Registration() {
     };
 
     return (
-        <div className="w-full flex flex-col items-center">
+        <main className="w-full flex flex-col items-center" role="main">
             <MyHeader name="Registration" message="Create your account for the Oil Supply & Delivery Management System" />
             <MyNavigation />
 
@@ -617,6 +617,6 @@ export default function Registration() {
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }
