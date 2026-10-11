@@ -268,11 +268,12 @@ export default function Home() {
                                     alt={slide.title}
                                     fill
                                     priority={idx === 0}
+                                    fetchPriority={idx === 0 ? "high" : "auto"}
                                     quality={80}
                                     sizes="(max-width: 768px) 100vw, 1240px"
                                     className="w-full h-full object-cover brightness-50"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent flex flex-col justify-end p-6 md:p-12 text-left text-white">
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent flex flex-col justify-end p-6 md:p-12 pb-14 md:pb-14 text-left text-white">
                                     <span className="text-xs font-bold uppercase tracking-wider text-[#F59E0B] mb-2 bg-[#F59E0B]/20 w-fit px-3 py-1 rounded-full border border-[#F59E0B]/30">
                                         {slide.badge}
                                     </span>
@@ -316,7 +317,7 @@ export default function Home() {
                         </button>
                     </div>
 
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1 z-20 items-center">
+                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-20 items-center">
                         {HERO_SLIDES.map((_, idx) => (
                             <button
                                 key={idx}
@@ -339,11 +340,11 @@ export default function Home() {
                             <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-[#1E293B] tracking-tight">
                                 Featured Oil Products & Energy Grades
                             </h2>
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#16A34A] text-white shadow-none shrink-0">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#15803D] text-white shadow-none shrink-0">
                                 Live Catalog
                             </span>
                         </div>
-                        <p className="text-xs text-[#64748B] mt-0.5">
+                        <p className="text-xs text-[#475569] mt-0.5">
                             Items stream continuously. Hover over any product card to pause and view details.
                         </p>
                     </div>
@@ -415,7 +416,7 @@ export default function Home() {
                                                             <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-[#F5F7FA] border border-[#CBD5E1] text-[#1E293B] truncate max-w-[130px]">
                                                                 {product.category}
                                                             </span>
-                                                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold shrink-0 ${product.stockLevel === "In Stock" ? "bg-[#16A34A] text-white" : product.stockLevel === "Low Stock" ? "bg-[#D97706] text-white" : "bg-[#DC2626] text-white"}`}>
+                                                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold shrink-0 ${product.stockLevel === "In Stock" ? "bg-[#15803D] text-white" : product.stockLevel === "Low Stock" ? "bg-[#B45309] text-white" : "bg-[#B91C1C] text-white"}`}>
                                                                 {product.stockLevel}
                                                             </span>
                                                         </div>
@@ -470,7 +471,7 @@ export default function Home() {
                                                             <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-[#F5F7FA] border border-[#CBD5E1] text-[#1E293B] truncate max-w-[130px]">
                                                                 {product.category}
                                                             </span>
-                                                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold shrink-0 ${product.stockLevel === "In Stock" ? "bg-[#16A34A] text-white" : product.stockLevel === "Low Stock" ? "bg-[#D97706] text-white" : "bg-[#DC2626] text-white"}`}>
+                                                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold shrink-0 ${product.stockLevel === "In Stock" ? "bg-[#15803D] text-white" : product.stockLevel === "Low Stock" ? "bg-[#B45309] text-white" : "bg-[#B91C1C] text-white"}`}>
                                                                 {product.stockLevel}
                                                             </span>
                                                         </div>
@@ -607,7 +608,7 @@ export default function Home() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-[#E2E8F0] pb-4">
                     <div>
                         <div className="flex items-center gap-2 flex-wrap">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#16A34A] text-white shadow-none shrink-0">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#15803D] text-white shadow-none shrink-0">
                                 100% Verified
                             </span>
                             <h2 className="text-lg sm:text-xl md:text-2xl font-black text-[#1E293B]">
