@@ -286,6 +286,7 @@ export default function Home() {
                                     fill
                                     priority={idx === 0}
                                     fetchPriority={idx === 0 ? "high" : "auto"}
+                                    unoptimized={idx === 0}
                                     quality={70}
                                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1240px"
                                     className="w-full h-full object-cover brightness-50"
