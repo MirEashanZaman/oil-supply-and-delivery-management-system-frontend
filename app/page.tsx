@@ -286,8 +286,8 @@ export default function Home() {
                                     fill
                                     priority={idx === 0}
                                     fetchPriority={idx === 0 ? "high" : "auto"}
-                                    quality={80}
-                                    sizes="(max-width: 768px) 100vw, 1240px"
+                                    quality={70}
+                                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1240px"
                                     className="w-full h-full object-cover brightness-50"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent flex flex-col justify-end p-6 md:p-12 pb-14 md:pb-14 text-left text-white">
