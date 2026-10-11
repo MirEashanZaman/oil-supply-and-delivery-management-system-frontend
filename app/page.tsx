@@ -75,9 +75,23 @@ export default function Home() {
         const reviewsMap = getStoredReviews();
         setPublicReviews(Object.values(reviewsMap));
 
-        fetchAllServerReviews().then((liveMap) => {
-            setPublicReviews(Object.values(liveMap));
-        });
+        let pollReviews: NodeJS.Timeout | null = null;
+
+        const initBackgroundReviews = () => {
+            fetchAllServerReviews().then((liveMap) => {
+                setPublicReviews(Object.values(liveMap));
+            });
+
+            pollReviews = setInterval(() => {
+                fetchAllServerReviews().then((liveMap) => setPublicReviews(Object.values(liveMap)));
+            }, 8000);
+        };
+
+        if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+            (window as any).requestIdleCallback(initBackgroundReviews, { timeout: 2000 });
+        } else {
+            setTimeout(initBackgroundReviews, 1500);
+        }
 
         const handleReviewsUpdate = (e: any) => {
             if (e?.detail) {
@@ -88,13 +102,10 @@ export default function Home() {
         };
 
         window.addEventListener("osdms_reviews_updated", handleReviewsUpdate);
-        const pollReviews = setInterval(() => {
-            fetchAllServerReviews().then((liveMap) => setPublicReviews(Object.values(liveMap)));
-        }, 4000);
 
         return () => {
             window.removeEventListener("osdms_reviews_updated", handleReviewsUpdate);
-            clearInterval(pollReviews);
+            if (pollReviews) clearInterval(pollReviews);
         };
     }, []);
 
