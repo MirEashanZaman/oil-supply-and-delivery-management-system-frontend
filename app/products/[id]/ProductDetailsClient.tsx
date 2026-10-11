@@ -249,7 +249,6 @@ export default function ProductDetails({
                     </div>
                 )}
 
-                {/* Verified Delivery Reviews Section for this Product (Visible to Everyone) */}
                 {product && (
                     <div className="mt-8 bg-white p-5 sm:p-8 rounded-2xl border border-[#E2E8F0] shadow-sm text-left">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-[#E2E8F0] pb-4">
