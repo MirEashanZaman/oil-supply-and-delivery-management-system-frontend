@@ -5,9 +5,8 @@ import MyHeader from "@/components/header";
 export const dynamic = "force-static";
 
 export default function AboutUs() {
-
     return (
-        <div className="w-full flex flex-col items-center">
+        <main className="w-full flex flex-col items-center" role="main">
             <MyHeader name="About Us" message="Learn about the Oil Supply & Delivery Management System" />
             <MyNavigation />
 
@@ -21,10 +20,10 @@ export default function AboutUs() {
                             <h1 className="text-2xl sm:text-3xl font-black text-[#1E293B] tracking-tight leading-tight">
                                 Oil Supply & Delivery Management System
                             </h1>
-                            <p className="mt-3 text-[#64748B] text-sm sm:text-base leading-relaxed">
+                            <p className="mt-3 text-[#475569] text-sm sm:text-base leading-relaxed">
                                 The Oil Supply & Delivery Management System is a centralized web platform designed to streamline the fuel supply chain. It provides an integrated digital ecosystem where certified petroleum suppliers, licensed regional dealers, and commercial customers manage orders, inventory, and logistics with total transparency.
                             </p>
-                            <p className="mt-2 text-[#64748B] text-sm leading-relaxed">
+                            <p className="mt-2 text-[#475569] text-sm leading-relaxed">
                                 By digitizing procurement workflows and automating order tracking, our system minimizes delivery delays, simplifies invoicing, and ensures that critical fuel resources reach their destination safely and reliably.
                             </p>
                             <div className="mt-6 flex flex-wrap gap-3">
@@ -54,7 +53,7 @@ export default function AboutUs() {
                                 </svg>
                             </div>
                             <h2 className="text-lg font-bold text-[#1E293B]">Refinery Suppliers</h2>
-                            <p className="text-xs text-[#64748B] leading-relaxed mt-1">
+                            <p className="text-xs text-[#475569] leading-relaxed mt-1">
                                 Sourced directly from certified refineries. Suppliers publish inventory lots, manage bulk petroleum allocations, and coordinate transport dispatches.
                             </p>
                         </div>
@@ -68,7 +67,7 @@ export default function AboutUs() {
                                 </svg>
                             </div>
                             <h2 className="text-lg font-bold text-[#1E293B]">Licensed Dealers</h2>
-                            <p className="text-xs text-[#64748B] leading-relaxed mt-1">
+                            <p className="text-xs text-[#475569] leading-relaxed mt-1">
                                 Regional intermediaries who purchase wholesale stock from suppliers and deliver to local business customers and industrial facilities.
                             </p>
                         </div>
@@ -82,7 +81,7 @@ export default function AboutUs() {
                                 </svg>
                             </div>
                             <h2 className="text-lg font-bold text-[#1E293B]">Direct Customers</h2>
-                            <p className="text-xs text-[#64748B] leading-relaxed mt-1">
+                            <p className="text-xs text-[#475569] leading-relaxed mt-1">
                                 Businesses and fleet operators can browse certified fuel grades, choose their preferred supplier or dealer, and track shipments in real time.
                             </p>
                         </div>
@@ -93,23 +92,23 @@ export default function AboutUs() {
                     <h2 className="text-xl font-bold text-[#1E293B] mb-4">How The Delivery Process Works</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div className="p-4 bg-[#F5F7FA] rounded-xl border border-[#E2E8F0]">
-                            <span className="text-xs font-bold text-[#F59E0B] uppercase">Step 1</span>
+                            <span className="text-xs font-bold text-[#B45309] uppercase">Step 1</span>
                             <h3 className="text-sm font-bold text-[#1E293B] mt-1">Catalog Order</h3>
-                            <p className="text-xs text-[#64748B] mt-1">Browse crude oil, diesel, or gasoline and place orders directly with preferred sourcing parties.</p>
+                            <p className="text-xs text-[#475569] mt-1">Browse crude oil, diesel, or gasoline and place orders directly with preferred sourcing parties.</p>
                         </div>
                         <div className="p-4 bg-[#F5F7FA] rounded-xl border border-[#E2E8F0]">
-                            <span className="text-xs font-bold text-[#F59E0B] uppercase">Step 2</span>
+                            <span className="text-xs font-bold text-[#B45309] uppercase">Step 2</span>
                             <h3 className="text-sm font-bold text-[#1E293B] mt-1">Order Dispatch</h3>
-                            <p className="text-xs text-[#64748B] mt-1">The supplier or dealer accepts the order, schedules delivery dates, and dispatches tanker logistics.</p>
+                            <p className="text-xs text-[#475569] mt-1">The supplier or dealer accepts the order, schedules delivery dates, and dispatches tanker logistics.</p>
                         </div>
                         <div className="p-4 bg-[#F5F7FA] rounded-xl border border-[#E2E8F0]">
-                            <span className="text-xs font-bold text-[#F59E0B] uppercase">Step 3</span>
+                            <span className="text-xs font-bold text-[#B45309] uppercase">Step 3</span>
                             <h3 className="text-sm font-bold text-[#1E293B] mt-1">Delivery & Invoicing</h3>
-                            <p className="text-xs text-[#64748B] mt-1">Customers track status in real-time until delivery is completed with instant digital receipts.</p>
+                            <p className="text-xs text-[#475569] mt-1">Customers track status in real-time until delivery is completed with instant digital receipts.</p>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }
