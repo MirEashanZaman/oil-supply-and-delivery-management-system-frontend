@@ -5,9 +5,8 @@ import MyHeader from "@/components/header";
 export const dynamic = "force-static";
 
 export default function ContactInfo() {
-
     return (
-        <div className="w-full flex flex-col items-center">
+        <main className="w-full flex flex-col items-center" role="main">
             <MyHeader name="Contact Us" message="Get in touch with the Oil Supply & Delivery Management System team" />
             <MyNavigation />
 
@@ -21,7 +20,7 @@ export default function ContactInfo() {
                             <h1 className="text-2xl sm:text-3xl font-black text-[#1E293B] tracking-tight leading-tight">
                                 Contact Directory & Support Operations
                             </h1>
-                            <p className="mt-3 text-[#64748B] text-sm sm:text-base leading-relaxed">
+                            <p className="mt-3 text-[#475569] text-sm sm:text-base leading-relaxed">
                                 Get in touch with our central dispatch coordinators, customer support teams, and dealership onboarding representatives across nationwide distribution channels.
                             </p>
                             <div className="mt-6 flex flex-wrap gap-3">
@@ -52,7 +51,7 @@ export default function ContactInfo() {
                                 </svg>
                             </div>
                             <h2 className="text-lg font-bold text-[#1E293B]">Central Headquarters</h2>
-                            <p className="text-xs text-[#64748B] leading-relaxed mt-1">
+                            <p className="text-xs text-[#475569] leading-relaxed mt-1">
                                 Oil Supply & Delivery Operations Center, Kuril, Dhaka-1229, Bangladesh.
                             </p>
                         </div>
@@ -66,7 +65,7 @@ export default function ContactInfo() {
                                 </svg>
                             </div>
                             <h2 className="text-lg font-bold text-[#1E293B]">Direct Phone Lines</h2>
-                            <p className="text-xs text-[#64748B] leading-relaxed mt-1">
+                            <p className="text-xs text-[#475569] leading-relaxed mt-1">
                                 Support: +880 1700-000000<br />
                                 Logistics: +880 1800-000000
                             </p>
@@ -81,7 +80,7 @@ export default function ContactInfo() {
                                 </svg>
                             </div>
                             <h2 className="text-lg font-bold text-[#1E293B]">Official Email Inquiries</h2>
-                            <p className="text-xs text-[#64748B] leading-relaxed mt-1">
+                            <p className="text-xs text-[#475569] leading-relaxed mt-1">
                                 General: support@oilsupply-delivery.com<br />
                                 Orders: dispatch@oilsupply-delivery.com
                             </p>
@@ -91,14 +90,14 @@ export default function ContactInfo() {
 
                 <div className="card bg-[#FFFFFF] shadow-md border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 text-left">
                     <h2 className="text-xl font-bold text-[#1E293B] mb-2">Authenticated Realtime Communication</h2>
-                    <p className="text-xs text-[#64748B] leading-relaxed mb-6">
+                    <p className="text-xs text-[#475569] leading-relaxed mb-6">
                         To maintain secure and verified supply chain dispatches, live chat and instant inquiries are exclusively accessible to authenticated accounts (Customers, Dealers, Suppliers, Delivery Fleet, and Administrators) via the Dashboard.
                     </p>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="p-4 bg-[#F5F7FA] rounded-xl border border-[#E2E8F0]">
                             <h3 className="text-sm font-bold text-[#1E293B]">Already have an account?</h3>
-                            <p className="text-xs text-[#64748B] mt-1 mb-3">
+                            <p className="text-xs text-[#475569] mt-1 mb-3">
                                 Sign in to access the Realtime Dispatch Chat tab, track active orders, and message operations staff directly.
                             </p>
                             <Link
@@ -111,7 +110,7 @@ export default function ContactInfo() {
 
                         <div className="p-4 bg-[#F5F7FA] rounded-xl border border-[#E2E8F0]">
                             <h3 className="text-sm font-bold text-[#1E293B]">New to the platform?</h3>
-                            <p className="text-xs text-[#64748B] mt-1 mb-3">
+                            <p className="text-xs text-[#475569] mt-1 mb-3">
                                 Register as a Customer, Dealer, or Supplier to start ordering fuel products and communicating with suppliers.
                             </p>
                             <Link
@@ -124,6 +123,6 @@ export default function ContactInfo() {
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }
