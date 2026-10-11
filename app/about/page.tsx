@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { connection } from "next/server";
 import MyNavigation from "@/components/navigation";
 import MyHeader from "@/components/header";
 
-export default async function AboutUs() {
-    await connection();
+export const dynamic = "force-static";
+
+export default function AboutUs() {
 
     return (
         <div className="w-full flex flex-col items-center">
