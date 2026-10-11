@@ -72,7 +72,7 @@ export default function FAQPage() {
     };
 
     return (
-        <div className="w-full flex flex-col items-center">
+        <main className="w-full flex flex-col items-center" role="main">
             <MyHeader name="Frequently Asked Questions" message="Everything you need to know about fuel supply, delivery logistics, and safety standards." />
             <MyNavigation />
 
@@ -94,6 +94,7 @@ export default function FAQPage() {
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search questions (e.g., diesel, PIN, pricing, safety)..."
+                            aria-label="Search questions"
                             className="flex-1 p-3 rounded-xl bg-white/10 text-white placeholder-slate-300 border border-white/20 outline-none text-xs sm:text-sm focus:bg-white/20 transition"
                         />
                         {searchQuery && (
@@ -115,7 +116,7 @@ export default function FAQPage() {
                             className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                                 selectedCategory === cat
                                     ? "bg-[#0F2747] text-[#F59E0B] shadow-sm"
-                                    : "bg-white text-[#64748B] hover:bg-slate-100 border border-[#E2E8F0]"
+                                    : "bg-white text-[#475569] hover:bg-slate-100 border border-[#E2E8F0]"
                             }`}
                         >
                             {cat}
@@ -146,7 +147,7 @@ export default function FAQPage() {
                                                 ?
                                             </span>
                                             <div>
-                                                <span className="text-[10px] font-bold text-[#D97706] uppercase tracking-wider block">
+                                                <span className="text-[10px] font-bold text-[#B45309] uppercase tracking-wider block">
                                                     {faq.category}
                                                 </span>
                                                 <h2 className="text-xs sm:text-sm font-bold text-[#1E293B] mt-0.5">
@@ -160,7 +161,7 @@ export default function FAQPage() {
                                     </button>
 
                                     {isOpen && (
-                                        <div className="px-4 sm:px-5 pb-5 pt-1 text-xs text-[#64748B] leading-relaxed border-t border-slate-100 bg-[#F8FAFC]">
+                                        <div className="px-4 sm:px-5 pb-5 pt-1 text-xs text-[#475569] leading-relaxed border-t border-slate-100 bg-[#F8FAFC]">
                                             <p className="p-3 bg-white rounded-xl border border-slate-200/70 text-[#1E293B]">
                                                 {faq.answer}
                                             </p>
@@ -175,7 +176,7 @@ export default function FAQPage() {
                 <div className="p-5 sm:p-6 bg-white border border-[#E2E8F0] rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="w-full sm:w-auto">
                         <h3 className="font-bold text-sm text-[#1E293B]">Still have questions?</h3>
-                        <p className="text-xs text-[#64748B] mt-0.5">Our support engineers and PetroBot AI assistant are available 24/7.</p>
+                        <p className="text-xs text-[#475569] mt-0.5">Our support engineers and PetroBot AI assistant are available 24/7.</p>
                     </div>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto shrink-0">
                         <Link
@@ -193,6 +194,6 @@ export default function FAQPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }
