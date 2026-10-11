@@ -302,7 +302,7 @@ export default function Login() {
     };
 
     return (
-        <div className="w-full flex flex-col items-center">
+        <main className="w-full flex flex-col items-center" role="main">
             <MyHeader name="Login" message="Sign in to your Oil Supply & Delivery account" />
             <MyNavigation />
 
@@ -599,6 +599,6 @@ export default function Login() {
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }
