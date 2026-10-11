@@ -7,7 +7,7 @@ import MyNavigation from "@/components/navigation";
 
 export default function TermsPage() {
     return (
-        <div className="w-full flex flex-col items-center">
+        <main className="w-full flex flex-col items-center" role="main">
             <MyHeader
                 name="Terms & Conditions"
                 message="Enterprise Petroleum Supply, Custody Transfer & Logistics Terms of Service"
@@ -84,6 +84,6 @@ export default function TermsPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }
