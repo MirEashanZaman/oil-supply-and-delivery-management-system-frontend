@@ -13,7 +13,7 @@ export default function MyHeader(props: { name: string; message: string }) {
                     className="object-contain"
                 />
                 <div className="text-left">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#F59E0B] block">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#B45309] block">
                         Enterprise Portal
                     </span>
                     <p className="text-lg sm:text-xl font-black text-[#0F2747] leading-tight">
@@ -26,7 +26,7 @@ export default function MyHeader(props: { name: string; message: string }) {
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1E293B]">
                     {props.name}
                 </h1>
-                <p className="text-xs sm:text-sm text-[#64748B] max-w-lg mt-1">
+                <p className="text-xs sm:text-sm text-[#475569] max-w-lg mt-1 font-medium">
                     {props.message}
                 </p>
             </div>
