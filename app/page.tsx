@@ -148,10 +148,17 @@ export default function Home() {
 
     useEffect(() => {
         if (!isAutoPlay) return;
-        const timer = setInterval(() => {
-            setCurrentHeroSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-        }, 4000);
-        return () => clearInterval(timer);
+        let timer: NodeJS.Timeout | null = null;
+        const initialDelay = setTimeout(() => {
+            timer = setInterval(() => {
+                setCurrentHeroSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+            }, 5000);
+        }, 3000);
+
+        return () => {
+            clearTimeout(initialDelay);
+            if (timer) clearInterval(timer);
+        };
     }, [isAutoPlay]);
 
     const handleScroll = (direction: "left" | "right") => {
