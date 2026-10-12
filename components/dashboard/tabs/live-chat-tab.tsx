@@ -20,12 +20,32 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
   const STORAGE_KEY = "persistent_chat_messages_v1";
 
   useEffect(() => {
+    const extractTimestamp = (m: ChatMessage): number => {
+      if (!m) return 0;
+      if (typeof (m as any).createdAt === "number") return (m as any).createdAt;
+      const match = m.id && typeof m.id === "string" ? m.id.match(/_(\d{10,14})/) : null;
+      if (match && match[1]) {
+        const val = Number(match[1]);
+        if (!isNaN(val) && val > 0) return val;
+      }
+      return 0;
+    };
+
+    const sortChronologically = (list: ChatMessage[]): ChatMessage[] => {
+      return [...list].sort((a, b) => {
+        const tA = extractTimestamp(a);
+        const tB = extractTimestamp(b);
+        if (tA && tB && tA !== tB) return tA - tB;
+        return 0;
+      });
+    };
+
     try {
       const cached = localStorage.getItem(STORAGE_KEY);
       if (cached) {
         const parsed = JSON.parse(cached);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          setMessages(parsed);
+          setMessages(sortChronologically(parsed));
         }
       }
     } catch {}
@@ -45,15 +65,21 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
               if (cached) {
                 const parsed: ChatMessage[] = JSON.parse(cached);
                 if (Array.isArray(parsed)) {
-                  parsed.forEach((m) => combinedMap.set(m.id, m));
+                  parsed.forEach((m) => {
+                    if (m && m.id) combinedMap.set(m.id, m);
+                  });
                 }
               }
             } catch {}
 
-            prev.forEach((m) => combinedMap.set(m.id, m));
-            serverList.forEach((m) => combinedMap.set(m.id, m));
+            prev.forEach((m) => {
+              if (m && m.id) combinedMap.set(m.id, m);
+            });
+            serverList.forEach((m) => {
+              if (m && m.id) combinedMap.set(m.id, m);
+            });
 
-            const merged = Array.from(combinedMap.values()).slice(-200);
+            const merged = sortChronologically(Array.from(combinedMap.values())).slice(-200);
             try {
               localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
             } catch {}
@@ -81,7 +107,7 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
           if (event.data?.type === "NEW_MESSAGE" && event.data?.message) {
             const incoming: ChatMessage = event.data.message;
             setMessages((prev) => {
-              const next = [...prev.filter((m) => m.id !== incoming.id), incoming].slice(-200);
+              const next = sortChronologically([...prev.filter((m) => m.id !== incoming.id), incoming]).slice(-200);
               try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
               } catch {}
@@ -97,7 +123,7 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
         try {
           const parsed = JSON.parse(e.newValue);
           if (Array.isArray(parsed)) {
-            setMessages(parsed);
+            setMessages(sortChronologically(parsed));
           }
         } catch {}
       }
@@ -105,18 +131,30 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
     window.addEventListener("storage", handleStorageChange);
 
     const pusher = getPusherClient();
-    let channel: any = null;
+    let channels: any[] = [];
     if (pusher) {
       try {
-        channel = pusher.subscribe(channelName);
-        channel.bind("new-message", (data: ChatMessage) => {
-          setMessages((prev) => {
-            const next = [...prev.filter((m) => m.id !== data.id), data].slice(-200);
-            try {
-              localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-            } catch {}
-            return next;
-          });
+        const subChannels = [channelName];
+        const userRole = userData?.title || userData?.role;
+        const roleChannel = getRoleBasedChannel(userRole);
+        if (roleChannel && !subChannels.includes(roleChannel)) {
+          subChannels.push(roleChannel);
+        }
+
+        subChannels.forEach((cName) => {
+          try {
+            const ch = pusher.subscribe(cName);
+            ch.bind("new-message", (data: ChatMessage) => {
+              setMessages((prev) => {
+                const next = sortChronologically([...prev.filter((m) => m.id !== data.id), data]).slice(-200);
+                try {
+                  localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+                } catch {}
+                return next;
+              });
+            });
+            channels.push(ch);
+          } catch {}
         });
       } catch {}
     }
@@ -125,7 +163,7 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
       const newMsg = e?.detail;
       if (newMsg) {
         setMessages((prev) => {
-          const next = [...prev.filter((m) => m.id !== newMsg.id), newMsg].slice(-200);
+          const next = sortChronologically([...prev.filter((m) => m.id !== newMsg.id), newMsg]).slice(-200);
           try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
           } catch {}
@@ -147,14 +185,14 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
           broadcastChannel.close();
         } catch {}
       }
-      if (channel) {
+      channels.forEach((ch) => {
         try {
-          channel.unbind_all();
-          channel.unsubscribe();
+          ch.unbind_all();
+          ch.unsubscribe();
         } catch {}
-      }
+      });
     };
-  }, []);
+  }, [userData?.title, userData?.role]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -165,11 +203,27 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
     const trimmedMessage = inputMessage.trim();
     if (!trimmedMessage) return;
 
+    let resolvedSender = userData?.userName || userData?.name;
+    let resolvedEmail = userData?.email;
+    let resolvedRole = userData?.title || userData?.role;
+
+    if (!resolvedSender || !resolvedEmail) {
+      try {
+        const stored = localStorage.getItem("user");
+        if (stored) {
+          const u = JSON.parse(stored);
+          resolvedSender = resolvedSender || u.userName || u.name;
+          resolvedEmail = resolvedEmail || u.email;
+          resolvedRole = resolvedRole || u.title || u.role;
+        }
+      } catch {}
+    }
+
     const payload: ChatMessage = {
       id: `msg_${Date.now()}`,
-      sender: userData?.userName || userData?.name || "User",
-      email: userData?.email || "user@example.com",
-      role: userData?.title || userData?.role || "Customer",
+      sender: resolvedSender || "User",
+      email: resolvedEmail || "user@example.com",
+      role: resolvedRole || "Customer",
       topic: selectedTopic,
       message: trimmedMessage,
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
@@ -184,6 +238,12 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
       } catch {}
       return next;
     });
+
+    try {
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("local_chat_update", { detail: payload }));
+      }
+    } catch {}
 
     try {
       const res = await axios.post("/api/messages", {
