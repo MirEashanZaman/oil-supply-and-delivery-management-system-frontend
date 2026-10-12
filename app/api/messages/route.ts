@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
+import os from "os";
 import { getPusherServer, ChatMessage } from "@/lib/pusher";
 import { API_ENDPOINT, fetchWithTimeout } from "@/lib/api";
 
 const MESSAGES_FILE = path.join(process.cwd(), "data", "messages.json");
+const TMP_MESSAGES_FILE = path.join(os.tmpdir(), "oil_supply_messages.json");
 
 function normalizeChannel(channel?: string | null) {
     const trimmed = (channel || "").trim();
@@ -28,6 +30,26 @@ let GLOBAL_MESSAGES_CACHE: ChatMessage[] = [];
 const isLocalPrivateIp = !API_ENDPOINT || API_ENDPOINT.includes("localhost") || API_ENDPOINT.includes("127.0.0.1") || API_ENDPOINT.includes("192.168.") || API_ENDPOINT.includes("10.0.");
 const shouldFetchBackend = !(process.env.VERCEL && isLocalPrivateIp);
 
+function extractMessageTime(m: ChatMessage): number {
+    if (!m) return 0;
+    if (typeof (m as any).createdAt === "number") return (m as any).createdAt;
+    const match = m.id && typeof m.id === "string" ? m.id.match(/_(\d{10,14})/) : null;
+    if (match && match[1]) {
+        const val = Number(match[1]);
+        if (!isNaN(val) && val > 0) return val;
+    }
+    return 0;
+}
+
+function sortMessagesChronologically(list: ChatMessage[]): ChatMessage[] {
+    return [...list].sort((a, b) => {
+        const tA = extractMessageTime(a);
+        const tB = extractMessageTime(b);
+        if (tA && tB && tA !== tB) return tA - tB;
+        return 0;
+    });
+}
+
 async function readStoredMessages(): Promise<ChatMessage[]> {
     const combinedMap = new Map<string, ChatMessage>();
 
@@ -45,8 +67,17 @@ async function readStoredMessages(): Promise<ChatMessage[]> {
                 if (m && m.id) combinedMap.set(m.id, { ...m, channel: normalizeChannel(m.channel) });
             });
         }
-    } catch {
-    }
+    } catch {}
+
+    try {
+        const tmpText = await fs.readFile(TMP_MESSAGES_FILE, "utf8");
+        const parsedTmp = JSON.parse(tmpText);
+        if (Array.isArray(parsedTmp)) {
+            parsedTmp.forEach((m: any) => {
+                if (m && m.id) combinedMap.set(m.id, { ...m, channel: normalizeChannel(m.channel) });
+            });
+        }
+    } catch {}
 
     if (shouldFetchBackend) {
         try {
@@ -62,7 +93,7 @@ async function readStoredMessages(): Promise<ChatMessage[]> {
         } catch {}
     }
 
-    const result = Array.from(combinedMap.values()).slice(-200);
+    const result = sortMessagesChronologically(Array.from(combinedMap.values())).slice(-200);
     GLOBAL_MESSAGES_CACHE = [...result];
     return result;
 }
@@ -94,6 +125,13 @@ async function writeStoredMessages(messages: ChatMessage[]) {
         await fs.writeFile(MESSAGES_FILE, JSON.stringify(messages, null, 2), "utf8");
     } catch (err) {
         console.warn("Write to messages.json file fallback:", err);
+    }
+
+    try {
+        await fs.mkdir(path.dirname(TMP_MESSAGES_FILE), { recursive: true });
+        await fs.writeFile(TMP_MESSAGES_FILE, JSON.stringify(messages, null, 2), "utf8");
+    } catch (err) {
+        console.warn("Write to tmp messages file fallback:", err);
     }
 }
 
@@ -133,14 +171,17 @@ export async function POST(request: Request) {
 
         const newMessagesList: ChatMessage[] = [messageData];
 
-        const updatedMessages = [...normalizedExistingMessages, ...newMessagesList].slice(-200);
+        const updatedMessages = sortMessagesChronologically([...normalizedExistingMessages, ...newMessagesList]).slice(-200);
         await writeStoredMessages(updatedMessages);
 
         const pusherServer = getPusherServer();
         if (pusherServer) {
             try {
+                const targetChannels = Array.from(new Set([normalizedChannel, "oil-supply-chat"]));
                 for (const msg of newMessagesList) {
-                    await pusherServer.trigger(normalizedChannel, "new-message", msg);
+                    for (const ch of targetChannels) {
+                        await pusherServer.trigger(ch, "new-message", msg);
+                    }
                 }
             } catch (pusherErr) {
                 console.warn("Pusher server trigger error (falling back to persisted message):", pusherErr);
