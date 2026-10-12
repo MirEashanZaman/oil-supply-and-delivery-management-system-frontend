@@ -37,7 +37,6 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
           const serverList: ChatMessage[] = res.data.data;
           setMessages((prev) => {
             const combinedMap = new Map<string, ChatMessage>();
-            // Load stored local messages first
             try {
               const cached = localStorage.getItem(STORAGE_KEY);
               if (cached) {
@@ -48,9 +47,7 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
               }
             } catch {}
 
-            // Merge current state
             prev.forEach((m) => combinedMap.set(m.id, m));
-            // Merge server messages
             serverList.forEach((m) => combinedMap.set(m.id, m));
 
             const merged = Array.from(combinedMap.values()).slice(-200);
@@ -67,7 +64,6 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
 
     loadStoredMessages();
 
-    // Fast 2-second cross-device polling interval to synchronize between phone and laptop
     const pollTimer = window.setInterval(() => {
       loadStoredMessages();
     }, 2000);
