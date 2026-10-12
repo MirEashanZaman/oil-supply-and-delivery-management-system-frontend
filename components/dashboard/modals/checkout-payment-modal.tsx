@@ -288,7 +288,6 @@ export const CheckoutPaymentModal: React.FC<CheckoutPaymentModalProps> = ({
                                 })()}
                             </div>
 
-                            {/* Promo Code Input in single checkout */}
                             <div className="mb-4 bg-[#FAFBFD] p-3 rounded-xl border border-[#E2E8F0] text-xs">
                                 <label className="block text-[11px] font-bold text-dark-slate mb-1">
                                     Have a Promo Code? <span className="font-normal text-secondary-gray">(OIL10, PETRO20, WELCOME50)</span>
