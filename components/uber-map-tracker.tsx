@@ -105,7 +105,6 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
     const [callAlert, setCallAlert] = useState<string | null>(null);
     const [simProgress, setSimProgress] = useState<number>(45);
 
-    // Live IoT Tanker Sensor Telematics
     const [fuelTempCelsius, setFuelTempCelsius] = useState<number>(22.4);
     const [tankPressureBar, setTankPressureBar] = useState<number>(1.85);
     const [flowRateLpm, setFlowRateLpm] = useState<number>(185);
@@ -682,7 +681,6 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
                         </button>
                     </div>
 
-                    {/* Bottom Status & Metrics Strip */}
                     <div className="p-3.5 bg-[#0B1329] border-t border-[#1E293B] space-y-2.5">
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                             <div className="bg-[#1E293B] p-2 rounded-xl border border-[#334155]">
