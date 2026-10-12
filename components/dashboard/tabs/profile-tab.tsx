@@ -56,8 +56,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       alert("Enter a valid local or international mobile number.");
       return;
     }
-    if (password && password.length < 6) {
-      alert("Password must be at least 6 characters long.");
+    if (password && password.length < 8) {
+      alert("Password must be at least 8 characters long.");
       return;
     }
     if (password && password !== confirmPassword) {
@@ -231,7 +231,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="New password (min 6 characters)"
+                  placeholder="New password (min 8 characters)"
                   autoComplete="new-password"
                   className="input input-bordered w-full pr-10 text-sm bg-white text-[#1E293B] rounded-xl border-[#E2E8F0] focus:border-[#F59E0B]"
                 />
