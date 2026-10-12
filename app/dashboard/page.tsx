@@ -659,7 +659,9 @@ export default function Dashboard() {
                 const storedProfile = JSON.parse(localStorage.getItem("user") || "null") as Partial<UserData> | null;
                 const matchFilename = match.filename || match.photo || match.photoUrl || match.image || match.imageUrl;
                 let resolvedPhotoUrl = storedProfile?.photoUrl;
-                if (matchFilename && typeof matchFilename === "string") {
+                if (storedProfile?.photoUrl && (storedProfile.photoUrl.startsWith("data:") || storedProfile.photoUrl.startsWith("blob:"))) {
+                    resolvedPhotoUrl = storedProfile.photoUrl;
+                } else if (matchFilename && typeof matchFilename === "string") {
                     if (matchFilename.startsWith("data:") || matchFilename.startsWith("http://") || matchFilename.startsWith("https://")) {
                         resolvedPhotoUrl = matchFilename;
                     } else {
@@ -2261,6 +2263,8 @@ export default function Dashboard() {
                 const savedRecord = response.data;
                 if (savedRecord?.filename) {
                     updatedPhotoUrl = `/api/profile-image/${encodeURIComponent(savedRecord.filename)}`;
+                } else if (updated.photoUrl) {
+                    updatedPhotoUrl = updated.photoUrl;
                 }
             }
             const mergedUser: UserData = {
