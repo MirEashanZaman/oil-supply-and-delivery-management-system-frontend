@@ -1,15 +1,9 @@
-/**
- * Client-Side Image Optimization Utility
- * Automatically converts any user-uploaded image (PNG, JPG, HEIC, etc.) to a compressed WebP format
- * before sending to the backend API or storing in state.
- */
 export async function convertToWebP(
     file: File,
     maxWidth: number = 1200,
     maxHeight: number = 1200,
     quality: number = 0.85
 ): Promise<File> {
-    // If it's already an SVG or tiny file, return as-is
     if (file.type === "image/svg+xml" || file.size < 5000) {
         return file;
     }
@@ -22,7 +16,6 @@ export async function convertToWebP(
                 let width = img.width;
                 let height = img.height;
 
-                // Maintain aspect ratio while respecting maximum dimensions
                 if (width > height) {
                     if (width > maxWidth) {
                         height = Math.round((height * maxWidth) / width);
@@ -42,7 +35,7 @@ export async function convertToWebP(
 
                 const ctx = canvas.getContext("2d");
                 if (!ctx) {
-                    resolve(file); // fallback to original file if canvas context unavailable
+                    resolve(file);
                     return;
                 }
 
@@ -55,7 +48,6 @@ export async function convertToWebP(
                             return;
                         }
 
-                        // Create clean WebP file with .webp extension
                         const cleanName = file.name.replace(/\.[^/.]+$/, "") + ".webp";
                         const webpFile = new File([blob], cleanName, {
                             type: "image/webp",
