@@ -28,14 +28,12 @@ let GLOBAL_MESSAGES_CACHE: ChatMessage[] = [];
 async function readStoredMessages(): Promise<ChatMessage[]> {
     const combinedMap = new Map<string, ChatMessage>();
 
-    // 1. First check in-memory cache
     if (Array.isArray(GLOBAL_MESSAGES_CACHE)) {
         GLOBAL_MESSAGES_CACHE.forEach((m) => {
             if (m && m.id) combinedMap.set(m.id, { ...m, channel: normalizeChannel(m.channel) });
         });
     }
 
-    // 2. Read local file storage
     try {
         const fileText = await fs.readFile(MESSAGES_FILE, "utf8");
         const parsed = JSON.parse(fileText);
@@ -45,10 +43,8 @@ async function readStoredMessages(): Promise<ChatMessage[]> {
             });
         }
     } catch {
-        // file might not exist in serverless container
     }
 
-    // 3. Fetch from backend centralized message broker/API
     try {
         const backendRes = await fetchWithTimeout(`${API_ENDPOINT}/rabbitmq/messages`, { cache: "no-store" }, 2500);
         if (backendRes.ok) {
@@ -146,7 +142,6 @@ export async function POST(request: Request) {
             }
         }
 
-        // Bridge message to RabbitMQ backend broker queue
         try {
             await fetchWithTimeout(`${API_ENDPOINT}/rabbitmq/send`, {
                 method: "POST",
