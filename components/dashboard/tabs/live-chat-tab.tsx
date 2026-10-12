@@ -30,7 +30,10 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
       }
     } catch {}
 
+    let isFetching = false;
     const loadStoredMessages = async () => {
+      if (isFetching) return;
+      isFetching = true;
       try {
         const res = await axios.get(`/api/messages?channel=${encodeURIComponent(channelName)}&t=${Date.now()}`);
         if (res.data?.success && Array.isArray(res.data?.data)) {
@@ -59,6 +62,8 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
         }
       } catch (err) {
         console.warn("Failed to load live chat history:", err);
+      } finally {
+        isFetching = false;
       }
     };
 
@@ -66,23 +71,55 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
 
     const pollTimer = window.setInterval(() => {
       loadStoredMessages();
-    }, 2000);
+    }, 1200);
+
+    let broadcastChannel: BroadcastChannel | null = null;
+    try {
+      if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+        broadcastChannel = new BroadcastChannel("oil_supply_chat_bus");
+        broadcastChannel.onmessage = (event) => {
+          if (event.data?.type === "NEW_MESSAGE" && event.data?.message) {
+            const incoming: ChatMessage = event.data.message;
+            setMessages((prev) => {
+              const next = [...prev.filter((m) => m.id !== incoming.id), incoming].slice(-200);
+              try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+              } catch {}
+              return next;
+            });
+          }
+        };
+      }
+    } catch {}
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          if (Array.isArray(parsed)) {
+            setMessages(parsed);
+          }
+        } catch {}
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
 
     const pusher = getPusherClient();
-    if (!pusher) {
-      return () => window.clearInterval(pollTimer);
+    let channel: any = null;
+    if (pusher) {
+      try {
+        channel = pusher.subscribe(channelName);
+        channel.bind("new-message", (data: ChatMessage) => {
+          setMessages((prev) => {
+            const next = [...prev.filter((m) => m.id !== data.id), data].slice(-200);
+            try {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+            } catch {}
+            return next;
+          });
+        });
+      } catch {}
     }
-
-    const channel = pusher.subscribe(channelName);
-    channel.bind("new-message", (data: ChatMessage) => {
-      setMessages((prev) => {
-        const next = [...prev.filter((m) => m.id !== data.id), data].slice(-200);
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-        } catch {}
-        return next;
-      });
-    });
 
     const handleLocalUpdate = (e: any) => {
       const newMsg = e?.detail;
@@ -103,9 +140,19 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
 
     return () => {
       window.clearInterval(pollTimer);
+      window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("local_chat_update", handleLocalUpdate);
-      channel.unbind_all();
-      channel.unsubscribe();
+      if (broadcastChannel) {
+        try {
+          broadcastChannel.close();
+        } catch {}
+      }
+      if (channel) {
+        try {
+          channel.unbind_all();
+          channel.unsubscribe();
+        } catch {}
+      }
     };
   }, []);
 
@@ -164,6 +211,17 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
           } catch {}
           return finalSlice;
         });
+
+        try {
+          if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+            const bc = new BroadcastChannel("oil_supply_chat_bus");
+            bc.postMessage({ type: "NEW_MESSAGE", message: newMsg });
+            if (botReply) {
+              bc.postMessage({ type: "NEW_MESSAGE", message: botReply });
+            }
+            bc.close();
+          }
+        } catch {}
       }
     } catch (err) {
       console.warn("Live chat send fallback:", err);
