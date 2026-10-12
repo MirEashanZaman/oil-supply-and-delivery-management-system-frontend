@@ -148,7 +148,6 @@ export default function Dashboard() {
     const cartTotalItems = useMemo(() => cartItems.reduce((acc, item) => acc + item.quantity, 0), [cartItems]);
     const cartSubtotal = useMemo(() => cartItems.reduce((acc, item) => acc + (item.product.numericPrice * item.quantity), 0), [cartItems]);
 
-    // Volume Discount: 5% for >= 20 units, 10% for >= 50 units, 15% for >= 100 units
     const bulkDiscountRate = useMemo(() => {
         if (cartTotalItems >= 100) return 0.15;
         if (cartTotalItems >= 50) return 0.10;
@@ -801,7 +800,6 @@ export default function Dashboard() {
                     if (!Array.isArray(localOrders)) localOrders = [];
                 } catch {}
 
-                // Merge server and local orders, prioritizing server data and deduplicating by ID
                 const serverIds = new Set(serverOrders.map((o: any) => String(o.id)));
                 const combined = [
                     ...localOrders.filter((lo) => !serverIds.has(String(lo.id))),
@@ -1358,7 +1356,6 @@ export default function Dashboard() {
                 const defaultSupplierId = availableSuppliers[0]?.id ? Number(availableSuppliers[0].id) : 1;
                 const defaultDealerId = availableDealers[0]?.id ? Number(availableDealers[0].id) : 1;
 
-                // Allocate proportional discount across cart items if any
                 const discountRatio = cartSubtotal > 0 ? totalDiscountAmount / cartSubtotal : 0;
 
                 for (const item of cartItems) {
@@ -1566,7 +1563,6 @@ export default function Dashboard() {
         setCheckoutProduct(null);
         if (user && user.id) fetchOrders(user.id, user.title);
 
-        // Broadcast order confirmation message to Live Chat & RabbitMQ
         if (user) {
             const orderNotice = `[RabbitMQ Message Event] Order #${createdOrderId || "Confirmed"} placed successfully for ${user.userName || user.name || "Customer"}. Delivery scheduled to ${deliveryAddress || user.address || "Hub"}.`;
             axios.post("/api/messages", {
@@ -1602,7 +1598,6 @@ export default function Dashboard() {
         if (!user || !user.id) return;
         if (!window.confirm("Are you sure you want to cancel this order?")) return;
 
-        // Optimistically remove from state and localStorage
         const customerId = user.id;
         try {
             const rawLocal = localStorage.getItem(`customer_orders_${customerId}`) || "[]";
@@ -1739,7 +1734,6 @@ export default function Dashboard() {
         const targetOrder = orders.find((order) => order.id === orderId);
         const customerId = targetOrder?.customerId || user.id;
 
-        // Optimistically remove from state and localStorage
         if (customerId) {
             try {
                 const rawLocal = localStorage.getItem(`customer_orders_${customerId}`) || "[]";
@@ -2364,9 +2358,7 @@ export default function Dashboard() {
                 </div>
             )}
 
-            {/* Main Content Area */}
             <div className="flex-1 flex flex-col items-center px-2 sm:px-6 w-full max-w-full overflow-x-hidden">
-                {/* User Info Bar */}
                 <div className="w-full max-w-[1200px] card bg-[#FFFFFF] border border-[#E2E8F0] shadow-sm rounded-2xl p-3.5 sm:p-6 mb-4 sm:mb-6 text-left">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E2E8F0] pb-4 sm:pb-6">
                         <div className="flex items-center gap-3">
@@ -2447,7 +2439,6 @@ export default function Dashboard() {
                         </div>
                     )}
 
-                    {/* Metrics Grid */}
                     <div className="mt-4 sm:mt-6 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
                         {dashboardMetrics.map((metric) => (
                             <div key={metric.label} className={`rounded-xl sm:rounded-2xl border p-3 sm:p-4 shadow-sm ${metric.tint}`}>
@@ -2458,7 +2449,6 @@ export default function Dashboard() {
                         ))}
                     </div>
 
-                    {/* Navigation Tabs */}
                     <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pt-4 pb-1 no-scrollbar w-full">
                         <button
                             type="button"
