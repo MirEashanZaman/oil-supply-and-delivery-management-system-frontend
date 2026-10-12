@@ -25,7 +25,6 @@ export const APP_URL = normalizeBaseUrl(
 
 export const isProductionEnv = process.env.NODE_ENV === "production";
 
-// Configure default axios timeout to 6000ms to eliminate hanging requests
 if (typeof window !== "undefined") {
     axios.defaults.timeout = 6000;
 }
