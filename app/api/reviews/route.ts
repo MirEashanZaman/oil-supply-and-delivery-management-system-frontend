@@ -10,14 +10,12 @@ let GLOBAL_REVIEWS_CACHE: any[] = [];
 async function readStoredReviewsFile(): Promise<any[]> {
   const map = new Map<number, any>();
 
-  // 1. In-memory cache
   if (Array.isArray(GLOBAL_REVIEWS_CACHE)) {
     GLOBAL_REVIEWS_CACHE.forEach((r) => {
       if (r && r.orderId) map.set(Number(r.orderId), r);
     });
   }
 
-  // 2. Local file
   try {
     const raw = await fs.readFile(REVIEWS_FILE, "utf-8");
     const parsed = JSON.parse(raw);
@@ -28,7 +26,6 @@ async function readStoredReviewsFile(): Promise<any[]> {
     }
   } catch {}
 
-  // 3. Central database backend
   try {
     const response = await fetchWithTimeout(`${API_ENDPOINT}/review/list`, {
       cache: "no-store",
@@ -80,7 +77,6 @@ export async function POST(req: NextRequest) {
     ];
     await writeStoredReviewsFile(updated);
 
-    // Sync to PostgreSQL backend database
     try {
       await fetchWithTimeout(`${API_ENDPOINT}/review/submit`, {
         method: "POST",
