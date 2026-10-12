@@ -103,7 +103,6 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
           monthRevenue += val;
           monthVolumeLiters += (Number(ord.quantity ?? 1) || 1) * 1000;
         } else if (!ord.createdAt && selectedAnalyticsYear === new Date().getFullYear() && index === new Date().getMonth()) {
-          // If order has no createdAt date, attribute it directly to current month
           monthOrders++;
           const val = Number(String(ord.totalAmount ?? 0).replace(/[$,\s]/g, "")) || 0;
           monthRevenue += val;
@@ -238,7 +237,6 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
       .filter((p) => p.distanceKm <= selectedRadiusKm);
 
     if (isDealer) {
-      // For Dealers: prioritize nearby Refinery Suppliers for wholesale bulk sourcing
       return rawList.filter((p) => p.role === "Supplier").sort((a, b) => a.distanceKm - b.distanceKm);
     }
 
@@ -411,7 +409,6 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         </div>
       </div>
 
-      {/* Nearby Supplier & Dealer Proximity Radar (Haversine Algorithmic Detection) */}
       <div className="card bg-card-white border border-[#E2E8F0] rounded-2xl p-5 sm:p-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-4 border-b border-[#E2E8F0]">
           <div>
@@ -577,7 +574,6 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 
               return (
                 <div key={data.month} className="flex flex-col items-center h-full justify-end group relative">
-                  {/* Floating tooltip on hover */}
                   <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#0F2747] text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-lg opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-30 whitespace-nowrap border border-white/20">
                     <span className="text-[#F59E0B]">{formattedValue}</span>
                     <span className="text-slate-300 ml-1">({data.volumeLiters.toLocaleString()} L)</span>
