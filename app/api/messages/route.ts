@@ -25,6 +25,9 @@ export const revalidate = 0;
 
 let GLOBAL_MESSAGES_CACHE: ChatMessage[] = [];
 
+const isLocalPrivateIp = !API_ENDPOINT || API_ENDPOINT.includes("localhost") || API_ENDPOINT.includes("127.0.0.1") || API_ENDPOINT.includes("192.168.") || API_ENDPOINT.includes("10.0.");
+const shouldFetchBackend = !(process.env.VERCEL && isLocalPrivateIp);
+
 async function readStoredMessages(): Promise<ChatMessage[]> {
     const combinedMap = new Map<string, ChatMessage>();
 
@@ -45,17 +48,19 @@ async function readStoredMessages(): Promise<ChatMessage[]> {
     } catch {
     }
 
-    try {
-        const backendRes = await fetchWithTimeout(`${API_ENDPOINT}/rabbitmq/messages`, { cache: "no-store" }, 2500);
-        if (backendRes.ok) {
-            const data = await backendRes.json();
-            if (data?.success && Array.isArray(data?.data)) {
-                data.data.forEach((m: any) => {
-                    if (m && m.id) combinedMap.set(m.id, { ...m, channel: normalizeChannel(m.channel) });
-                });
+    if (shouldFetchBackend) {
+        try {
+            const backendRes = await fetchWithTimeout(`${API_ENDPOINT}/rabbitmq/messages`, { cache: "no-store" }, 1200);
+            if (backendRes.ok) {
+                const data = await backendRes.json();
+                if (data?.success && Array.isArray(data?.data)) {
+                    data.data.forEach((m: any) => {
+                        if (m && m.id) combinedMap.set(m.id, { ...m, channel: normalizeChannel(m.channel) });
+                    });
+                }
             }
-        }
-    } catch {}
+        } catch {}
+    }
 
     const result = Array.from(combinedMap.values()).slice(-200);
     GLOBAL_MESSAGES_CACHE = [...result];
@@ -142,19 +147,21 @@ export async function POST(request: Request) {
             }
         }
 
-        try {
-            await fetchWithTimeout(`${API_ENDPOINT}/rabbitmq/send`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    queue: "customer_messages_queue",
-                    pattern: "chat.message.created",
-                    data: messageData,
-                    sender: messageData.sender,
-                    recipient: messageData.channel,
-                }),
-            }, 3000).catch(() => {});
-        } catch {}
+        if (shouldFetchBackend) {
+            try {
+                await fetchWithTimeout(`${API_ENDPOINT}/rabbitmq/send`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        queue: "customer_messages_queue",
+                        pattern: "chat.message.created",
+                        data: messageData,
+                        sender: messageData.sender,
+                        recipient: messageData.channel,
+                    }),
+                }, 1500).catch(() => {});
+            } catch {}
+        }
 
         return NextResponse.json({
             success: true,
