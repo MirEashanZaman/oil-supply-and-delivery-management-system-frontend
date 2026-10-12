@@ -42,7 +42,6 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
     const rawFile = e.target.files?.[0];
     if (!rawFile) return;
 
-    // Automatically convert uploaded photo to optimized WebP format
     const optimizedWebpFile = await convertToWebP(rawFile, 800, 800, 0.85);
 
     setPhotoFile(optimizedWebpFile);
@@ -139,7 +138,6 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           </div>
         </div>
 
-        {/* Enterprise Role Specification Card */}
         <div className="mt-6 pt-5 border-t border-[#E2E8F0] grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Enterprise Role</span>
