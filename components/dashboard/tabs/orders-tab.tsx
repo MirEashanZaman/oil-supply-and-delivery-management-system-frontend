@@ -399,7 +399,6 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
         </div>
       )}
 
-      {/* Review & Rating Modal */}
       {reviewingOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 backdrop-blur-xs p-4" role="dialog" aria-modal="true" aria-labelledby="review-modal-title">
           <div className="flex w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-2xl border border-slate-200 animate-fadeIn">
