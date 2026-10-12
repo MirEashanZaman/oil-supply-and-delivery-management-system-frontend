@@ -320,7 +320,6 @@ export const CartDrawerModal: React.FC<CartDrawerModalProps> = ({
                                 </div>
                             </div>
 
-                            {/* Promo Code Input Box */}
                             <div className="pt-2 border-t border-[#E2E8F0]">
                                 <label className="block text-[11px] font-bold text-dark-slate mb-1">
                                     Have a Promo Code? <span className="font-normal text-secondary-gray">(e.g. OIL10, PETRO20, WELCOME50)</span>
