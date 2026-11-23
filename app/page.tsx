@@ -191,10 +191,7 @@ export default function Home() {
             >
                 <div>
                     <div className="inline-flex items-center gap-2 text-xs font-medium text-slate-300">
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-radar-ripple absolute inline-flex h-full w-full rounded-full bg-[#F59E0B] opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#F59E0B]"></span>
-                        </span>
+                        <span className="inline-flex rounded-full h-2 w-2 bg-[#F59E0B]"></span>
                         <span>{user ? `Signed in as ${user.name || user.userName || user.email?.split("@")[0] || "User"}` : "Direct refinery & dealer network"}</span>
                         <LiveTelemetrySpark color="#F59E0B" active={true} />
                     </div>
@@ -321,10 +318,7 @@ export default function Home() {
                                         transition={{ duration: 0.38, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
                                     >
                                         <div className="inline-flex items-center gap-2 text-xs font-medium text-[#F59E0B] mb-2">
-                                            <span className="relative flex h-2 w-2">
-                                                <span className="animate-radar-ripple absolute inline-flex h-full w-full rounded-full bg-[#F59E0B] opacity-75"></span>
-                                                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#F59E0B]"></span>
-                                            </span>
+                                            <span className="inline-flex rounded-full h-2 w-2 bg-[#F59E0B]"></span>
                                             <span>{activeSlide.badge}</span>
                                         </div>
                                         <h3 className="text-2xl md:text-4xl font-medium max-w-2xl leading-tight text-white">
