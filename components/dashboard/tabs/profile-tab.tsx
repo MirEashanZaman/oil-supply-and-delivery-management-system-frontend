@@ -108,8 +108,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                 {(userData?.userName || userData?.name || userData?.email || "U")[0].toUpperCase()}
               </div>
             )}
-            <label className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] px-3 py-1.5 rounded-lg cursor-pointer shadow-lg transition-transform hover:scale-105 text-[11px] font-bold whitespace-nowrap">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <label className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] px-3 py-1.5 rounded-lg cursor-pointer transition-colors text-[11px] font-medium whitespace-nowrap flex items-center gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
@@ -120,46 +120,47 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 
           <div className="text-center sm:text-left flex-1 space-y-2">
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
-              <h3 className="text-2xl font-black text-[#0F2747]">
+              <h3 className="text-2xl font-medium text-[#111827]">
                 {userData?.userName || userData?.name || "System User"}
               </h3>
-              <span className={`badge border-none font-bold text-xs px-3 py-1 ${getRoleBadgeColor(userData?.title || userData?.role || "")}`}>
+              <span className={`badge border-none font-medium text-xs px-3 py-1 ${getRoleBadgeColor(userData?.title || userData?.role || "")}`}>
                 {userData?.title || userData?.role || "Customer"}
               </span>
-              <span className="badge bg-emerald-50 text-emerald-700 border border-emerald-300 font-bold text-[10px] px-2.5 py-0.5">
-                ✓ Govt Energy Board Verified
+              <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-[#16A34A] border border-emerald-200 font-medium text-xs px-2.5 py-0.5 rounded-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" aria-hidden="true" />
+                Energy Board Verified
               </span>
             </div>
-            <p className="text-sm font-medium text-secondary-gray">{userData?.email}</p>
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 pt-1 text-xs text-secondary-gray">
-              <span>📍 {userData?.address || "Address not registered"}</span>
-              <span>📞 {userData?.phoneNumber || userData?.phone || "Phone not registered"}</span>
+            <p className="text-sm text-[#4B5565]">{userData?.email}</p>
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 pt-1 text-xs text-[#4B5565]">
+              <span>Address: {userData?.address || "Not registered"}</span>
+              <span className="font-mono tabular-nums">Phone: {userData?.phoneNumber || userData?.phone || "Not registered"}</span>
             </div>
           </div>
         </div>
 
         <div className="mt-6 pt-5 border-t border-[#E2E8F0] grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Enterprise Role</span>
-            <strong className="text-xs text-[#0F2747] font-extrabold">{userData?.title || userData?.role || "Customer"}</strong>
+          <div className="p-3 bg-[#F5F7FA] rounded-xl border border-[#E2E8F0]">
+            <span className="text-xs font-medium text-[#6B7487] block">Enterprise role</span>
+            <strong className="text-xs text-[#111827] font-medium">{userData?.title || userData?.role || "Customer"}</strong>
           </div>
-          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Compliance Standard</span>
-            <strong className="text-xs text-emerald-700 font-extrabold">ISO 9001 & ASTM-D Grade</strong>
+          <div className="p-3 bg-[#F5F7FA] rounded-xl border border-[#E2E8F0]">
+            <span className="text-xs font-medium text-[#6B7487] block">Compliance standard</span>
+            <strong className="text-xs text-[#16A34A] font-medium">ISO 9001 & ASTM-D Grade</strong>
           </div>
-          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Security & Access</span>
-            <strong className="text-xs text-[#0F2747] font-extrabold">256-bit TLS Encrypted Session</strong>
+          <div className="p-3 bg-[#F5F7FA] rounded-xl border border-[#E2E8F0]">
+            <span className="text-xs font-medium text-[#6B7487] block">Security & access</span>
+            <strong className="text-xs text-[#111827] font-medium">256-bit TLS Encrypted Session</strong>
           </div>
         </div>
       </div>
 
-      <div className="card bg-card-white border border-[#E2E8F0] shadow-sm rounded-2xl p-6">
-        <h3 className="text-lg font-bold text-[#0F2747] mb-4">Update Profile & Security Details</h3>
+      <div className="card bg-card-white border border-[#E2E8F0] rounded-2xl p-6">
+        <h3 className="text-lg font-medium text-[#111827] mb-4">Update Profile & Security Details</h3>
 
         {saved && (
-          <div className="p-3 mb-4 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold animate-fadeIn">
-            Profile details updated successfully!
+          <div className="p-3 mb-4 rounded-lg bg-emerald-50 text-[#16A34A] border border-emerald-200 text-xs font-medium animate-fadeIn">
+            Profile details updated
           </div>
         )}
 
