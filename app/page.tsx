@@ -4,10 +4,22 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
+import { motion, AnimatePresence } from "motion/react";
+import {
+    ArrowRight,
+    ChevronLeft,
+    ChevronRight,
+    Pause,
+    Play,
+    ShieldCheck,
+    Truck,
+    Zap,
+} from "lucide-react";
 import MyHeader from "@/components/header";
 import MyNavigation from "@/components/navigation";
 import { getProductImage } from "@/components/dashboard/utils";
 import { getStoredReviews, fetchAllServerReviews, OrderReview } from "@/lib/reviews";
+import { SpotlightCard, LiveTelemetrySpark } from "@/components/ui/motion-primitives";
 
 type CarouselProduct = {
     id: number;
@@ -148,17 +160,10 @@ export default function Home() {
 
     useEffect(() => {
         if (!isAutoPlay) return;
-        let timer: NodeJS.Timeout | null = null;
-        const initialDelay = setTimeout(() => {
-            timer = setInterval(() => {
-                setCurrentHeroSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-            }, 5000);
-        }, 3000);
-
-        return () => {
-            clearTimeout(initialDelay);
-            if (timer) clearInterval(timer);
-        };
+        const timer = setInterval(() => {
+            setCurrentHeroSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+        }, 5000);
+        return () => clearInterval(timer);
     }, [isAutoPlay]);
 
     const handleScroll = (direction: "left" | "right") => {
@@ -171,16 +176,27 @@ export default function Home() {
         }
     };
 
+    const activeSlide = HERO_SLIDES[currentHeroSlide];
+
     return (
         <main className="w-full max-w-[1240px] flex flex-col items-center" role="main">
             <MyHeader name="Home" message="Centralized petroleum supply, dealer allocation, and tanker delivery tracking" />
             <MyNavigation />
 
-            <div className="w-full bg-[#0F2747] text-white rounded-2xl p-6 sm:p-8 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 text-left border border-[#163860]">
+            <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
+                className="w-full bg-[#0F2747] text-white rounded-2xl p-6 sm:p-8 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 text-left border border-[#163860]"
+            >
                 <div>
                     <div className="inline-flex items-center gap-2 text-xs font-medium text-slate-300">
-                        <span className="w-2 h-2 rounded-full bg-[#F59E0B]" aria-hidden="true" />
+                        <span className="relative flex h-2 w-2">
+                            <span className="animate-radar-ripple absolute inline-flex h-full w-full rounded-full bg-[#F59E0B] opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#F59E0B]"></span>
+                        </span>
                         <span>{user ? `Signed in as ${user.name || user.userName || user.email?.split("@")[0] || "User"}` : "Direct refinery & dealer network"}</span>
+                        <LiveTelemetrySpark color="#F59E0B" active={true} />
                     </div>
                     <h1 className="text-2xl md:text-3xl font-medium mt-2 text-white">
                         Oil Supply & Delivery Management System
@@ -192,43 +208,46 @@ export default function Home() {
                 <div className="flex gap-3 items-center flex-wrap shrink-0">
                     {user ? (
                         <>
-                            <Link
-                                href="/dashboard"
-                                className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] font-medium px-5 h-11 flex items-center gap-2 border-none rounded-lg"
-                            >
-                                <span>Open Dashboard</span>
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
-                            </Link>
-                            <button
+                            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
+                                <Link
+                                    href="/dashboard"
+                                    className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] font-medium px-5 h-11 flex items-center gap-2 border-none rounded-lg"
+                                >
+                                    <span>Open Dashboard</span>
+                                    <ArrowRight className="w-4 h-4" />
+                                </Link>
+                            </motion.div>
+                            <motion.button
+                                whileTap={{ scale: 0.97 }}
                                 onClick={handleLogout}
                                 className="btn bg-transparent text-slate-200 border border-white/25 hover:bg-white/10 rounded-lg h-11 px-4 font-medium cursor-pointer"
                             >
                                 Sign out
-                            </button>
+                            </motion.button>
                         </>
                     ) : (
                         <>
-                            <Link
-                                href="/login"
-                                className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] font-medium px-5 h-11 flex items-center gap-2 border-none rounded-lg"
-                            >
-                                <span>Sign in</span>
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
-                            </Link>
-                            <Link
-                                href="/registration"
-                                className="btn bg-transparent text-slate-200 border border-white/25 hover:bg-white/10 rounded-lg h-11 px-4 font-medium"
-                            >
-                                Register
-                            </Link>
+                            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
+                                <Link
+                                    href="/login"
+                                    className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] font-medium px-5 h-11 flex items-center gap-2 border-none rounded-lg"
+                                >
+                                    <span>Sign in</span>
+                                    <ArrowRight className="w-4 h-4" />
+                                </Link>
+                            </motion.div>
+                            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
+                                <Link
+                                    href="/registration"
+                                    className="btn bg-transparent text-slate-200 border border-white/25 hover:bg-white/10 rounded-lg h-11 px-4 font-medium"
+                                >
+                                    Register
+                                </Link>
+                            </motion.div>
                         </>
                     )}
                 </div>
-            </div>
+            </motion.div>
 
             <div className="w-full mb-12">
                 <div className="flex items-center justify-between mb-3 px-1 text-left">
@@ -240,13 +259,15 @@ export default function Home() {
                         <p className="text-xs text-[#4B5565]">Integrated energy supply and fleet distribution terminals</p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <button
+                        <motion.button
+                            whileTap={{ scale: 0.95 }}
                             onClick={() => setIsAutoPlay(!isAutoPlay)}
                             aria-label={isAutoPlay ? "Pause automatic slide transition" : "Play automatic slide transition"}
-                            className="btn btn-xs btn-ghost text-xs text-[#4B5565] hover:text-[#111827] cursor-pointer font-medium"
+                            className="btn btn-xs btn-ghost text-xs text-[#4B5565] hover:text-[#111827] cursor-pointer font-medium inline-flex items-center gap-1"
                         >
-                            {isAutoPlay ? "Pause" : "Play"}
-                        </button>
+                            {isAutoPlay ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                            <span>{isAutoPlay ? "Pause" : "Play"}</span>
+                        </motion.button>
                     </div>
                 </div>
 
@@ -256,103 +277,129 @@ export default function Home() {
                     </div>
                 )}
 
-                <div className="carousel w-full rounded-2xl overflow-hidden relative bg-[#0F2747] h-[360px] md:h-[420px] border border-[#E2E8F0]">
+                <div className="w-full rounded-2xl overflow-hidden relative bg-[#0F2747] h-[360px] md:h-[420px] border border-[#E2E8F0]">
                     {isLoadingProducts ? (
-                        Array.from({ length: 3 }).map((_, index) => (
-                            <div
-                                key={`home-skeleton-${index}`}
-                                className="absolute inset-0 flex items-end justify-start bg-[#ECEFF4] p-6 md:p-12"
-                            >
-                                <div className="w-full max-w-xl space-y-3">
-                                    <div className="h-4 w-32 rounded bg-slate-300" />
-                                    <div className="h-8 w-3/4 rounded bg-slate-300" />
-                                    <div className="h-4 w-2/3 rounded bg-slate-300" />
-                                </div>
+                        <div className="absolute inset-0 flex items-end justify-start bg-[#ECEFF4] p-6 md:p-12">
+                            <div className="w-full max-w-xl space-y-3">
+                                <div className="h-4 w-32 rounded bg-slate-300" />
+                                <div className="h-8 w-3/4 rounded bg-slate-300" />
+                                <div className="h-4 w-2/3 rounded bg-slate-300" />
                             </div>
-                        ))
+                        </div>
                     ) : (
-                        HERO_SLIDES.map((slide, idx) => (
-                            <div
-                                key={slide.id}
-                                className={`carousel-item absolute inset-0 w-full h-full transition-[opacity,transform] duration-500 ${idx === currentHeroSlide
-                                    ? "opacity-100 translate-x-0 z-10"
-                                    : idx < currentHeroSlide
-                                        ? "opacity-0 -translate-x-full z-0"
-                                        : "opacity-0 translate-x-full z-0"
-                                    }`}
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={activeSlide.id}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                                className="absolute inset-0 w-full h-full"
                             >
-                                <Image
-                                    src={slide.image}
-                                    alt={slide.title}
-                                    fill
-                                    priority={idx === 0}
-                                    fetchPriority={idx === 0 ? "high" : "auto"}
-                                    unoptimized={idx === 0}
-                                    quality={70}
-                                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1240px"
-                                    className={`w-full h-full object-cover brightness-50 ${idx === currentHeroSlide ? "animate-hero-zoom" : ""}`}
-                                />
-                                <div className="absolute inset-0 bg-black/55 flex flex-col justify-end p-6 md:p-12 pb-14 md:pb-14 text-left text-white">
-                                    <div className="inline-flex items-center gap-2 text-xs font-medium text-[#F59E0B] mb-2">
-                                        <span className="relative flex h-2 w-2">
-                                            <span className="animate-radar-ripple absolute inline-flex h-full w-full rounded-full bg-[#F59E0B] opacity-75"></span>
-                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#F59E0B]"></span>
-                                        </span>
-                                        <span>{slide.badge}</span>
-                                    </div>
-                                    <h3 className="text-2xl md:text-4xl font-medium max-w-2xl leading-tight text-white">
-                                        {slide.title}
-                                    </h3>
-                                    <p className="text-xs md:text-sm text-slate-200 mt-2 max-w-xl leading-relaxed">
-                                        {slide.tagline}
-                                    </p>
-                                    <div className="mt-5 flex gap-3">
-                                        <Link href="/dashboard" className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] btn-sm md:btn-md font-medium border-none rounded-lg">
-                                            Explore Products
-                                        </Link>
-                                        <Link href="/about" className="btn bg-transparent btn-sm md:btn-md text-white border border-white/40 hover:bg-white/15 rounded-lg font-medium">
-                                            Learn Logistics
-                                        </Link>
-                                    </div>
+                                <motion.div
+                                    initial={{ scale: 1 }}
+                                    animate={{ scale: 1.06 }}
+                                    transition={{ duration: 5.5, ease: "linear" }}
+                                    className="w-full h-full relative"
+                                >
+                                    <Image
+                                        src={activeSlide.image}
+                                        alt={activeSlide.title}
+                                        fill
+                                        priority={currentHeroSlide === 0}
+                                        unoptimized={currentHeroSlide === 0}
+                                        quality={75}
+                                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1240px"
+                                        className="w-full h-full object-cover brightness-50"
+                                    />
+                                </motion.div>
+
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent flex flex-col justify-end p-6 md:p-12 pb-14 md:pb-14 text-left text-white">
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 12 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.38, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+                                    >
+                                        <div className="inline-flex items-center gap-2 text-xs font-medium text-[#F59E0B] mb-2">
+                                            <span className="relative flex h-2 w-2">
+                                                <span className="animate-radar-ripple absolute inline-flex h-full w-full rounded-full bg-[#F59E0B] opacity-75"></span>
+                                                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#F59E0B]"></span>
+                                            </span>
+                                            <span>{activeSlide.badge}</span>
+                                        </div>
+                                        <h3 className="text-2xl md:text-4xl font-medium max-w-2xl leading-tight text-white">
+                                            {activeSlide.title}
+                                        </h3>
+                                        <p className="text-xs md:text-sm text-slate-200 mt-2 max-w-xl leading-relaxed">
+                                            {activeSlide.tagline}
+                                        </p>
+                                        <div className="mt-5 flex gap-3">
+                                            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
+                                                <Link href="/dashboard" className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] btn-sm md:btn-md font-medium border-none rounded-lg">
+                                                    Explore Products
+                                                </Link>
+                                            </motion.div>
+                                            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
+                                                <Link href="/about" className="btn bg-transparent btn-sm md:btn-md text-white border border-white/40 hover:bg-white/15 rounded-lg font-medium">
+                                                    Learn Logistics
+                                                </Link>
+                                            </motion.div>
+                                        </div>
+                                    </motion.div>
                                 </div>
-                            </div>
-                        ))
+                            </motion.div>
+                        </AnimatePresence>
                     )}
 
                     <div className="absolute left-4 right-4 top-1/2 -translate-y-1/2 flex justify-between z-20 pointer-events-none">
-                        <button
+                        <motion.button
+                            whileHover={{ scale: 1.08 }}
+                            whileTap={{ scale: 0.92 }}
                             onClick={() => setCurrentHeroSlide((prev) => (prev === 0 ? HERO_SLIDES.length - 1 : prev - 1))}
                             className="btn btn-circle btn-sm md:btn-md bg-black/60 hover:bg-black/80 text-white border-none pointer-events-auto cursor-pointer"
                             aria-label="Previous slide"
                         >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 19l-7-7 7-7" />
-                            </svg>
-                        </button>
-                        <button
+                            <ChevronLeft className="w-4 h-4" />
+                        </motion.button>
+                        <motion.button
+                            whileHover={{ scale: 1.08 }}
+                            whileTap={{ scale: 0.92 }}
                             onClick={() => setCurrentHeroSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
                             className="btn btn-circle btn-sm md:btn-md bg-black/60 hover:bg-black/80 text-white border-none pointer-events-auto cursor-pointer"
                             aria-label="Next slide"
                         >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </button>
+                            <ChevronRight className="w-4 h-4" />
+                        </motion.button>
                     </div>
 
-                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-20 items-center">
-                        {HERO_SLIDES.map((_, idx) => (
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-20 items-center">
+                        {HERO_SLIDES.map((s, idx) => (
                             <button
-                                key={idx}
+                                key={s.id}
                                 onClick={() => setCurrentHeroSlide(idx)}
-                                className="p-2 flex items-center justify-center cursor-pointer focus:outline-none"
+                                className="p-1.5 flex items-center justify-center cursor-pointer focus:outline-none"
                                 aria-label={`Go to slide ${idx + 1}`}
                             >
-                                <span className={`block h-2 rounded-full transition-colors ${idx === currentHeroSlide ? "bg-[#F59E0B] w-6" : "bg-white/60 hover:bg-white w-2"
-                                    }`} />
+                                <motion.span
+                                    layout
+                                    transition={{ type: "spring", stiffness: 400, damping: 28 }}
+                                    className={`block h-2 rounded-full ${idx === currentHeroSlide ? "bg-[#F59E0B] w-7" : "bg-white/60 hover:bg-white w-2"}`}
+                                />
                             </button>
                         ))}
                     </div>
+
+                    {isAutoPlay && (
+                        <div className="absolute bottom-0 inset-x-0 h-1 bg-white/10 z-20">
+                            <motion.div
+                                key={`progress-${currentHeroSlide}`}
+                                initial={{ width: "0%" }}
+                                animate={{ width: "100%" }}
+                                transition={{ duration: 5, ease: "linear" }}
+                                className="h-full bg-[#F59E0B]"
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -374,12 +421,13 @@ export default function Home() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <button
+                        <motion.button
+                            whileTap={{ scale: 0.96 }}
                             onClick={() => setIsMarqueeMode(!isMarqueeMode)}
                             className="btn btn-xs h-8 px-3 rounded-lg border border-[#CBD5E1] bg-[#FFFFFF] text-[#111827] hover:bg-[#F5F7FA] cursor-pointer text-xs font-medium"
                         >
                             {isMarqueeMode ? "Switch to manual scroll" : "Switch to auto stream"}
-                        </button>
+                        </motion.button>
                         {!isMarqueeMode && (
                             <div className="flex gap-1">
                                 <button
@@ -388,9 +436,7 @@ export default function Home() {
                                     title="Scroll left"
                                     aria-label="Scroll products left"
                                 >
-                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 19l-7-7 7-7" />
-                                    </svg>
+                                    <ChevronLeft className="w-3.5 h-3.5" />
                                 </button>
                                 <button
                                     onClick={() => handleScroll("right")}
@@ -398,9 +444,7 @@ export default function Home() {
                                     title="Scroll right"
                                     aria-label="Scroll products right"
                                 >
-                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 5l7 7-7 7" />
-                                    </svg>
+                                    <ChevronRight className="w-3.5 h-3.5" />
                                 </button>
                             </div>
                         )}
@@ -420,7 +464,7 @@ export default function Home() {
                                     <div key={`track-${trackIdx}`} className="marquee-track" aria-hidden={trackIdx === 2 ? "true" : undefined}>
                                         {products.map((product) => (
                                             <div key={`prod-${trackIdx}-${product.id}`} className="marquee-card">
-                                                <div className="card card-interactive bg-[#FFFFFF] w-full border border-[#E2E8F0] overflow-hidden hover:border-[#CBD5E1] text-left rounded-2xl h-full flex flex-col justify-between">
+                                                <SpotlightCard className="card bg-[#FFFFFF] w-full border border-[#E2E8F0] hover:border-[#CBD5E1] text-left rounded-2xl h-full">
                                                     <figure className="h-44 sm:h-48 w-full overflow-hidden bg-[#F5F7FA] shrink-0 relative">
                                                         <img
                                                             src={product.image}
@@ -470,7 +514,7 @@ export default function Home() {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </SpotlightCard>
                                             </div>
                                         ))}
                                     </div>
@@ -484,7 +528,7 @@ export default function Home() {
                         >
                             {products.map((product) => (
                                 <div key={product.id} className="carousel-item">
-                                    <div className="card bg-[#FFFFFF] w-80 sm:w-96 border border-[#E2E8F0] overflow-hidden text-left rounded-2xl">
+                                    <SpotlightCard className="card bg-[#FFFFFF] w-80 sm:w-96 border border-[#E2E8F0] text-left rounded-2xl">
                                         <figure className="h-48 w-full overflow-hidden bg-[#F5F7FA]">
                                             <img
                                                 src={product.image}
@@ -501,8 +545,7 @@ export default function Home() {
                                                     <span className="px-2 py-0.5 rounded bg-[#F5F7FA] border border-[#E2E8F0] text-xs font-medium text-[#4B5565]">
                                                         {product.category}
                                                     </span>
-                                                    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium ${product.stockLevel === "In Stock" ? "bg-emerald-50 text-[#16A34A] border border-emerald-200" : product.stockLevel === "Low Stock" ? "bg-amber-50 text-[#D97706] border border-amber-200" : "bg-rose-50 text-[#DC2626] border border-rose-200"
-                                                        }`}>
+                                                    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium ${product.stockLevel === "In Stock" ? "bg-emerald-50 text-[#16A34A] border border-emerald-200" : product.stockLevel === "Low Stock" ? "bg-amber-50 text-[#D97706] border border-amber-200" : "bg-rose-50 text-[#DC2626] border border-rose-200"}`}>
                                                         <span className={`w-1.5 h-1.5 rounded-full ${product.stockLevel === "In Stock" ? "bg-[#16A34A]" : product.stockLevel === "Low Stock" ? "bg-[#D97706]" : "bg-[#DC2626]"}`} />
                                                         {product.stockLevel}
                                                     </span>
@@ -529,7 +572,7 @@ export default function Home() {
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </SpotlightCard>
                                 </div>
                             ))}
                         </div>
@@ -538,42 +581,41 @@ export default function Home() {
             </div>
 
             <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 text-left">
-                <div className="card bg-[#FFFFFF] p-6 rounded-2xl border border-[#E2E8F0] hover:border-[#CBD5E1] transition-colors">
-                    <div className="w-9 h-9 rounded-lg bg-[#F5F7FA] border border-[#E2E8F0] text-[#4B5565] flex items-center justify-center mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
+                <SpotlightCard className="card bg-[#FFFFFF] p-6 rounded-2xl border border-[#E2E8F0] hover:border-[#CBD5E1]">
+                    <div>
+                        <div className="w-9 h-9 rounded-lg bg-[#F5F7FA] border border-[#E2E8F0] text-[#0F2747] flex items-center justify-center mb-3">
+                            <Zap className="h-4 w-4" />
+                        </div>
+                        <h3 className="font-medium text-base text-[#111827] mb-1">Direct Refinery Sourcing</h3>
+                        <p className="text-xs text-[#4B5565] leading-relaxed">
+                            Refineries publish verified fuel inventory directly, reducing supply chain bottlenecks and middleman markups.
+                        </p>
                     </div>
-                    <h3 className="font-medium text-base text-[#111827] mb-1">Direct Refinery Sourcing</h3>
-                    <p className="text-xs text-[#4B5565] leading-relaxed">
-                        Refineries publish verified fuel inventory directly, reducing supply chain bottlenecks and middleman markups.
-                    </p>
-                </div>
+                </SpotlightCard>
 
-                <div className="card bg-[#FFFFFF] p-6 rounded-2xl border border-[#E2E8F0] hover:border-[#CBD5E1] transition-colors">
-                    <div className="w-9 h-9 rounded-lg bg-[#F5F7FA] border border-[#E2E8F0] text-[#4B5565] flex items-center justify-center mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-                        </svg>
+                <SpotlightCard className="card bg-[#FFFFFF] p-6 rounded-2xl border border-[#E2E8F0] hover:border-[#CBD5E1]">
+                    <div>
+                        <div className="w-9 h-9 rounded-lg bg-[#F5F7FA] border border-[#E2E8F0] text-[#0F2747] flex items-center justify-center mb-3">
+                            <Truck className="h-4 w-4" />
+                        </div>
+                        <h3 className="font-medium text-base text-[#111827] mb-1">Regional Dealer Network</h3>
+                        <p className="text-xs text-[#4B5565] leading-relaxed">
+                            Licensed dealers procure stock in bulk from refinery terminals and dispatch local deliveries to commercial buyers.
+                        </p>
                     </div>
-                    <h3 className="font-medium text-base text-[#111827] mb-1">Regional Dealer Network</h3>
-                    <p className="text-xs text-[#4B5565] leading-relaxed">
-                        Licensed dealers procure stock in bulk from refinery terminals and dispatch local deliveries to commercial buyers.
-                    </p>
-                </div>
+                </SpotlightCard>
 
-                <div className="card bg-[#FFFFFF] p-6 rounded-2xl border border-[#E2E8F0] hover:border-[#CBD5E1] transition-colors">
-                    <div className="w-9 h-9 rounded-lg bg-[#F5F7FA] border border-[#E2E8F0] text-[#4B5565] flex items-center justify-center mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                        </svg>
+                <SpotlightCard className="card bg-[#FFFFFF] p-6 rounded-2xl border border-[#E2E8F0] hover:border-[#CBD5E1]">
+                    <div>
+                        <div className="w-9 h-9 rounded-lg bg-[#F5F7FA] border border-[#E2E8F0] text-[#0F2747] flex items-center justify-center mb-3">
+                            <ShieldCheck className="h-4 w-4" />
+                        </div>
+                        <h3 className="font-medium text-base text-[#111827] mb-1">Scheduled Tanker Delivery</h3>
+                        <p className="text-xs text-[#4B5565] leading-relaxed">
+                            End-to-end shipment tracking with estimated transit times, destination depot validation, and e-POD custody receipts.
+                        </p>
                     </div>
-                    <h3 className="font-medium text-base text-[#111827] mb-1">Scheduled Tanker Delivery</h3>
-                    <p className="text-xs text-[#4B5565] leading-relaxed">
-                        End-to-end shipment tracking with estimated transit times, destination depot validation, and e-POD custody receipts.
-                    </p>
-                </div>
+                </SpotlightCard>
             </div>
 
             <div className="w-full mb-12 text-left">
@@ -606,9 +648,9 @@ export default function Home() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {publicReviews.map((rev) => (
-                            <div
+                            <SpotlightCard
                                 key={rev.orderId}
-                                className="card bg-white p-5 rounded-2xl border border-[#E2E8F0] flex flex-col justify-between"
+                                className="card bg-white p-5 rounded-2xl border border-[#E2E8F0]"
                             >
                                 <div>
                                     <div className="flex items-center justify-between gap-2 mb-3">
@@ -639,7 +681,7 @@ export default function Home() {
                                         {rev.createdAt ? new Date(rev.createdAt).toLocaleDateString() : "Recent"}
                                     </span>
                                 </div>
-                            </div>
+                            </SpotlightCard>
                         ))}
                     </div>
                 )}
@@ -668,12 +710,14 @@ export default function Home() {
                         Read our public knowledge base covering Euro V diesel specs, HazMat transport protocols, Platts wholesale pricing, and 4-digit PIN delivery receipts.
                     </p>
                 </div>
-                <Link
-                    href="/faq"
-                    className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] font-medium text-xs rounded-lg px-5 h-10 border-none shrink-0"
-                >
-                    View FAQ
-                </Link>
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} className="shrink-0">
+                    <Link
+                        href="/faq"
+                        className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] font-medium text-xs rounded-lg px-5 h-10 border-none"
+                    >
+                        View FAQ
+                    </Link>
+                </motion.div>
             </div>
         </main>
     );
