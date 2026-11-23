@@ -11,8 +11,9 @@
   --color-card-white: #FFFFFF;
   --color-success-green: #16A34A;
   --color-error-red: #DC2626;
-  --color-dark-slate: #1E293B;
-  --color-secondary-gray: #64748B;
+  --color-dark-slate: #111827;
+  --color-secondary-gray: #4B5565;
+  --color-muted-gray: #6B7487;
 }
 
 html,
@@ -21,8 +22,9 @@ body {
   max-width: 100vw;
   overflow-x: hidden;
   background-color: #F5F7FA;
-  color: #1E293B;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #111827;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   min-width: 0;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -44,6 +46,7 @@ input,
 select,
 textarea {
   touch-action: manipulation;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 *,
@@ -57,8 +60,8 @@ textarea {
 .badge {
   height: auto !important;
   min-height: 1.5rem !important;
-  padding-left: 0.65rem !important;
-  padding-right: 0.65rem !important;
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
   padding-top: 0.25rem !important;
   padding-bottom: 0.25rem !important;
   white-space: nowrap !important;
@@ -67,6 +70,8 @@ textarea {
   justify-content: center !important;
   line-height: 1.25 !important;
   flex-shrink: 0 !important;
+  border-radius: 0.375rem !important;
+  font-weight: 500 !important;
 }
 
 :root,
@@ -75,19 +80,20 @@ textarea {
 html {
   --color-base-100: #FFFFFF;
   --color-base-200: #F5F7FA;
-  --color-base-300: #E2E8F0;
-  --color-base-content: #1E293B;
+  --color-base-300: #ECEFF4;
+  --color-base-content: #111827;
 }
 
 .card {
   background-color: #FFFFFF !important;
-  color: #1E293B !important;
+  color: #111827 !important;
 }
 
 .btn-primary {
   background-color: #0F2747 !important;
   color: #FFFFFF !important;
   border-color: #0F2747 !important;
+  font-weight: 500 !important;
 }
 
 .btn-primary:hover {
@@ -97,9 +103,9 @@ html {
 
 .btn-accent {
   background-color: #F59E0B !important;
-  color: #1E293B !important;
+  color: #111827 !important;
   border-color: #F59E0B !important;
-  font-weight: 700 !important;
+  font-weight: 500 !important;
 }
 
 .btn-accent:hover {
@@ -109,16 +115,16 @@ html {
 }
 
 .btn-secondary {
-  background-color: #F59E0B !important;
-  color: #1E293B !important;
-  border-color: #F59E0B !important;
-  font-weight: 700 !important;
+  background-color: #ECEFF4 !important;
+  color: #111827 !important;
+  border-color: #CBD5E1 !important;
+  font-weight: 500 !important;
 }
 
 .btn-secondary:hover {
-  background-color: #D97706 !important;
-  border-color: #D97706 !important;
-  color: #FFFFFF !important;
+  background-color: #E2E8F0 !important;
+  border-color: #94A3B8 !important;
+  color: #111827 !important;
 }
 
 @keyframes marquee-rtl {
@@ -141,7 +147,7 @@ html {
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   perspective: 1000px;
-  animation: marquee-rtl 28s linear infinite;
+  animation: marquee-rtl 32s linear infinite;
 }
 
 .animate-carousel-rtl:hover {
@@ -177,7 +183,7 @@ html {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(8px);
   }
 
   to {
@@ -187,7 +193,7 @@ html {
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 ::-webkit-scrollbar {
@@ -196,14 +202,14 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-  background: #F1F5F9;
+  background: #F5F7FA;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #CBD5E1;
-  border-radius: 9999px;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
-}
+}
