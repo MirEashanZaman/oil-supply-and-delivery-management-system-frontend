@@ -60,7 +60,7 @@ export const TrackingTab: React.FC<TrackingTabProps> = ({
                 Live Fleet GPS & Telematics Dispatch
               </h3>
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-emerald-50 border border-emerald-200 text-[#16A34A] font-mono text-[11px] font-medium">
-                <Radio className="w-3 h-3 animate-pulse" />
+                <Radio className="w-3 h-3" />
                 <span>60fps Stream Active</span>
               </span>
               <LiveTelemetrySpark color="#16A34A" active={true} />
