@@ -246,28 +246,28 @@ export default function Dashboard() {
 
         return [
             {
-                label: "Total Revenue",
+                label: "Total revenue",
                 value: `$${revenue.toLocaleString(undefined, { maximumFractionDigits: 2 })}`,
                 detail: `${orders.length} order entries`,
-                tint: "bg-emerald-50 text-emerald-700 border-emerald-200",
+                tint: "bg-white text-[#111827] border-[#E2E8F0]",
             },
             {
-                label: "Pending Orders",
+                label: "Pending orders",
                 value: String(pendingOrders),
-                detail: `${inTransitOrders} in transit / processing`,
-                tint: "bg-amber-50 text-amber-700 border-amber-200",
+                detail: `${inTransitOrders} in transit`,
+                tint: "bg-white text-[#111827] border-[#E2E8F0]",
             },
             {
-                label: "Low Stock Items",
+                label: "Low stock items",
                 value: String(lowStockProducts),
                 detail: `${totalInventory} units in stock`,
-                tint: "bg-rose-50 text-rose-700 border-rose-200",
+                tint: "bg-white text-[#111827] border-[#E2E8F0]",
             },
             {
-                label: "Network Reach",
+                label: "Network reach",
                 value: String(partnerCount || activeCustomers || 0),
-                detail: `${activeCustomers} customers / ${partnerCount} partners`,
-                tint: "bg-sky-50 text-sky-700 border-sky-200",
+                detail: `${activeCustomers} customers · ${partnerCount} partners`,
+                tint: "bg-white text-[#111827] border-[#E2E8F0]",
             },
         ];
     }, [orders, products, allMergedUsers, availableSuppliers, availableDealers]);
@@ -2443,12 +2443,12 @@ export default function Dashboard() {
                         </div>
                     )}
 
-                    <div className="mt-4 sm:mt-6 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+                    <div className="mt-4 sm:mt-6 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                         {dashboardMetrics.map((metric) => (
-                            <div key={metric.label} className={`rounded-xl sm:rounded-2xl border p-3 sm:p-4 shadow-sm ${metric.tint}`}>
-                                <div className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.08em] opacity-80 truncate">{metric.label}</div>
-                                <div className="mt-1.5 sm:mt-3 text-lg sm:text-2xl font-black leading-none">{metric.value}</div>
-                                <div className="mt-1.5 text-[10px] sm:text-xs font-medium opacity-80 line-clamp-1">{metric.detail}</div>
+                            <div key={metric.label} className={`rounded-xl border p-4 ${metric.tint}`}>
+                                <div className="text-xs font-medium text-[#6B7487] truncate">{metric.label}</div>
+                                <div className="mt-2 font-mono tabular-nums text-xl sm:text-2xl font-semibold text-[#111827] leading-none">{metric.value}</div>
+                                <div className="mt-1.5 font-mono tabular-nums text-xs text-[#4B5565] line-clamp-1">{metric.detail}</div>
                             </div>
                         ))}
                     </div>
