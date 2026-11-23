@@ -282,7 +282,7 @@ export default function Login() {
             });
 
             if (res.data?.success) {
-                setSuccessMessage("Password reset successfully! You can now log in with your new password.");
+                setSuccessMessage("Password reset complete. You can now sign in with your new password");
                 setShowForgotPassword(false);
                 setForgotStep("EMAIL");
                 setForgotEmail("");
@@ -312,14 +312,14 @@ export default function Login() {
                         {!showForgotPassword ? (
                             <>
                                 <div className="flex items-center gap-3 mb-4">
-                                    <div className="p-3 bg-[#0F2747]/10 text-[#0F2747] rounded-xl">
-                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    <div className="p-2.5 bg-[#F5F7FA] border border-[#E2E8F0] text-[#4B5565] rounded-lg">
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                         </svg>
                                     </div>
                                     <div>
-                                        <h1 className="text-2xl font-bold text-[#1E293B] tracking-tight">Account Login</h1>
-                                        <p className="text-xs text-[#64748B]">Sign in to access orders, delivery status, and inventory</p>
+                                        <h1 className="text-xl font-medium text-[#111827]">Account Sign In</h1>
+                                        <p className="text-xs text-[#6B7487]">Access orders, delivery status, and inventory</p>
                                     </div>
                                 </div>
 
