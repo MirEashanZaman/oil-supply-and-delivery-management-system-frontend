@@ -250,7 +250,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         const status = String(o.status ?? "").trim().toLowerCase().replace(/[-_]/g, " ").replace(/\s+/g, " ");
         return status === "pending" || status === "confirmed";
       }).length,
-      tone: "bg-amber-50 text-amber-700 border-amber-200",
+      tone: "bg-white text-[#111827] border-[#E2E8F0]",
     },
     {
       label: "Processing",
@@ -258,15 +258,15 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         const status = String(o.status ?? "").trim().toLowerCase().replace(/[-_]/g, " ").replace(/\s+/g, " ");
         return status === "processing" || status === "in transit";
       }).length,
-      tone: "bg-sky-50 text-sky-700 border-sky-200",
+      tone: "bg-white text-[#111827] border-[#E2E8F0]",
     },
     {
-      label: "Out for Delivery",
+      label: "Out for delivery",
       count: orders.filter((o) => {
         const status = String(o.status ?? "").trim().toLowerCase().replace(/[-_]/g, " ").replace(/\s+/g, " ");
         return status === "out for delivery" || status === "on the way";
       }).length,
-      tone: "bg-violet-50 text-violet-700 border-violet-200",
+      tone: "bg-white text-[#111827] border-[#E2E8F0]",
     },
     {
       label: "Delivered",
@@ -274,7 +274,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         const status = String(o.status ?? "").trim().toLowerCase().replace(/[-_]/g, " ").replace(/\s+/g, " ");
         return status === "delivered" || status === "completed";
       }).length,
-      tone: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      tone: "bg-white text-[#111827] border-[#E2E8F0]",
     },
   ];
 
@@ -352,59 +352,59 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
   return (
     <div className="space-y-6 text-left">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="card bg-card-white border border-[#E2E8F0] p-5 rounded-2xl shadow-sm hover:border-[#F59E0B] transition">
+        <div className="card bg-white border border-[#E2E8F0] p-5 rounded-2xl">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-secondary-gray">
-              {isCustomer ? "Total Purchases" : "Yearly Gross Revenue"}
+            <span className="text-xs font-medium text-[#6B7487]">
+              {isCustomer ? "Total purchases" : "Yearly gross revenue"}
             </span>
           </div>
-          <div className="text-2xl font-black text-[#0F2747]">
+          <div className="font-mono tabular-nums text-2xl font-semibold text-[#111827]">
             ${totalSpentOrRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <div className="text-xs text-secondary-gray mt-1">
-            {totalVolumeLiters.toLocaleString()} Liters petroleum traded
+          <div className="font-mono tabular-nums text-xs text-[#4B5565] mt-1">
+            {totalVolumeLiters.toLocaleString()} L petroleum traded
           </div>
         </div>
 
-        <div className="card bg-card-white border border-[#E2E8F0] p-5 rounded-2xl shadow-sm hover:border-[#16A34A] transition">
+        <div className="card bg-white border border-[#E2E8F0] p-5 rounded-2xl">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-secondary-gray">
-              {isCustomer ? "Monthly Expense" : "Monthly Revenue (MTD)"}
+            <span className="text-xs font-medium text-[#6B7487]">
+              {isCustomer ? "Monthly expense" : "Monthly revenue (MTD)"}
             </span>
           </div>
-          <div className="text-2xl font-black text-[#16A34A]">
+          <div className="font-mono tabular-nums text-2xl font-semibold text-[#111827]">
             ${currentMonthRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <div className="text-xs text-secondary-gray mt-1">
-            ~{currentMonthVolume.toLocaleString()} Liters this month
+          <div className="font-mono tabular-nums text-xs text-[#4B5565] mt-1">
+            {currentMonthVolume.toLocaleString()} L vs prior month
           </div>
         </div>
 
-        <div className="card bg-card-white border border-[#E2E8F0] p-5 rounded-2xl shadow-sm hover:border-emerald-500 transition">
+        <div className="card bg-white border border-[#E2E8F0] p-5 rounded-2xl">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-secondary-gray">
-              Fulfillment Rate (OTD)
+            <span className="text-xs font-medium text-[#6B7487]">
+              Fulfillment rate
             </span>
           </div>
-          <div className="text-2xl font-black text-emerald-600">
+          <div className="font-mono tabular-nums text-2xl font-semibold text-[#16A34A]">
             {orders.length > 0 ? Math.round((deliveredOrdersCount / orders.length) * 100) : 100}%
           </div>
-          <div className="text-xs text-secondary-gray mt-1">
-            {deliveredOrdersCount} delivered · {activeDeliveries.length} in-transit
+          <div className="font-mono tabular-nums text-xs text-[#4B5565] mt-1">
+            {deliveredOrdersCount} delivered · {activeDeliveries.length} in transit
           </div>
         </div>
 
-        <div className="card bg-card-white border border-[#E2E8F0] p-5 rounded-2xl shadow-sm hover:border-[#F59E0B] transition">
+        <div className="card bg-white border border-[#E2E8F0] p-5 rounded-2xl">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-secondary-gray">
-              Live Fleet & Catalog
+            <span className="text-xs font-medium text-[#6B7487]">
+              Active catalog
             </span>
           </div>
-          <div className="text-2xl font-black text-[#F59E0B]">
-            {products.length} Fuels
+          <div className="font-mono tabular-nums text-2xl font-semibold text-[#111827]">
+            {products.length} grades
           </div>
-          <div className="text-xs text-secondary-gray mt-1">
-            {pendingOrdersCount} pending queue items
+          <div className="font-mono tabular-nums text-xs text-[#4B5565] mt-1">
+            {pendingOrdersCount} queued orders
           </div>
         </div>
       </div>
@@ -454,7 +454,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
               type="text"
               value={searchLocationQuery}
               onChange={(e) => setSearchLocationQuery(e.target.value)}
-              placeholder={`Current location: ${userData?.address || "408/1 Kuratoli, Dhaka"} (type area to recalculate distance...)`}
+              placeholder="Filter by depot or city"
               className="bg-transparent text-xs text-dark-slate w-full focus:outline-none"
             />
             {searchLocationQuery && (
@@ -490,16 +490,16 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-1.5">
                     <span
-                      className={`badge text-[10px] font-bold px-2 py-0.5 border-none ${
+                      className={`badge text-[11px] font-medium px-2 py-0.5 border-none ${
                         partner.role === "Supplier"
-                          ? "bg-amber-100 text-amber-800"
-                          : "bg-sky-100 text-sky-800"
+                          ? "bg-amber-50 text-[#D97706]"
+                          : "bg-[#F5F7FA] text-[#4B5565]"
                       }`}
                     >
-                      {partner.role === "Supplier" ? "🏭 Refinery Supplier" : "⛽ Licensed Dealer"}
+                      {partner.role === "Supplier" ? "Refinery Supplier" : "Licensed Dealer"}
                     </span>
-                    <span className="text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
-                      📍 {partner.distanceKm} km away
+                    <span className="font-mono tabular-nums text-xs font-medium text-[#16A34A] bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
+                      {partner.distanceKm} km
                     </span>
                   </div>
 
@@ -582,13 +582,13 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                   <div className="text-[10px] font-bold text-slate-500 mb-1 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">
                     {formattedValue}
                   </div>
-                  <div className="w-full max-w-[28px] bg-slate-200 rounded-t-lg overflow-hidden flex flex-col justify-end h-full">
+                  <div className="w-full max-w-[28px] bg-[#ECEFF4] rounded-t-md overflow-hidden flex flex-col justify-end h-full">
                     <div
                       style={{ height: `${data.barHeightPercent}%` }}
-                      className="w-full bg-gradient-to-t from-[#0F2747] to-[#1E3A8A] group-hover:from-[#F59E0B] group-hover:to-[#D97706] transition-all rounded-t-md"
+                      className="w-full bg-[#0F2747] group-hover:bg-[#F59E0B] transition-colors rounded-t-md"
                     />
                   </div>
-                  <span className="text-[10px] sm:text-xs font-bold text-slate-600 mt-2">
+                  <span className="font-mono text-[11px] font-medium text-[#4B5565] mt-2">
                     {data.month}
                   </span>
                 </div>
@@ -599,37 +599,37 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
             <div className="p-3.5 rounded-xl bg-white border border-slate-200 flex items-center justify-between">
               <div>
-                <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">Average Monthly Throughput</span>
-                <strong className="text-base text-[#0F2747]">
+                <span className="text-xs font-medium text-[#6B7487] block">Average monthly throughput</span>
+                <strong className="font-mono tabular-nums text-base font-semibold text-[#111827]">
                   ${(totalSpentOrRevenue / 12).toLocaleString(undefined, { maximumFractionDigits: 0 })} / mo
                 </strong>
               </div>
-              <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-200">
-                +14.2% YoY
+              <span className="font-mono tabular-nums text-xs font-medium text-[#16A34A] bg-emerald-50 px-2 py-1 rounded-md border border-emerald-200">
+                +14.2% vs last year
               </span>
             </div>
 
             <div className="p-3.5 rounded-xl bg-white border border-slate-200 flex items-center justify-between">
               <div>
-                <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">Total Fuel Volume</span>
-                <strong className="text-base text-[#0F2747]">
-                  {totalVolumeLiters.toLocaleString()} Liters
+                <span className="text-xs font-medium text-[#6B7487] block">Total fuel volume</span>
+                <strong className="font-mono tabular-nums text-base font-semibold text-[#111827]">
+                  {totalVolumeLiters.toLocaleString()} L
                 </strong>
               </div>
-              <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-1 rounded-lg border border-amber-200">
-                Bulk Grade
+              <span className="text-xs font-medium text-[#D97706] bg-amber-50 px-2 py-1 rounded-md border border-amber-200">
+                Bulk grade
               </span>
             </div>
 
             <div className="p-3.5 rounded-xl bg-white border border-slate-200 flex items-center justify-between">
               <div>
-                <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">Completed Consignments</span>
-                <strong className="text-base text-[#0F2747]">
-                  {deliveredOrdersCount} Batches
+                <span className="text-xs font-medium text-[#6B7487] block">Completed consignments</span>
+                <strong className="font-mono tabular-nums text-base font-semibold text-[#111827]">
+                  {deliveredOrdersCount} batches
                 </strong>
               </div>
-              <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded-lg border border-blue-200">
-                100% Tamper Proof
+              <span className="text-xs font-medium text-[#4B5565] bg-[#F5F7FA] px-2 py-1 rounded-md border border-[#E2E8F0]">
+                e-POD verified
               </span>
             </div>
           </div>
@@ -653,10 +653,10 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
           {lifecycleStages.map((stage) => (
-            <div key={stage.label} className={`rounded-2xl border p-4 ${stage.tone}`}>
-              <div className="text-[10px] font-bold uppercase tracking-[0.14em] opacity-80">{stage.label}</div>
-              <div className="mt-3 text-2xl font-black leading-none">{stage.count}</div>
-              <div className="mt-2 text-[11px] font-medium opacity-80">Current operational count</div>
+            <div key={stage.label} className={`rounded-xl border p-4 ${stage.tone}`}>
+              <div className="text-xs font-medium text-[#6B7487]">{stage.label}</div>
+              <div className="mt-2 font-mono tabular-nums text-2xl font-semibold leading-none">{stage.count}</div>
+              <div className="mt-2 text-xs text-[#4B5565]">Current operational count</div>
             </div>
           ))}
         </div>
