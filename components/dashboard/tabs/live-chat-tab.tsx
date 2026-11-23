@@ -331,13 +331,15 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
             className="h-80 sm:h-96 overflow-y-auto bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 sm:p-4 space-y-2.5 sm:space-y-3 w-full scroll-smooth"
           >
             {messages.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center p-6 text-[#64748B]">
-                <div className="w-12 h-12 rounded-full bg-[#0F2747]/10 flex items-center justify-center text-[#0F2747] font-bold text-lg mb-2">
-                  💬
+              <div className="h-full flex flex-col items-center justify-center text-center p-6 text-[#6B7487]">
+                <div className="w-10 h-10 rounded-lg bg-white border border-[#E2E8F0] flex items-center justify-center text-[#4B5565] mb-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                  </svg>
                 </div>
-                <p className="text-sm font-bold text-[#1E293B]">No dispatch messages yet</p>
-                <p className="text-xs text-[#64748B] max-w-sm mt-1">
-                  Start the conversation by selecting a topic and typing a message below.
+                <p className="text-sm font-medium text-[#111827]">No dispatch messages yet</p>
+                <p className="text-xs text-[#6B7487] max-w-sm mt-1">
+                  Start the conversation by selecting a topic and typing a message below
                 </p>
               </div>
             ) : (
@@ -347,53 +349,53 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
                 return (
                   <div
                     key={m.id}
-                    className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border text-xs transition-all w-full max-w-full break-words ${
+                    className={`p-3 sm:p-4 rounded-xl border text-xs transition-colors w-full max-w-full break-words ${
                       isBot
-                        ? "bg-gradient-to-r from-[#0F2747]/10 via-[#F59E0B]/10 to-[#0F2747]/5 border-[#F59E0B]/40 shadow-sm"
+                        ? "bg-[#F5F7FA] border-[#CBD5E1]"
                         : isMe
-                          ? "bg-[#0F2747]/5 border-[#0F2747]/20"
+                          ? "bg-white border-[#CBD5E1]"
                           : "bg-white border-[#E2E8F0]"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-1.5 mb-1 flex-wrap">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="font-bold text-[#1E293B] text-xs sm:text-sm flex items-center gap-1">
-                          {isBot && <span className="text-[#D97706]">🤖</span>}
+                        <span className="font-medium text-[#111827] text-xs sm:text-sm flex items-center gap-1.5">
+                          {isBot && <span className="w-2 h-2 rounded-full bg-[#F59E0B]" aria-hidden="true" />}
                           {m.sender}
                         </span>
                         <span
-                          className={`badge text-[9px] sm:text-[10px] font-bold uppercase border-none px-1.5 sm:px-2 py-0.5 ${
+                          className={`badge text-[10px] font-medium border-none px-2 py-0.5 ${
                             isBot
-                              ? "bg-[#D97706] text-white shadow-xs"
+                              ? "bg-[#0F2747] text-white"
                               : m.role === "Supplier"
                               ? "bg-[#0F2747] text-[#F59E0B]"
                               : m.role === "Dealer"
-                                ? "bg-[#F59E0B]/20 text-[#D97706]"
+                                ? "bg-amber-50 text-[#D97706]"
                                 : m.role === "Admin"
-                                  ? "bg-[#16A34A]/20 text-[#16A34A]"
-                                  : "bg-[#64748B]/15 text-[#1E293B]"
+                                  ? "bg-emerald-50 text-[#16A34A]"
+                                  : "bg-[#F5F7FA] text-[#4B5565]"
                             }`}
                         >
                           {m.role || "User"}
                         </span>
                         {isMe && (
-                          <span className="badge bg-[#16A34A] text-white text-[8px] sm:text-[9px] font-bold border-none px-1.5 py-0.5">
+                          <span className="badge bg-emerald-50 text-[#16A34A] text-[10px] font-medium border border-emerald-200 px-1.5 py-0.5">
                             You
                           </span>
                         )}
                       </div>
-                      <span className="text-[9px] sm:text-[10px] text-[#64748B] font-mono">{m.timestamp}</span>
+                      <span className="text-[10px] text-[#6B7487] font-mono tabular-nums">{m.timestamp}</span>
                     </div>
                     <div className="mb-1.5">
                       <span
-                        className={`inline-block text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-md ${
-                          isBot ? "text-[#B45309] bg-[#FDE68A]" : "text-[#0F2747] bg-[#0F2747]/10"
+                        className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded ${
+                          isBot ? "text-[#D97706] bg-amber-50" : "text-[#4B5565] bg-[#F5F7FA]"
                         }`}
                       >
                         {m.topic}
                       </span>
                     </div>
-                    <p className="text-[#1E293B] text-xs sm:text-sm leading-relaxed whitespace-pre-wrap break-words">{m.message}</p>
+                    <p className="text-[#111827] text-xs sm:text-sm leading-relaxed whitespace-pre-wrap break-words">{m.message}</p>
                   </div>
                 );
               })
@@ -405,7 +407,7 @@ export const LiveChatTab: React.FC<LiveChatTabProps> = ({ userData }) => {
             <button
               type="button"
               onClick={() => scrollToBottom(true)}
-              className="absolute bottom-3 right-4 bg-[#0F2747] hover:bg-[#163860] text-white shadow-md border border-white/20 rounded-full px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition-all animate-bounce cursor-pointer z-10"
+              className="absolute bottom-3 right-4 bg-[#0F2747] hover:bg-[#163860] text-white border border-white/20 rounded-lg px-3 py-1.5 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer z-10"
             >
               <span>Scroll to latest</span>
               <span>↓</span>
