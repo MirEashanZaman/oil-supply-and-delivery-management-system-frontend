@@ -2,8 +2,29 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import axios from "axios";
+import { motion, AnimatePresence } from "motion/react";
+import {
+    Navigation,
+    Satellite,
+    RefreshCw,
+    X,
+    Play,
+    Pause,
+    Maximize2,
+    Crosshair,
+    Phone,
+    AlertTriangle,
+    Thermometer,
+    Gauge,
+    Activity,
+    Droplets,
+    MapPin,
+    ShieldCheck,
+    Compass,
+} from "lucide-react";
 import type * as LeafletType from "leaflet";
 import { API_ENDPOINT } from "@/lib/api";
+import { AnimatedMetricValue, LiveTelemetrySpark } from "./ui/motion-primitives";
 
 export type TrackingOrderData = {
     id: number | string;
@@ -43,37 +64,36 @@ interface UberMapTrackerProps {
     isEmbedded?: boolean;
 }
 
-// High-resolution 18-point corridor from Eastern Refinery Depot (Kuril/Uttara) to Customer Facility (Dhanmondi)
 const DEFAULT_ROUTE_COORDS: [number, number][] = [
-    [23.8340, 90.4195], // 0: Eastern Refinery Fuel Terminal
+    [23.8340, 90.4195],
     [23.8295, 90.4198],
     [23.8242, 90.4210],
-    [23.8180, 90.4205], // 3: Kuril Flyover Checkpoint
+    [23.8180, 90.4205],
     [23.8115, 90.4220],
     [23.8045, 90.4232],
-    [23.7975, 90.4240], // 6: Pragati Sarani Transit Hub
+    [23.7975, 90.4240],
     [23.7905, 90.4245],
     [23.7840, 90.4238],
-    [23.7785, 90.4185], // 9: Gulshan-Badda Link Corridor
+    [23.7785, 90.4185],
     [23.7760, 90.4110],
     [23.7735, 90.4025],
-    [23.7690, 90.3955], // 12: Mohakhali Flyover Sector
+    [23.7690, 90.3955],
     [23.7630, 90.3915],
     [23.7575, 90.3880],
     [23.7530, 90.3835],
     [23.7495, 90.3790],
-    [23.7465, 90.3750], // 17: Customer Intake Terminal
+    [23.7465, 90.3750],
 ];
 
 const DEFAULT_DEPOT_COORDS: [number, number] = DEFAULT_ROUTE_COORDS[0];
 const DEFAULT_DEST_COORDS: [number, number] = DEFAULT_ROUTE_COORDS[DEFAULT_ROUTE_COORDS.length - 1];
 
 const CORRIDOR_CHECKPOINTS = [
-    { label: "Refinery Terminal", threshold: 0 },
-    { label: "Kuril Flyover", threshold: 22 },
-    { label: "Pragati Sarani", threshold: 45 },
-    { label: "Gulshan Link", threshold: 68 },
-    { label: "Intake Manifold", threshold: 96 },
+    { label: "Refinery Terminal", threshold: 0, code: "DEP-01" },
+    { label: "Kuril Flyover", threshold: 22, code: "CHK-02" },
+    { label: "Pragati Sarani", threshold: 45, code: "CHK-03" },
+    { label: "Gulshan Link", threshold: 68, code: "CHK-04" },
+    { label: "Intake Manifold", threshold: 96, code: "MAN-05" },
 ];
 
 const MAP_TILES = {
@@ -145,7 +165,6 @@ function interpolateRoute(progressPercent: number): {
 }
 
 export default function UberMapTracker({ order, userRole = "customer", onClose, isEmbedded = false }: UberMapTrackerProps) {
-    // Default to smooth 60fps live route stream so the user immediately sees fluid real-time motion
     const [trackingMode, setTrackingMode] = useState<"route-sim" | "device-gps">("route-sim");
     const [mapTheme, setMapTheme] = useState<keyof typeof MAP_TILES>("dark");
     const [isBroadcastingGps, setIsBroadcastingGps] = useState<boolean>(false);
@@ -223,7 +242,6 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
         fetchLiveTracking();
     }, [order?.id]);
 
-    // Initialize Leaflet Map once
     useEffect(() => {
         let isMounted = true;
 
@@ -255,37 +273,35 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
             }).addTo(map);
             tileLayerRef.current = tileLayer;
 
-            // Origin Depot Beacon
             const depotIcon = L.divIcon({
                 className: "custom-depot-icon",
                 html: `
-                    <div style="position: relative; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;">
+                    <div style="position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
                         <div class="animate-radar-ripple" style="position: absolute; inset: 2px; border-radius: 9999px; background: rgba(245, 158, 11, 0.35);"></div>
-                        <div style="position: relative; background-color: #D97706; color: white; border-radius: 9999px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; font-family: monospace; box-shadow: 0 4px 12px rgba(217, 119, 6, 0.5); border: 2px solid #FEF3C7;">
+                        <div style="position: relative; background-color: #D97706; color: white; border-radius: 9999px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; font-family: monospace; box-shadow: 0 4px 14px rgba(217, 119, 6, 0.55); border: 2px solid #FEF3C7;">
                             DEP
                         </div>
                     </div>
                 `,
-                iconSize: [42, 42],
-                iconAnchor: [21, 21],
+                iconSize: [44, 44],
+                iconAnchor: [22, 22],
             });
             L.marker(DEFAULT_DEPOT_COORDS, { icon: depotIcon })
                 .addTo(map)
                 .bindPopup("<b>Eastern Refinery Fuel Terminal</b><br>Dispatch Origin Manifold");
 
-            // Destination Facility Beacon
             const destIcon = L.divIcon({
                 className: "custom-dest-icon",
                 html: `
-                    <div style="position: relative; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;">
+                    <div style="position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
                         <div class="animate-radar-ripple" style="position: absolute; inset: 2px; border-radius: 9999px; background: rgba(16, 185, 129, 0.35);"></div>
-                        <div style="position: relative; background-color: #059669; color: white; border-radius: 9999px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; font-family: monospace; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.5); border: 2px solid #D1FAE5;">
+                        <div style="position: relative; background-color: #059669; color: white; border-radius: 9999px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; font-family: monospace; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.55); border: 2px solid #D1FAE5;">
                             DEST
                         </div>
                     </div>
                 `,
-                iconSize: [42, 42],
-                iconAnchor: [21, 21],
+                iconSize: [44, 44],
+                iconAnchor: [22, 22],
             });
             L.marker(DEFAULT_DEST_COORDS, { icon: destIcon })
                 .addTo(map)
@@ -293,17 +309,15 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
 
             const interp = interpolateRoute(progressRef.current);
 
-            // Subtle corridor under-glow
             const glowLine = L.polyline(DEFAULT_ROUTE_COORDS, {
-                color: "#0EA5E9",
-                weight: 10,
+                color: "#38BDF8",
+                weight: 12,
                 opacity: 0.14,
                 lineCap: "round",
                 lineJoin: "round",
             }).addTo(map);
             glowPolylineRef.current = glowLine;
 
-            // Traveled path (solid emerald-cyan)
             const traveledLine = L.polyline(interp.traveledPath, {
                 color: "#10B981",
                 weight: 5,
@@ -313,7 +327,6 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
             }).addTo(map);
             traveledPolylineRef.current = traveledLine;
 
-            // Remaining path (animated flowing dash)
             const remainingLine = L.polyline(interp.remainingPath, {
                 color: "#38BDF8",
                 weight: 4,
@@ -325,29 +338,28 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
             }).addTo(map);
             remainingPolylineRef.current = remainingLine;
 
-            // Live Tanker Carrier Icon (created once; rotated smoothly via DOM query without re-mounting!)
             const vehicleIcon = L.divIcon({
                 className: "custom-vehicle-marker",
                 html: `
-                    <div style="position: relative; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
-                        <div class="animate-radar-ripple" style="position: absolute; inset: 4px; background: rgba(56, 189, 248, 0.42); border-radius: 9999px;"></div>
-                        <div class="animate-radar-ripple-delayed" style="position: absolute; inset: 8px; border: 1.5px solid rgba(56, 189, 248, 0.65); border-radius: 9999px;"></div>
-                        <div class="tanker-heading-arrow" style="position: relative; width: 36px; height: 36px; background-color: #0F172A; border: 2.5px solid #38BDF8; border-radius: 9999px; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(0,0,0,0.75); transform: rotate(${interp.heading}deg); will-change: transform;">
-                            <svg style="width: 18px; height: 18px; color: #38BDF8;" fill="currentColor" viewBox="0 0 24 24">
+                    <div style="position: relative; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                        <div class="animate-radar-ripple" style="position: absolute; inset: 4px; background: rgba(56, 189, 248, 0.40); border-radius: 9999px;"></div>
+                        <div class="animate-radar-ripple-delayed" style="position: absolute; inset: 8px; border: 1.5px solid rgba(56, 189, 248, 0.70); border-radius: 9999px;"></div>
+                        <div class="tanker-heading-arrow" style="position: relative; width: 38px; height: 38px; background: radial-gradient(circle at 30% 30%, #1E293B, #090D16); border: 2.5px solid #38BDF8; border-radius: 9999px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(0,0,0,0.8); transform: rotate(${interp.heading}deg); will-change: transform;">
+                            <svg style="width: 19px; height: 19px; color: #38BDF8;" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z" />
                             </svg>
                         </div>
                     </div>
                 `,
-                iconSize: [56, 56],
-                iconAnchor: [28, 28],
+                iconSize: [60, 60],
+                iconAnchor: [30, 30],
             });
 
             const vehicleMarker = L.marker(interp.coords, { icon: vehicleIcon, zIndexOffset: 1000 }).addTo(map);
             vehicleMarker.bindPopup(`
                 <div style="font-family: Inter, sans-serif; font-size: 12px; color: #0F172A; padding: 2px;">
                     <b style="color: #0F2747;">Tanker Unit #${order?.id || "4491"}</b><br/>
-                    Status: <b>Live Telemetry Stream</b><br/>
+                    Status: <b>Live 60fps Telemetry</b><br/>
                     Speed: <b>${gpsSpeed} km/h</b>
                 </div>
             `);
@@ -388,7 +400,6 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
         };
     }, []);
 
-    // Switch map tiles cleanly
     useEffect(() => {
         if (!leafletMapRef.current || !tileLayerRef.current) return;
         import("leaflet").then((L) => {
@@ -403,7 +414,6 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
         });
     }, [mapTheme]);
 
-    // 60fps requestAnimationFrame live trajectory loop
     useEffect(() => {
         if (trackingMode !== "route-sim" || isPaused) return;
 
@@ -415,7 +425,6 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
             const dtSeconds = Math.min((now - lastTime) / 1000, 0.1);
             lastTime = now;
 
-            // Full route takes ~42 seconds at 1x speed
             const deltaPercent = dtSeconds * 2.4 * simSpeedMultiplier;
             let nextProgress = progressRef.current + deltaPercent;
             if (nextProgress >= 100) {
@@ -425,7 +434,6 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
 
             const { coords, heading, traveledPath, remainingPath } = interpolateRoute(nextProgress);
 
-            // Direct 60fps Leaflet layer updates without React re-render overhead
             if (vehicleMarkerRef.current) {
                 vehicleMarkerRef.current.setLatLng(coords);
                 const el = vehicleMarkerRef.current.getElement();
@@ -447,8 +455,7 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
                 leafletMapRef.current.panTo(coords, { animate: false });
             }
 
-            // Sync React telemetry HUD at 10Hz (every 100ms) for smooth live counters
-            if (now - lastUiSyncTime >= 100) {
+            if (now - lastUiSyncTime >= 110) {
                 lastUiSyncTime = now;
                 const wave = Math.sin(nextProgress * 0.25);
                 setSimProgress(Number(nextProgress.toFixed(1)));
@@ -469,7 +476,6 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
         return () => cancelAnimationFrame(animationFrameId);
     }, [trackingMode, isPaused, simSpeedMultiplier, followCarrier]);
 
-    // Real Device Hardware GPS mode
     useEffect(() => {
         if (trackingMode !== "device-gps") {
             if (geoWatchIdRef.current !== null) {
@@ -605,14 +611,16 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
 
     const content = (
         <div className={`bg-[#0B111E] rounded-2xl border border-[#1E293B] w-full ${isEmbedded ? "" : "max-w-6xl max-h-[96vh]"} flex flex-col overflow-hidden text-white`}>
-            {/* Top Telemetry Command Bar */}
+            {/* Top Telemetry Command Bar with 21st.dev sliding mode pill */}
             <div className="bg-[#0F172A] border-b border-[#1E293B] px-5 py-3.5 flex items-center justify-between flex-wrap gap-3">
                 <div className="flex items-center gap-3">
                     <div className="relative w-10 h-10 rounded-xl bg-[#162238] border border-sky-500/30 flex items-center justify-center text-sky-400">
-                        <span className="animate-radar-ripple absolute inset-1 rounded-lg bg-sky-400/20" />
-                        <svg className="w-5 h-5 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                        </svg>
+                        <motion.span
+                            animate={{ scale: [1, 1.4, 1], opacity: [0.45, 0, 0.45] }}
+                            transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+                            className="absolute inset-0.5 rounded-xl bg-sky-400/25"
+                        />
+                        <Navigation className="w-4 h-4 relative" />
                     </div>
                     <div>
                         <div className="flex items-center gap-2 flex-wrap">
@@ -640,31 +648,34 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
                     </div>
                 </div>
 
-                {/* Mode & Map Controls */}
+                {/* 21st.dev Spring-Animated Mode Pill & Controls */}
                 <div className="flex items-center gap-2 flex-wrap">
-                    <div className="flex items-center bg-[#162033] p-1 rounded-xl border border-[#263449]">
-                        <button
-                            type="button"
-                            onClick={() => setTrackingMode("route-sim")}
-                            className={`px-3 py-1 text-xs font-medium rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${trackingMode === "route-sim"
-                                ? "bg-sky-500 text-slate-950 font-semibold"
-                                : "text-slate-300 hover:text-white"
-                                }`}
-                        >
-                            <span className={`w-1.5 h-1.5 rounded-full ${trackingMode === "route-sim" ? "bg-slate-950" : "bg-sky-400"}`} />
-                            <span>Live Route Stream</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={() => setTrackingMode("device-gps")}
-                            className={`px-3 py-1 text-xs font-medium rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${trackingMode === "device-gps"
-                                ? "bg-emerald-500 text-slate-950 font-semibold"
-                                : "text-slate-300 hover:text-white"
-                                }`}
-                        >
-                            <span>Hardware GPS</span>
-                        </button>
+                    <div className="flex items-center bg-[#162033] p-1 rounded-xl border border-[#263449] relative">
+                        {(["route-sim", "device-gps"] as const).map((mode) => {
+                            const active = trackingMode === mode;
+                            return (
+                                <button
+                                    key={mode}
+                                    type="button"
+                                    onClick={() => setTrackingMode(mode)}
+                                    className={`relative px-3 py-1 text-xs font-medium rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 z-10 ${
+                                        active ? "text-slate-950 font-semibold" : "text-slate-300 hover:text-white"
+                                    }`}
+                                >
+                                    {active && (
+                                        <motion.span
+                                            layoutId="tracker-mode-pill"
+                                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                            className={`absolute inset-0 rounded-lg -z-10 ${
+                                                mode === "route-sim" ? "bg-sky-400" : "bg-emerald-400"
+                                            }`}
+                                        />
+                                    )}
+                                    <Satellite className="w-3.5 h-3.5" />
+                                    <span>{mode === "route-sim" ? "Live Route Stream" : "Hardware GPS"}</span>
+                                </button>
+                            );
+                        })}
                     </div>
 
                     <select
@@ -678,17 +689,16 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
                         <option value="satellite">Orbital Satellite</option>
                     </select>
 
-                    <button
+                    <motion.button
+                        whileTap={{ scale: 0.95 }}
                         type="button"
                         onClick={fetchLiveTracking}
                         disabled={isRefreshing}
                         className="px-3 py-1.5 rounded-xl bg-[#162033] hover:bg-[#1E293B] border border-[#263449] text-xs font-medium text-slate-200 transition-colors cursor-pointer flex items-center gap-1.5"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" className={`h-3.5 w-3.5 ${isRefreshing ? "animate-spin text-sky-400" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
+                        <RefreshCw className={`h-3.5 w-3.5 ${isRefreshing ? "animate-spin text-sky-400" : ""}`} />
                         <span>Sync</span>
-                    </button>
+                    </motion.button>
 
                     {!isEmbedded && (
                         <button
@@ -697,42 +707,40 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
                             className="w-8 h-8 rounded-xl bg-[#162033] hover:bg-[#1E293B] border border-[#263449] text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
                             aria-label="Close tracker"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <X className="h-4 w-4" />
                         </button>
                     )}
                 </div>
             </div>
 
-            {/* Live Route Progress & Checkpoint Ribbon */}
-            <div className="bg-[#111A2E] border-b border-[#1E293B] px-5 py-3 space-y-2.5">
+            {/* Interactive Motion Corridor Progress & Checkpoint Stepper */}
+            <div className="bg-[#111A2E] border-b border-[#1E293B] px-5 py-3.5 space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center gap-2.5">
-                        <span className="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                        <MapPin className="w-4 h-4 text-emerald-400 shrink-0" />
                         <span className="text-xs sm:text-sm font-medium text-white">
                             {isDelivered
                                 ? "Custody transfer completed at destination manifold"
-                                : `Active dispatch corridor: ${originLocation} → ${destinationLocation}`}
+                                : `${originLocation} → ${destinationLocation}`}
                         </span>
                     </div>
                     <div className="flex items-center gap-3 font-mono tabular-nums text-xs">
                         <span className="text-slate-400">
-                            Corridor progress: <strong className="text-sky-400">{simProgress.toFixed(0)}%</strong>
+                            Corridor: <AnimatedMetricValue value={simProgress} decimals={0} suffix="%" className="text-sky-400 font-semibold" />
                         </span>
                         <span className="text-slate-600">|</span>
                         <span className="text-emerald-400 font-semibold">
-                            ETA {remainingEtaMins} min ({remainingDistanceKm.toFixed(2)} km)
+                            ETA <AnimatedMetricValue value={remainingEtaMins} decimals={0} suffix=" min" /> (<AnimatedMetricValue value={remainingDistanceKm} decimals={2} suffix=" km" />)
                         </span>
                     </div>
                 </div>
 
-                {/* Interactive Animated Corridor Progress Bar */}
                 <div className="relative pt-1">
                     <div className="w-full h-2 bg-[#1E293B] rounded-full overflow-hidden">
-                        <div
-                            className="h-full bg-emerald-400 rounded-full transition-[width] duration-100"
-                            style={{ width: `${Math.min(100, Math.max(2, simProgress))}%` }}
+                        <motion.div
+                            className="h-full bg-gradient-to-r from-emerald-500 to-sky-400 rounded-full"
+                            animate={{ width: `${Math.min(100, Math.max(2, simProgress))}%` }}
+                            transition={{ type: "tween", ease: "linear", duration: 0.1 }}
                         />
                     </div>
                     <input
@@ -745,53 +753,90 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
                         aria-label="Corridor route progress"
                         className="absolute inset-0 w-full h-4 opacity-0 cursor-pointer"
                     />
-                    <div className="flex justify-between items-center mt-2">
-                        {CORRIDOR_CHECKPOINTS.map((cp) => {
+                    <div className="flex justify-between items-center mt-2.5">
+                        {CORRIDOR_CHECKPOINTS.map((cp, idx) => {
                             const reached = simProgress >= cp.threshold;
+                            const nextThreshold = CORRIDOR_CHECKPOINTS[idx + 1]?.threshold ?? 101;
+                            const isCurrentStage = simProgress >= cp.threshold && simProgress < nextThreshold;
                             return (
-                                <button
+                                <motion.button
                                     key={cp.label}
+                                    whileHover={{ y: -1 }}
+                                    whileTap={{ scale: 0.96 }}
                                     type="button"
                                     onClick={() => handleScrubProgress(cp.threshold)}
                                     className="flex items-center gap-1.5 text-[11px] cursor-pointer group"
                                 >
+                                    <span className="relative flex items-center justify-center">
+                                        {isCurrentStage && (
+                                            <motion.span
+                                                animate={{ scale: [1, 1.9, 1], opacity: [0.8, 0, 0.8] }}
+                                                transition={{ duration: 1.6, repeat: Infinity }}
+                                                className="absolute w-2.5 h-2.5 rounded-full bg-sky-400"
+                                            />
+                                        )}
+                                        <span
+                                            className={`relative w-2 h-2 rounded-full transition-colors ${
+                                                isCurrentStage
+                                                    ? "bg-sky-400"
+                                                    : reached
+                                                      ? "bg-emerald-400"
+                                                      : "bg-slate-600 group-hover:bg-slate-400"
+                                            }`}
+                                        />
+                                    </span>
                                     <span
-                                        className={`w-2 h-2 rounded-full transition-colors ${reached ? "bg-emerald-400" : "bg-slate-600 group-hover:bg-slate-400"}`}
-                                    />
-                                    <span className={`hidden sm:inline transition-colors ${reached ? "text-slate-200 font-medium" : "text-slate-500 group-hover:text-slate-300"}`}>
+                                        className={`hidden sm:inline transition-colors ${
+                                            isCurrentStage
+                                                ? "text-sky-300 font-medium"
+                                                : reached
+                                                  ? "text-slate-200 font-medium"
+                                                  : "text-slate-500 group-hover:text-slate-300"
+                                        }`}
+                                    >
                                         {cp.label}
                                     </span>
-                                </button>
+                                    <span className="font-mono text-[10px] text-slate-500 hidden md:inline">
+                                        {cp.code}
+                                    </span>
+                                </motion.button>
                             );
                         })}
                     </div>
                 </div>
             </div>
 
-            {gpsError && (
-                <div className="bg-amber-950/70 border-b border-amber-700/50 px-5 py-2 text-xs text-amber-200 flex items-center justify-between">
-                    <span>{gpsError}</span>
-                    <button
-                        type="button"
-                        onClick={() => setGpsError(null)}
-                        className="underline font-medium hover:text-white cursor-pointer"
+            <AnimatePresence>
+                {gpsError && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="bg-amber-950/70 border-b border-amber-700/50 px-5 py-2 text-xs text-amber-200 flex items-center justify-between"
                     >
-                        Dismiss
-                    </button>
-                </div>
-            )}
+                        <span>{gpsError}</span>
+                        <button
+                            type="button"
+                            onClick={() => setGpsError(null)}
+                            className="underline font-medium hover:text-white cursor-pointer"
+                        >
+                            Dismiss
+                        </button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-            {/* Main Split Body: Live Map + Telemetry Side Panel */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 flex-1 overflow-y-auto min-h-[420px]">
+            {/* Main Split Body */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 flex-1 overflow-y-auto min-h-[430px]">
                 <div className="lg:col-span-8 flex flex-col border-b lg:border-b-0 lg:border-r border-[#1E293B] relative">
                     <div
                         ref={mapContainerRef}
                         className="w-full h-[360px] sm:h-[440px] bg-[#090E1A] relative z-0"
                     />
 
-                    {/* Live Floating Telemetry Overlay Top-Left */}
+                    {/* Live Floating Telemetry HUD Top-Left */}
                     <div className="absolute top-3 left-3 z-10 flex flex-col gap-2 pointer-events-none">
-                        <div className="bg-[#0F172A]/90 px-3 py-1.5 rounded-xl border border-slate-700/80 text-xs font-mono tabular-nums flex items-center gap-2">
+                        <div className="bg-[#0F172A]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700/80 text-xs font-mono tabular-nums flex items-center gap-2.5">
                             <span className="relative flex h-2.5 w-2.5">
                                 <span className="animate-radar-ripple absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
@@ -799,10 +844,14 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
                             <span className="text-emerald-400 font-medium">
                                 {trackingMode === "device-gps" ? "HARDWARE GPS LOCK" : "60FPS TELEMETRY STREAM"}
                             </span>
+                            <LiveTelemetrySpark color="#38BDF8" active={!isPaused} />
                         </div>
 
-                        <div className="bg-[#0F172A]/90 px-3 py-1.5 rounded-xl border border-slate-700/80 text-[11px] text-slate-300 font-mono tabular-nums">
-                            Precision: <span className="text-emerald-400">±{gpsAccuracy}m</span> · Heading: <span className="text-sky-400">{gpsHeading}°</span>
+                        <div className="bg-[#0F172A]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700/80 text-[11px] text-slate-300 font-mono tabular-nums flex items-center gap-2">
+                            <Compass className="w-3.5 h-3.5 text-sky-400" />
+                            <span>Precision: <strong className="text-emerald-400">±{gpsAccuracy}m</strong></span>
+                            <span>·</span>
+                            <span>Bearing: <strong className="text-sky-400">{gpsHeading}°</strong></span>
                         </div>
                     </div>
 
@@ -810,93 +859,136 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
                     <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 flex-wrap justify-end">
                         {trackingMode === "route-sim" && (
                             <>
-                                <button
+                                <motion.button
+                                    whileTap={{ scale: 0.94 }}
                                     type="button"
                                     onClick={() => setIsPaused((p) => !p)}
-                                    className="px-2.5 py-1.5 rounded-xl bg-[#0F172A]/90 hover:bg-[#1E293B] border border-slate-700 text-xs font-medium text-slate-200 transition-colors cursor-pointer"
+                                    className="px-2.5 py-1.5 rounded-xl bg-[#0F172A]/90 hover:bg-[#1E293B] border border-slate-700 text-xs font-medium text-slate-200 transition-colors cursor-pointer inline-flex items-center gap-1.5"
                                 >
-                                    {isPaused ? "Resume" : "Pause"}
-                                </button>
-                                <button
+                                    {isPaused ? <Play className="w-3.5 h-3.5 text-emerald-400" /> : <Pause className="w-3.5 h-3.5 text-amber-400" />}
+                                    <span>{isPaused ? "Resume" : "Pause"}</span>
+                                </motion.button>
+                                <motion.button
+                                    whileTap={{ scale: 0.94 }}
                                     type="button"
                                     onClick={() => setSimSpeedMultiplier((s) => (s === 1 ? 2 : s === 2 ? 4 : 1))}
                                     className="px-2.5 py-1.5 rounded-xl bg-[#0F172A]/90 hover:bg-[#1E293B] border border-slate-700 font-mono tabular-nums text-xs font-medium text-sky-400 transition-colors cursor-pointer"
                                     title="Toggle simulation playback speed"
                                 >
                                     {simSpeedMultiplier}x Speed
-                                </button>
+                                </motion.button>
                             </>
                         )}
 
-                        <button
+                        <motion.button
+                            whileTap={{ scale: 0.94 }}
                             type="button"
                             onClick={() => {
                                 const next = !followCarrier;
                                 setFollowCarrier(next);
                                 if (next) handleCenterVehicle();
                             }}
-                            className={`px-2.5 py-1.5 rounded-xl border text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${followCarrier
-                                ? "bg-sky-500 text-slate-950 border-sky-400 font-semibold"
+                            className={`px-2.5 py-1.5 rounded-xl border text-xs font-medium transition-colors cursor-pointer inline-flex items-center gap-1.5 ${followCarrier
+                                ? "bg-sky-400 text-slate-950 border-sky-300 font-semibold"
                                 : "bg-[#0F172A]/90 hover:bg-[#1E293B] border-slate-700 text-slate-200"
                                 }`}
                         >
-                            <span>{followCarrier ? "Following Carrier" : "Follow Carrier"}</span>
-                        </button>
+                            <Crosshair className="w-3.5 h-3.5" />
+                            <span>{followCarrier ? "Following" : "Follow Carrier"}</span>
+                        </motion.button>
 
-                        <button
+                        <motion.button
+                            whileTap={{ scale: 0.94 }}
                             type="button"
                             onClick={handleFitRoute}
-                            className="px-2.5 py-1.5 rounded-xl bg-[#0F172A]/90 hover:bg-[#1E293B] border border-slate-700 text-xs font-medium text-slate-200 transition-colors cursor-pointer"
+                            className="px-2.5 py-1.5 rounded-xl bg-[#0F172A]/90 hover:bg-[#1E293B] border border-slate-700 text-xs font-medium text-slate-200 transition-colors cursor-pointer inline-flex items-center gap-1.5"
                         >
-                            Fit Corridor
-                        </button>
+                            <Maximize2 className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>Fit Corridor</span>
+                        </motion.button>
                     </div>
 
-                    {/* Live Animated Sensor Gauges Bottom Bar */}
+                    {/* 21st.dev Live Animated Sensor Telemetry Deck */}
                     <div className="p-4 bg-[#0F172A] border-t border-[#1E293B] space-y-3">
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-left">
-                            <div className="bg-[#162033] p-2.5 rounded-xl border border-[#263449]">
-                                <span className="text-[11px] text-slate-400 block">Carrier velocity</span>
-                                <span className="text-base font-semibold text-white font-mono tabular-nums">{gpsSpeed} km/h</span>
-                                <div className="w-full h-1 bg-slate-800 rounded-full mt-1.5 overflow-hidden">
-                                    <div className="h-full bg-sky-400 transition-[width] duration-150" style={{ width: `${Math.min(100, (gpsSpeed / 80) * 100)}%` }} />
+                            <motion.div whileHover={{ y: -2 }} className="bg-[#162033] p-3 rounded-xl border border-[#263449]">
+                                <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+                                    <span>Carrier velocity</span>
+                                    <Gauge className="w-3.5 h-3.5 text-sky-400" />
                                 </div>
-                            </div>
-                            <div className="bg-[#162033] p-2.5 rounded-xl border border-[#263449]">
-                                <span className="text-[11px] text-slate-400 block">Distance remaining</span>
-                                <span className="text-base font-semibold text-emerald-400 font-mono tabular-nums">{remainingDistanceKm.toFixed(2)} km</span>
-                                <div className="w-full h-1 bg-slate-800 rounded-full mt-1.5 overflow-hidden">
-                                    <div className="h-full bg-emerald-400 transition-[width] duration-150" style={{ width: `${Math.min(100, simProgress)}%` }} />
+                                <AnimatedMetricValue value={gpsSpeed} decimals={0} suffix=" km/h" className="text-base font-semibold text-white block" />
+                                <div className="w-full h-1 bg-slate-800 rounded-full mt-2 overflow-hidden">
+                                    <motion.div
+                                        className="h-full bg-sky-400"
+                                        animate={{ width: `${Math.min(100, (gpsSpeed / 80) * 100)}%` }}
+                                        transition={{ duration: 0.2 }}
+                                    />
                                 </div>
-                            </div>
-                            <div className="bg-[#162033] p-2.5 rounded-xl border border-[#263449]">
-                                <span className="text-[11px] text-slate-400 block">Estimated arrival</span>
-                                <span className="text-base font-semibold text-amber-300 font-mono tabular-nums">{remainingEtaMins} mins</span>
-                                <div className="w-full h-1 bg-slate-800 rounded-full mt-1.5 overflow-hidden">
-                                    <div className="h-full bg-amber-400 transition-[width] duration-150" style={{ width: `${Math.max(10, 100 - remainingEtaMins * 3)}%` }} />
+                            </motion.div>
+
+                            <motion.div whileHover={{ y: -2 }} className="bg-[#162033] p-3 rounded-xl border border-[#263449]">
+                                <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+                                    <span>Distance left</span>
+                                    <Navigation className="w-3.5 h-3.5 text-emerald-400" />
                                 </div>
-                            </div>
-                            <div className="bg-[#162033] p-2.5 rounded-xl border border-[#263449]">
-                                <span className="text-[11px] text-slate-400 block">Cargo temperature</span>
-                                <span className="text-base font-semibold text-white font-mono tabular-nums">{fuelTempCelsius}°C <span className="text-[11px] text-emerald-400 font-normal">Normal</span></span>
-                                <div className="w-full h-1 bg-slate-800 rounded-full mt-1.5 overflow-hidden">
-                                    <div className="h-full bg-emerald-400 transition-[width] duration-150" style={{ width: "62%" }} />
+                                <AnimatedMetricValue value={remainingDistanceKm} decimals={2} suffix=" km" className="text-base font-semibold text-emerald-400 block" />
+                                <div className="w-full h-1 bg-slate-800 rounded-full mt-2 overflow-hidden">
+                                    <motion.div
+                                        className="h-full bg-emerald-400"
+                                        animate={{ width: `${Math.min(100, simProgress)}%` }}
+                                        transition={{ duration: 0.2 }}
+                                    />
                                 </div>
-                            </div>
+                            </motion.div>
+
+                            <motion.div whileHover={{ y: -2 }} className="bg-[#162033] p-3 rounded-xl border border-[#263449]">
+                                <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+                                    <span>Estimated arrival</span>
+                                    <Activity className="w-3.5 h-3.5 text-amber-400" />
+                                </div>
+                                <AnimatedMetricValue value={remainingEtaMins} decimals={0} suffix=" mins" className="text-base font-semibold text-amber-300 block" />
+                                <div className="w-full h-1 bg-slate-800 rounded-full mt-2 overflow-hidden">
+                                    <motion.div
+                                        className="h-full bg-amber-400"
+                                        animate={{ width: `${Math.max(10, 100 - remainingEtaMins * 3)}%` }}
+                                        transition={{ duration: 0.2 }}
+                                    />
+                                </div>
+                            </motion.div>
+
+                            <motion.div whileHover={{ y: -2 }} className="bg-[#162033] p-3 rounded-xl border border-[#263449]">
+                                <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+                                    <span>Cargo temperature</span>
+                                    <Thermometer className="w-3.5 h-3.5 text-emerald-400" />
+                                </div>
+                                <AnimatedMetricValue value={fuelTempCelsius} decimals={1} suffix="°C" className="text-base font-semibold text-white block" />
+                                <div className="w-full h-1 bg-slate-800 rounded-full mt-2 overflow-hidden">
+                                    <div className="h-full bg-emerald-400 w-[62%]" />
+                                </div>
+                            </motion.div>
                         </div>
 
                         <div className="grid grid-cols-3 gap-2.5 text-left">
                             <div className="bg-[#131C2E] px-3 py-2 rounded-lg border border-[#1E293B] flex items-center justify-between">
-                                <span className="text-[11px] text-slate-400">Manifold pressure</span>
-                                <span className="text-xs font-medium text-amber-300 font-mono tabular-nums">{tankPressureBar} bar</span>
+                                <span className="text-[11px] text-slate-400 inline-flex items-center gap-1.5">
+                                    <Gauge className="w-3 h-3 text-amber-400" />
+                                    <span>Manifold</span>
+                                </span>
+                                <AnimatedMetricValue value={tankPressureBar} decimals={2} suffix=" bar" className="text-xs font-medium text-amber-300" />
                             </div>
                             <div className="bg-[#131C2E] px-3 py-2 rounded-lg border border-[#1E293B] flex items-center justify-between">
-                                <span className="text-[11px] text-slate-400">Flowmeter rate</span>
-                                <span className="text-xs font-medium text-sky-300 font-mono tabular-nums">{flowRateLpm} L/min</span>
+                                <span className="text-[11px] text-slate-400 inline-flex items-center gap-1.5">
+                                    <Activity className="w-3 h-3 text-sky-400" />
+                                    <span>Flowmeter</span>
+                                </span>
+                                <AnimatedMetricValue value={flowRateLpm} decimals={0} suffix=" L/min" className="text-xs font-medium text-sky-300" />
                             </div>
                             <div className="bg-[#131C2E] px-3 py-2 rounded-lg border border-[#1E293B] flex items-center justify-between">
-                                <span className="text-[11px] text-slate-400">Tank ullage</span>
-                                <span className="text-xs font-medium text-emerald-300 font-mono tabular-nums">{ullagePercent}%</span>
+                                <span className="text-[11px] text-slate-400 inline-flex items-center gap-1.5">
+                                    <Droplets className="w-3 h-3 text-emerald-400" />
+                                    <span>Ullage</span>
+                                </span>
+                                <AnimatedMetricValue value={ullagePercent} decimals={1} suffix="%" className="text-xs font-medium text-emerald-300" />
                             </div>
                         </div>
                     </div>
@@ -954,41 +1046,47 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
                                     <p className="text-[11px] text-slate-400">
                                         HazMat Class 3 Tanker Operator
                                     </p>
-                                    <p className="text-[11px] text-emerald-400 font-mono tabular-nums">
-                                        1,420 verified dispatches
+                                    <p className="text-[11px] text-emerald-400 font-mono tabular-nums inline-flex items-center gap-1">
+                                        <ShieldCheck className="w-3.5 h-3.5" />
+                                        <span>1,420 verified dispatches</span>
                                     </p>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-2 pt-1">
-                                <button
+                                <motion.button
+                                    whileTap={{ scale: 0.96 }}
                                     type="button"
                                     onClick={() => setCallAlert("Connecting carrier radio channel to Md. Rafiqul Islam (+880 1711-449182)")}
                                     className="py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                    </svg>
+                                    <Phone className="h-3.5 w-3.5" />
                                     <span>Call Driver</span>
-                                </button>
+                                </motion.button>
 
-                                <button
+                                <motion.button
+                                    whileTap={{ scale: 0.96 }}
                                     type="button"
                                     onClick={() => setCallAlert("Dispatch control center notified for Order #" + order.id)}
                                     className="py-2 rounded-lg bg-[#263449] hover:bg-[#334155] text-slate-200 font-medium text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                    </svg>
+                                    <AlertTriangle className="h-3.5 w-3.5 text-amber-400" />
                                     <span>Alert Desk</span>
-                                </button>
+                                </motion.button>
                             </div>
 
-                            {callAlert && (
-                                <div className="p-2.5 rounded-lg bg-sky-950/80 border border-sky-700/50 text-[11px] text-sky-200 animate-fadeIn">
-                                    {callAlert}
-                                </div>
-                            )}
+                            <AnimatePresence>
+                                {callAlert && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 6 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -4 }}
+                                        className="p-2.5 rounded-lg bg-sky-950/80 border border-sky-700/50 text-[11px] text-sky-200"
+                                    >
+                                        {callAlert}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
 
                         <div className="bg-[#162033] p-4 rounded-xl border border-[#263449] space-y-2.5">
@@ -1028,13 +1126,14 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
                     </div>
 
                     <div className="pt-2">
-                        <button
+                        <motion.button
+                            whileTap={{ scale: 0.98 }}
                             type="button"
                             onClick={onClose}
                             className="w-full py-2.5 rounded-xl bg-[#1E293B] hover:bg-[#263449] border border-slate-700 text-white font-medium text-xs transition-colors cursor-pointer"
                         >
                             Return to Orders
-                        </button>
+                        </motion.button>
                     </div>
                 </div>
             </div>
