@@ -1,0 +1,25 @@
+name: Render & Vercel Keep-Alive Heartbeat
+
+on:
+  schedule:
+    # Runs every 10 minutes so Render never reaches its 15-minute idle shutdown threshold
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping-services:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render Backend & Vercel Keep-Alive Endpoint
+        run: |
+          for url in \
+            "https://oil-supply-delivery-management-system.onrender.com/health" \
+            "https://oil-supply-delivery-management-system-backend.onrender.com/health" \
+            "${{ vars.NEXT_PUBLIC_API_ENDPOINT }}/health" \
+            "${{ vars.NEXT_PUBLIC_APP_URL }}/api/keep-alive"; do
+            if [ -n "$url" ] && [ "$url" != "/health" ] && [ "$url" != "/api/keep-alive" ]; then
+              echo "Pinging $url ..."
+              curl -sS -L --max-time 45 -A "GitHub-Actions-KeepAlive/1.0" "$url" || true
+              echo ""
+            fi
+          done
