@@ -119,8 +119,8 @@ export const AdminMonitoringTab: React.FC<AdminMonitoringTabProps> = ({
               type="text"
               value={userSearchQuery}
               onChange={(e) => setUserSearchQuery(e.target.value)}
-              placeholder="Search users by username or email..."
-              className="w-full pl-10 pr-10 py-2.5 border border-[#E2E8F0] rounded-xl text-sm bg-[#F8FAFC] text-dark-slate placeholder-secondary-gray focus:outline-none focus:border-primary focus:bg-white transition-all shadow-inner"
+              placeholder="Search users"
+              className="w-full pl-10 pr-10 py-2.5 border border-[#E2E8F0] rounded-lg text-sm bg-[#F5F7FA] text-dark-slate placeholder-secondary-gray focus:outline-none focus:border-primary focus:bg-white transition-colors"
             />
             {userSearchQuery && (
               <button
@@ -285,8 +285,8 @@ export const AdminMonitoringTab: React.FC<AdminMonitoringTabProps> = ({
           <div className="w-full max-w-[1400px] overflow-hidden rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] shadow-sm">
             <div className="flex items-center justify-between border-b border-[#E2E8F0] px-6 py-4">
               <div>
-                <h2 className="text-4xl font-extrabold leading-none tracking-[-0.04em] text-[#0F2747]">Create New User</h2>
-                <p className="mt-2 text-sm text-[#64748B]">Add a new account for any role in the system.</p>
+                <h2 className="text-xl font-medium text-[#111827]">Create New User</h2>
+                <p className="mt-1 text-xs text-[#6B7487]">Add a new account for any role in the system</p>
               </div>
               <button
                 type="button"
