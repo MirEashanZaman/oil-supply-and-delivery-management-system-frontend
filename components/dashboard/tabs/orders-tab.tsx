@@ -100,7 +100,7 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
     setReviews(updated);
 
     setReviewSubmitting(false);
-    setReviewSuccessMsg("Thank you! Your delivery feedback and rating have been recorded.");
+    setReviewSuccessMsg("Your delivery feedback and rating have been recorded");
     setTimeout(() => {
       setReviewingOrder(null);
       setReviewSuccessMsg(null);
@@ -178,7 +178,7 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
                       Order #{item.id}
                     </h3>
                     <span
-                      className={`text-xs px-2.5 py-0.5 rounded font-bold uppercase ${isConfirmed
+                      className={`text-xs px-2.5 py-0.5 rounded font-medium ${isConfirmed
                         ? "bg-green-100 text-success-green border border-green-200"
                         : isRejected
                           ? "bg-red-100 text-error-red border border-red-200"
@@ -191,29 +191,29 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
                                 : "bg-blue-50 text-primary border border-blue-100"
                         }`}
                     >
-                      {item.status ? item.status.toUpperCase() : "PENDING"}
+                      {item.status ? item.status : "Pending"}
                     </span>
                     {distanceKm !== undefined && (
-                      <span className="flex items-center gap-1 text-[11px] font-bold text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded border border-sky-200">
-                        <span>📍 {distanceKm} km away</span>
-                        {transitMinutes && <span className="text-slate-500 font-medium">({transitMinutes} mins)</span>}
+                      <span className="flex items-center gap-1 font-mono tabular-nums text-[11px] font-medium text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded border border-sky-200">
+                        <span>{distanceKm} km away</span>
+                        {transitMinutes && <span className="text-slate-500">({transitMinutes} mins)</span>}
                       </span>
                     )}
                     {isDelivered && existingReview && (
-                      <span className="flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                        <span>★ {existingReview.rating}/5</span>
-                        <span className="text-slate-500 font-medium">Reviewed</span>
+                      <span className="flex items-center gap-1 font-mono tabular-nums text-[11px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                        <span>{existingReview.rating}.0/5.0</span>
+                        <span className="text-slate-500">Reviewed</span>
                       </span>
                     )}
                   </div>
 
                   <p className="text-sm text-dark-slate">
-                    Product: <span className="font-semibold text-primary">{item.product?.name || "Petroleum Fuel"}</span> (Qty: {item.quantity})
+                    Product: <span className="font-medium text-primary">{item.product?.name || "Petroleum Fuel"}</span> (Qty: <span className="font-mono tabular-nums">{item.quantity}</span>)
                   </p>
 
                   {!isCustomer && item.customerName && (
                     <p className="text-xs text-secondary-gray">
-                      Customer: <strong className="text-dark-slate">{item.customerName}</strong> ({item.customerEmail || "Buyer"})
+                      Customer: <strong className="text-dark-slate font-medium">{item.customerName}</strong> ({item.customerEmail || "Buyer"})
                     </p>
                   )}
 
@@ -222,8 +222,8 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
                   </p>
 
                   {isDelivered && existingReview?.comment && (
-                    <p className="text-xs text-slate-600 bg-slate-50 p-2 rounded-lg border border-slate-200 italic mt-1">
-                      "{existingReview.comment}"
+                    <p className="text-xs text-slate-600 bg-slate-50 p-2 rounded-lg border border-slate-200 mt-1">
+                      &ldquo;{existingReview.comment}&rdquo;
                     </p>
                   )}
                 </div>
@@ -436,7 +436,7 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
                       key={star}
                       type="button"
                       onClick={() => setRating(star)}
-                      className={`text-2xl transition-transform hover:scale-110 cursor-pointer ${star <= rating ? "text-amber-500" : "text-slate-300"}`}
+                      className={`text-2xl transition-colors cursor-pointer ${star <= rating ? "text-amber-500" : "text-slate-300"}`}
                       aria-label={`${star} star rating`}
                     >
                       ★
