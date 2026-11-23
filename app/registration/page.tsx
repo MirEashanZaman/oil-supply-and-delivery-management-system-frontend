@@ -181,9 +181,9 @@ export default function Registration() {
 
             if (res.status === 200 || res.status === 201) {
                 if (result.data.title === "Deliveryman") {
-                    setSuccessMessage("Deliveryman registration submitted successfully! Your account is pending administrator approval before you can log in. Redirecting...");
+                    setSuccessMessage("Deliveryman registration submitted. Your account is pending administrator approval before sign in");
                 } else {
-                    setSuccessMessage("Registration successful! Redirecting to login page...");
+                    setSuccessMessage("Registration complete. Redirecting to sign in...");
                 }
 
                 setUsername("");
@@ -235,14 +235,14 @@ export default function Registration() {
                 <div className="card bg-[#FFFFFF] shadow-md border border-[#E2E8F0] rounded-2xl w-full">
                     <div className="card-body p-4 sm:p-8">
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="p-3 bg-[#0F2747]/10 text-[#0F2747] rounded-xl">
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                            <div className="p-2.5 bg-[#F5F7FA] border border-[#E2E8F0] text-[#4B5565] rounded-lg">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                                 </svg>
                             </div>
                             <div>
-                                <h1 className="text-2xl font-bold text-[#1E293B] tracking-tight">Create Account</h1>
-                                <p className="text-xs text-[#64748B]">Choose your role and register to begin trading or ordering</p>
+                                <h1 className="text-xl font-medium text-[#111827]">Create Account</h1>
+                                <p className="text-xs text-[#6B7487]">Select your operational role to register</p>
                             </div>
                         </div>
 
