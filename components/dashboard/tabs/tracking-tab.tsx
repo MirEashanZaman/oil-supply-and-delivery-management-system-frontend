@@ -52,11 +52,6 @@ export const TrackingTab: React.FC<TrackingTabProps> = ({
       <div className="card bg-white border border-[#E2E8F0] rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-start sm:items-center gap-3.5">
           <div className="relative w-10 h-10 rounded-xl bg-[#0F2747] text-white flex items-center justify-center shrink-0">
-            <motion.span
-              animate={{ scale: [1, 1.45, 1], opacity: [0.5, 0, 0.5] }}
-              transition={{ duration: 2.2, repeat: Infinity, ease: "easeOut" }}
-              className="absolute inset-0 rounded-xl bg-sky-400/30"
-            />
             <Navigation className="w-4 h-4 text-sky-300" />
           </div>
           <div>
