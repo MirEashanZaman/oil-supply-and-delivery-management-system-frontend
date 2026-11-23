@@ -23,7 +23,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
   onOpenPostProductModal,
   onRemoveFromPortfolio,
 }) => {
-  const [inventorySearchQuery, setInventorySearchQuery] = useState("");
+  const [inventorySearchQuery] = useState("");
   const role = getRolePath(userData?.title || userData?.role);
   const isSupplier = role === "supplier";
   const isDealer = role === "dealer";
@@ -73,67 +73,62 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
     <div className="w-full text-left animate-fadeIn space-y-6">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1E293B]">
-            {isSupplier ? "My Supply Portfolio" : "My Stock Inventory & Forecasts"}
+          <h1 className="text-xl sm:text-2xl font-medium text-[#111827]">
+            {isSupplier ? "My Supply Portfolio" : "Stock Inventory & Replenishment"}
           </h1>
-          <p className="text-sm text-[#64748B]">
+          <p className="text-xs sm:text-sm text-[#4B5565] mt-0.5">
             {isSupplier
-              ? "Manage petroleum products you actively distribute to Dealers and direct Customers."
-              : "Monitor fuel depot storage levels, dynamic burn rate forecasting, and automatic procurement reorders."}
+              ? "Manage petroleum products you distribute to regional dealers and commercial buyers"
+              : "Monitor depot storage levels, consumption rates, and wholesale reorders"}
           </p>
         </div>
         {onOpenPostProductModal && (
           <button
             onClick={onOpenPostProductModal}
-            className="bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] px-5 py-2.5 rounded-xl text-sm font-bold transition-colors cursor-pointer shadow-sm border-none self-start sm:self-auto flex items-center gap-2"
+            className="bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] px-4 h-10 rounded-lg text-xs font-medium transition-colors cursor-pointer border-none self-start sm:self-auto flex items-center gap-2"
           >
             <span>+</span> Post Product Lot
           </button>
         )}
       </div>
 
-      <div className="rounded-2xl bg-gradient-to-r from-[#0F2747] to-[#1E3A8A] p-5 text-white shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="rounded-2xl bg-[#0F2747] p-5 text-white border border-[#163860] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="rounded bg-amber-400 px-2 py-0.5 text-[10px] font-black uppercase text-slate-950">
-              AI Forecast Engine
-            </span>
-            <span className="text-xs font-bold text-sky-200">
-              Depot Burn-Rate Monitor: <strong className="text-white">Active</strong>
+            <span className="inline-flex items-center gap-1.5 rounded bg-white/10 px-2 py-0.5 text-xs font-medium text-[#F59E0B]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" aria-hidden="true" />
+              Depot burn-rate monitor
             </span>
           </div>
-          <h3 className="text-base font-extrabold text-white">Automated Petroleum Replenishment Predictor</h3>
-          <p className="text-xs text-slate-300 max-w-xl">
-            Calculates daily retail consumption, seasonality factors, and Platts price spikes to recommend batch replenishment before reserve falls below the 15% safety threshold.
+          <h3 className="text-base font-medium text-white">Petroleum Replenishment Forecast</h3>
+          <p className="text-xs text-slate-300 max-w-xl leading-relaxed">
+            Tracks daily throughput and Platts benchmark movements to flag batch replenishment before depot reserves fall below the 15% threshold.
           </p>
         </div>
-        <div className="flex items-center gap-3 bg-white/10 backdrop-blur-xs p-3 rounded-xl border border-white/20 text-xs">
+        <div className="flex items-center gap-3 bg-[#163860] p-3 rounded-xl border border-white/15 text-xs shrink-0">
           <div>
-            <p className="text-[10px] text-slate-300 uppercase font-bold">Recommended Action</p>
-            <p className="font-extrabold text-amber-300">Reserve ULSD Diesel 500 BBL</p>
+            <p className="text-xs text-slate-300">Recommended action</p>
+            <p className="font-mono tabular-nums font-medium text-[#F59E0B]">Reserve ULSD Diesel · 500 BBL</p>
           </div>
           {onWholesaleOrder && displayList.length > 0 && (
             <button
               type="button"
               onClick={() => onWholesaleOrder(displayList[0])}
-              className="rounded-lg bg-amber-400 px-3 py-1.5 font-bold text-slate-950 hover:bg-amber-300 transition-colors cursor-pointer text-xs"
+              className="rounded-lg bg-[#F59E0B] px-3 py-1.5 font-medium text-[#111827] hover:bg-[#D97706] transition-colors cursor-pointer text-xs"
             >
-              1-Click Reorder
+              Reorder
             </button>
           )}
         </div>
       </div>
 
       {filteredInventory.length === 0 ? (
-        <div className="p-12 text-center bg-white border border-slate-200 rounded-2xl">
-          <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl">
-
-          </div>
-          <h3 className="text-base font-bold text-[#1E293B] mb-1">No products in your inventory yet</h3>
-          <p className="text-xs text-[#64748B] max-w-md mx-auto mb-4">
+        <div className="p-12 text-center bg-white border border-[#E2E8F0] rounded-2xl">
+          <h3 className="text-base font-medium text-[#111827] mb-1">No products in your inventory yet</h3>
+          <p className="text-xs text-[#4B5565] max-w-md mx-auto">
             {isDealer
-              ? 'Post your own product lot or click "+ Add to Profile" on any refinery product to link it here.'
-              : 'Click "+ Post Product Lot" above to create and list petroleum grades under your refinery account.'}
+              ? 'Post your own product lot or click "+ Add to Profile" on any refinery product to link it here'
+              : 'Click "+ Post Product Lot" above to list petroleum grades under your refinery account'}
           </p>
         </div>
       ) : (
@@ -144,9 +139,9 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
             return (
               <div
                 key={item.id}
-                className="bg-white border border-[#E2E8F0] overflow-hidden rounded-2xl shadow-sm flex flex-col justify-between"
+                className="bg-white border border-[#E2E8F0] overflow-hidden rounded-2xl flex flex-col justify-between"
               >
-                <div className="h-40 w-full overflow-hidden bg-slate-100">
+                <div className="h-40 w-full overflow-hidden bg-[#F5F7FA]">
                   <img
                     src={item.image || getProductImage(item.name, item.image, item.id)}
                     alt={item.name}
@@ -159,31 +154,31 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-bold text-secondary-gray bg-[#F1F5F9] px-2.5 py-1 rounded">
+                      <span className="text-xs font-medium text-[#4B5565] bg-[#F5F7FA] border border-[#E2E8F0] px-2.5 py-0.5 rounded">
                         {item.category}
                       </span>
                       {isOwner ? (
-                        <span className="text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-md">
-                          Posted by You (Permanent)
+                        <span className="text-xs font-medium bg-amber-50 text-[#D97706] border border-amber-200 px-2 py-0.5 rounded">
+                          Posted lot
                         </span>
                       ) : (
-                        <span className="text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-md">
-                          In Dealer Catalog
+                        <span className="text-xs font-medium bg-emerald-50 text-[#16A34A] border border-emerald-200 px-2 py-0.5 rounded">
+                          In dealer catalog
                         </span>
                       )}
                     </div>
-                    <h3 className="font-bold text-lg text-dark-slate mt-1">{item.name}</h3>
-                    <p className="text-xs text-secondary-gray mt-1 line-clamp-2">{item.description}</p>
+                    <h3 className="font-medium text-base text-[#111827] mt-1">{item.name}</h3>
+                    <p className="text-xs text-[#4B5565] mt-1 line-clamp-2 leading-relaxed">{item.description}</p>
                   </div>
-                  <div className="mt-4 pt-3 border-t border-[#F1F5F9] flex items-center justify-between gap-2">
-                    <span className="font-extrabold text-[#0F2747]">{item.price}</span>
+                  <div className="mt-4 pt-3 border-t border-[#E2E8F0] flex items-center justify-between gap-2">
+                    <span className="font-mono tabular-nums font-semibold text-[#0F2747]">{item.price}</span>
                     <div className="flex items-center gap-1.5">
                       {isOwner ? (
                         <>
                           {onEditProduct && (
                             <button
                               onClick={() => onEditProduct(item)}
-                              className="btn btn-xs bg-[#0F2747] hover:bg-[#0F2747]/90 text-white font-bold border-none rounded-lg cursor-pointer"
+                              className="btn btn-xs bg-[#0F2747] hover:bg-[#163860] text-white font-medium border-none rounded-lg cursor-pointer"
                             >
                               Edit
                             </button>
@@ -191,7 +186,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                           {onDeleteProduct && (
                             <button
                               onClick={() => onDeleteProduct(item.id, item.name)}
-                              className="btn btn-xs bg-[#DC2626] hover:bg-[#DC2626]/90 text-white font-bold border-none rounded-lg cursor-pointer"
+                              className="btn btn-xs bg-[#DC2626] hover:bg-[#B91C1C] text-white font-medium border-none rounded-lg cursor-pointer"
                             >
                               Delete
                             </button>
@@ -201,8 +196,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                         onRemoveFromPortfolio && (
                           <button
                             onClick={() => onRemoveFromPortfolio(item.id)}
-                            className="btn btn-xs bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-lg cursor-pointer font-bold"
-                            title="Remove from your profile. Profile-linked products cannot be edited or deleted."
+                            className="btn btn-xs bg-rose-50 hover:bg-rose-100 text-[#DC2626] border border-rose-200 rounded-lg cursor-pointer font-medium"
                           >
                             Remove
                           </button>
