@@ -729,7 +729,7 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
                 <div className="relative pt-1">
                     <div className="w-full h-2 bg-[#1E293B] rounded-full overflow-hidden">
                         <motion.div
-                            className="h-full bg-gradient-to-r from-emerald-500 to-sky-400 rounded-full"
+                            className="h-full bg-emerald-500 rounded-full"
                             animate={{ width: `${Math.min(100, Math.max(2, simProgress))}%` }}
                             transition={{ type: "tween", ease: "linear", duration: 0.1 }}
                         />
