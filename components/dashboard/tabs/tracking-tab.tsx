@@ -31,25 +31,23 @@ export const TrackingTab: React.FC<TrackingTabProps> = ({
 
   return (
     <div className="space-y-6 text-left">
-      { }
-      <div className="card bg-card-white border border-[#E2E8F0] rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="card bg-white border border-[#E2E8F0] rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="inline-flex h-3 w-3 rounded-full bg-emerald-500"></span>
-            <h3 className="text-base font-bold text-[#0F2747]">
+            <span className="inline-flex h-2 w-2 rounded-full bg-[#16A34A]"></span>
+            <h3 className="text-base font-medium text-[#111827]">
               Live Fleet GPS & Telematics Dispatch
             </h3>
           </div>
-          <p className="text-xs text-secondary-gray mt-1">
-            Real-time multi-route simulation, driver telemetry, and turn-by-turn ETA
+          <p className="text-xs text-[#4B5565] mt-1">
+            Multi-route simulation, driver telemetry, and turn-by-turn ETA
           </p>
         </div>
 
-        { }
         {activeOrders.length > 0 && (
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-secondary-gray whitespace-nowrap">
-              Active Consignment:
+            <span className="text-xs font-medium text-[#4B5565] whitespace-nowrap">
+              Active consignment
             </span>
             <select
               value={selectedTrackingOrder?.id || ""}
@@ -57,11 +55,11 @@ export const TrackingTab: React.FC<TrackingTabProps> = ({
                 const ord = orders.find((o) => o.id === Number(e.target.value));
                 if (ord) onSelectOrder(ord);
               }}
-              className="select select-bordered select-sm text-xs font-bold text-[#0F2747] border-[#E2E8F0] focus:border-[#F59E0B] rounded-xl"
+              className="select select-bordered select-sm text-xs font-medium text-[#111827] border-[#E2E8F0] focus:border-[#0F2747] rounded-lg"
             >
               {activeOrders.map((o) => (
                 <option key={o.id} value={o.id}>
-                  Order #{o.id} - {o.product?.name || "Fuel"} ({o.status})
+                  Order #{o.id} · {o.product?.name || "Fuel"} ({o.status})
                 </option>
               ))}
             </select>
@@ -69,7 +67,6 @@ export const TrackingTab: React.FC<TrackingTabProps> = ({
         )}
       </div>
 
-      { }
       {selectedTrackingOrder && selectedOrderIsTrackable ? (
         <div className="rounded-2xl overflow-hidden border border-[#E2E8F0]">
           <UberMapTracker
@@ -80,10 +77,10 @@ export const TrackingTab: React.FC<TrackingTabProps> = ({
           />
         </div>
       ) : (
-        <div className="text-center py-20 card bg-card-white border border-[#E2E8F0] rounded-2xl p-6">
-          <h4 className="text-base font-bold text-[#0F2747]">No Consignment Selected</h4>
-          <p className="text-xs text-secondary-gray mt-1 max-w-md mx-auto">
-            Select an active order from the dropdown above or your orders list to view live GPS tracking and delivery telemetry.
+        <div className="text-center py-20 card bg-white border border-[#E2E8F0] rounded-2xl p-6">
+          <h4 className="text-base font-medium text-[#111827]">No Consignment Selected</h4>
+          <p className="text-xs text-[#4B5565] mt-1 max-w-md mx-auto">
+            Select an active order from the dropdown above or your orders list to view live GPS tracking and delivery telemetry
           </p>
         </div>
       )}
