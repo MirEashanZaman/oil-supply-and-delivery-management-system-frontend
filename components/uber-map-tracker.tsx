@@ -276,15 +276,14 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
             const depotIcon = L.divIcon({
                 className: "custom-depot-icon",
                 html: `
-                    <div style="position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
-                        <div class="animate-radar-ripple" style="position: absolute; inset: 2px; border-radius: 9999px; background: rgba(245, 158, 11, 0.35);"></div>
-                        <div style="position: relative; background-color: #D97706; color: white; border-radius: 9999px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; font-family: monospace; box-shadow: 0 4px 14px rgba(217, 119, 6, 0.55); border: 2px solid #FEF3C7;">
+                    <div style="position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <div style="position: relative; background-color: #D97706; color: white; border-radius: 9999px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; font-family: monospace; border: 2px solid #FEF3C7;">
                             DEP
                         </div>
                     </div>
                 `,
-                iconSize: [44, 44],
-                iconAnchor: [22, 22],
+                iconSize: [36, 36],
+                iconAnchor: [18, 18],
             });
             L.marker(DEFAULT_DEPOT_COORDS, { icon: depotIcon })
                 .addTo(map)
@@ -293,15 +292,14 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
             const destIcon = L.divIcon({
                 className: "custom-dest-icon",
                 html: `
-                    <div style="position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
-                        <div class="animate-radar-ripple" style="position: absolute; inset: 2px; border-radius: 9999px; background: rgba(16, 185, 129, 0.35);"></div>
-                        <div style="position: relative; background-color: #059669; color: white; border-radius: 9999px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; font-family: monospace; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.55); border: 2px solid #D1FAE5;">
+                    <div style="position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <div style="position: relative; background-color: #059669; color: white; border-radius: 9999px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; font-family: monospace; border: 2px solid #D1FAE5;">
                             DEST
                         </div>
                     </div>
                 `,
-                iconSize: [44, 44],
-                iconAnchor: [22, 22],
+                iconSize: [36, 36],
+                iconAnchor: [18, 18],
             });
             L.marker(DEFAULT_DEST_COORDS, { icon: destIcon })
                 .addTo(map)
@@ -310,9 +308,9 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
             const interp = interpolateRoute(progressRef.current);
 
             const glowLine = L.polyline(DEFAULT_ROUTE_COORDS, {
-                color: "#38BDF8",
-                weight: 12,
-                opacity: 0.14,
+                color: "#1E293B",
+                weight: 6,
+                opacity: 0.4,
                 lineCap: "round",
                 lineJoin: "round",
             }).addTo(map);
@@ -320,7 +318,7 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
 
             const traveledLine = L.polyline(interp.traveledPath, {
                 color: "#10B981",
-                weight: 5,
+                weight: 4,
                 opacity: 0.95,
                 lineCap: "round",
                 lineJoin: "round",
@@ -341,18 +339,16 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
             const vehicleIcon = L.divIcon({
                 className: "custom-vehicle-marker",
                 html: `
-                    <div style="position: relative; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
-                        <div class="animate-radar-ripple" style="position: absolute; inset: 4px; background: rgba(56, 189, 248, 0.40); border-radius: 9999px;"></div>
-                        <div class="animate-radar-ripple-delayed" style="position: absolute; inset: 8px; border: 1.5px solid rgba(56, 189, 248, 0.70); border-radius: 9999px;"></div>
-                        <div class="tanker-heading-arrow" style="position: relative; width: 38px; height: 38px; background: radial-gradient(circle at 30% 30%, #1E293B, #090D16); border: 2.5px solid #38BDF8; border-radius: 9999px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(0,0,0,0.8); transform: rotate(${interp.heading}deg); will-change: transform;">
-                            <svg style="width: 19px; height: 19px; color: #38BDF8;" fill="currentColor" viewBox="0 0 24 24">
+                    <div style="position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+                        <div class="tanker-heading-arrow" style="position: relative; width: 36px; height: 36px; background-color: #0F172A; border: 2.5px solid #38BDF8; border-radius: 9999px; display: flex; align-items: center; justify-content: center; transform: rotate(${interp.heading}deg); will-change: transform;">
+                            <svg style="width: 18px; height: 18px; color: #38BDF8;" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z" />
                             </svg>
                         </div>
                     </div>
                 `,
-                iconSize: [60, 60],
-                iconAnchor: [30, 30],
+                iconSize: [44, 44],
+                iconAnchor: [22, 22],
             });
 
             const vehicleMarker = L.marker(interp.coords, { icon: vehicleIcon, zIndexOffset: 1000 }).addTo(map);
@@ -615,11 +611,6 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
             <div className="bg-[#0F172A] border-b border-[#1E293B] px-5 py-3.5 flex items-center justify-between flex-wrap gap-3">
                 <div className="flex items-center gap-3">
                     <div className="relative w-10 h-10 rounded-xl bg-[#162238] border border-sky-500/30 flex items-center justify-center text-sky-400">
-                        <motion.span
-                            animate={{ scale: [1, 1.4, 1], opacity: [0.45, 0, 0.45] }}
-                            transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
-                            className="absolute inset-0.5 rounded-xl bg-sky-400/25"
-                        />
                         <Navigation className="w-4 h-4 relative" />
                     </div>
                     <div>
@@ -836,18 +827,15 @@ export default function UberMapTracker({ order, userRole = "customer", onClose, 
 
                     {/* Live Floating Telemetry HUD Top-Left */}
                     <div className="absolute top-3 left-3 z-10 flex flex-col gap-2 pointer-events-none">
-                        <div className="bg-[#0F172A]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700/80 text-xs font-mono tabular-nums flex items-center gap-2.5">
-                            <span className="relative flex h-2.5 w-2.5">
-                                <span className="animate-radar-ripple absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
-                            </span>
+                        <div className="bg-[#0F172A] px-3 py-1.5 rounded-xl border border-slate-700 text-xs font-mono tabular-nums flex items-center gap-2.5">
+                            <span className="inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
                             <span className="text-emerald-400 font-medium">
                                 {trackingMode === "device-gps" ? "HARDWARE GPS LOCK" : "60FPS TELEMETRY STREAM"}
                             </span>
                             <LiveTelemetrySpark color="#38BDF8" active={!isPaused} />
                         </div>
 
-                        <div className="bg-[#0F172A]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700/80 text-[11px] text-slate-300 font-mono tabular-nums flex items-center gap-2">
+                        <div className="bg-[#0F172A] px-3 py-1.5 rounded-xl border border-slate-700 text-[11px] text-slate-300 font-mono tabular-nums flex items-center gap-2">
                             <Compass className="w-3.5 h-3.5 text-sky-400" />
                             <span>Precision: <strong className="text-emerald-400">±{gpsAccuracy}m</strong></span>
                             <span>·</span>
