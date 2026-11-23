@@ -290,11 +290,14 @@ export default function Home() {
                                     unoptimized={idx === 0}
                                     quality={70}
                                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1240px"
-                                    className="w-full h-full object-cover brightness-50"
+                                    className={`w-full h-full object-cover brightness-50 ${idx === currentHeroSlide ? "animate-hero-zoom" : ""}`}
                                 />
                                 <div className="absolute inset-0 bg-black/55 flex flex-col justify-end p-6 md:p-12 pb-14 md:pb-14 text-left text-white">
                                     <div className="inline-flex items-center gap-2 text-xs font-medium text-[#F59E0B] mb-2">
-                                        <span className="w-2 h-2 rounded-full bg-[#F59E0B]" aria-hidden="true" />
+                                        <span className="relative flex h-2 w-2">
+                                            <span className="animate-radar-ripple absolute inline-flex h-full w-full rounded-full bg-[#F59E0B] opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#F59E0B]"></span>
+                                        </span>
                                         <span>{slide.badge}</span>
                                     </div>
                                     <h3 className="text-2xl md:text-4xl font-medium max-w-2xl leading-tight text-white">
@@ -417,7 +420,7 @@ export default function Home() {
                                     <div key={`track-${trackIdx}`} className="marquee-track" aria-hidden={trackIdx === 2 ? "true" : undefined}>
                                         {products.map((product) => (
                                             <div key={`prod-${trackIdx}-${product.id}`} className="marquee-card">
-                                                <div className="card bg-[#FFFFFF] w-full border border-[#E2E8F0] overflow-hidden hover:border-[#CBD5E1] transition-colors text-left rounded-2xl h-full flex flex-col justify-between">
+                                                <div className="card card-interactive bg-[#FFFFFF] w-full border border-[#E2E8F0] overflow-hidden hover:border-[#CBD5E1] text-left rounded-2xl h-full flex flex-col justify-between">
                                                     <figure className="h-44 sm:h-48 w-full overflow-hidden bg-[#F5F7FA] shrink-0 relative">
                                                         <img
                                                             src={product.image}
