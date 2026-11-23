@@ -6,7 +6,7 @@ import Image from "next/image";
 import axios from "axios";
 import MyHeader from "@/components/header";
 import MyNavigation from "@/components/navigation";
-import { PRODUCT_IMAGE_MAP, getProductImage } from "@/components/dashboard/utils";
+import { getProductImage } from "@/components/dashboard/utils";
 import { getStoredReviews, fetchAllServerReviews, OrderReview } from "@/lib/reviews";
 
 type CarouselProduct = {
@@ -22,24 +22,24 @@ type CarouselProduct = {
 const HERO_SLIDES = [
     {
         id: 1,
-        title: "Oil Supply & Delivery Management System",
-        tagline: "Connecting refinery suppliers, licensed regional dealers, and bulk commercial customers in one streamlined platform.",
+        title: "Refinery Supply, Dealer Allocation & Tanker Dispatch",
+        tagline: "Connecting certified petroleum refineries, regional fuel dealers, and commercial buyers on one operational ledger",
         image: "/Brent Crude Oil.webp",
-        badge: "Direct Fuel Distribution",
+        badge: "Direct fuel distribution",
     },
     {
         id: 2,
-        title: "Wholesale & Tanker Fleet Logistics",
-        tagline: "Efficient order placement, depot dispatch coordination, and fast scheduled road deliveries.",
+        title: "Wholesale Lots & Road Tanker Fleet Logistics",
+        tagline: "Verified depot allocations, scheduled road tanker dispatches, and real-time GPS route telemetry",
         image: "/Ultra-Low Sulfur Diesel.webp",
-        badge: "Reliable Logistics",
+        badge: "Fleet dispatch",
     },
     {
         id: 3,
-        title: "Transparent Pricing & Verified Invoicing",
-        tagline: "Clear per-barrel benchmark rates, secure order verification, and reliable delivery tracking.",
+        title: "Benchmark Pricing & Electronic Proof of Delivery",
+        tagline: "Platts-indexed per-barrel rates, 4-digit PIN custody transfer receipts, and automated tax invoicing",
         image: "/Heavy Marine Fuel Oil (HFO).webp",
-        badge: "Verified Energy Grades",
+        badge: "Verified energy grades",
     },
 ];
 
@@ -58,8 +58,8 @@ export default function Home() {
     const [isMarqueeMode, setIsMarqueeMode] = useState(true);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const [products, setProducts] = useState<CarouselProduct[]>(INITIAL_DEFAULT_PRODUCTS);
-    const [isLoadingProducts, setIsLoadingProducts] = useState(false);
-    const [productsError, setProductsError] = useState<string | null>(null);
+    const [isLoadingProducts] = useState(false);
+    const [productsError] = useState<string | null>(null);
     const [user, setUser] = useState<{ name?: string; userName?: string; email?: string; title?: string } | null>(null);
     const [publicReviews, setPublicReviews] = useState<OrderReview[]>([]);
 
@@ -173,19 +173,20 @@ export default function Home() {
 
     return (
         <main className="w-full max-w-[1240px] flex flex-col items-center" role="main">
-            <MyHeader name="Home" message="Centralized petroleum supply, dealer management, and delivery tracking" />
+            <MyHeader name="Home" message="Centralized petroleum supply, dealer allocation, and tanker delivery tracking" />
             <MyNavigation />
 
-            <div className="w-full bg-[#0F2747] text-white rounded-2xl p-6 sm:p-8 shadow-md mb-8 flex flex-col md:flex-row items-center justify-between gap-6 text-left border border-[#0F2747]/30">
+            <div className="w-full bg-[#0F2747] text-white rounded-2xl p-6 sm:p-8 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 text-left border border-[#163860]">
                 <div>
-                    <span className="text-xs uppercase font-extrabold tracking-wider bg-[#F59E0B]/20 text-[#F59E0B] px-3 py-1 rounded-full border border-[#F59E0B]/30">
-                        Oil Supply & Delivery Platform
-                    </span>
-                    <h1 className="text-2xl md:text-3xl font-bold mt-3 tracking-tight text-white">
-                        {user ? `Welcome back, ${user.name || user.userName || user.email?.split("@")[0] || "User"}.` : "Oil Supply & Delivery Management System"}
+                    <div className="inline-flex items-center gap-2 text-xs font-medium text-slate-300">
+                        <span className="w-2 h-2 rounded-full bg-[#F59E0B]" aria-hidden="true" />
+                        <span>{user ? `Signed in as ${user.name || user.userName || user.email?.split("@")[0] || "User"}` : "Direct refinery & dealer network"}</span>
+                    </div>
+                    <h1 className="text-2xl md:text-3xl font-medium mt-2 text-white">
+                        Oil Supply & Delivery Management System
                     </h1>
                     <p className="text-xs sm:text-sm text-slate-300 mt-1.5 max-w-xl leading-relaxed">
-                        Streamlining energy and fuel trade with direct sourcing from refinery suppliers and certified dealer distribution.
+                        Procure certified fuel grades directly from refinery suppliers and regional dealers with live tanker telemetry and e-POD custody verification.
                     </p>
                 </div>
                 <div className="flex gap-3 items-center flex-wrap shrink-0">
@@ -193,34 +194,34 @@ export default function Home() {
                         <>
                             <Link
                                 href="/dashboard"
-                                className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] font-bold shadow-sm px-6 flex items-center gap-2 border-none rounded-xl"
+                                className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] font-medium px-5 h-11 flex items-center gap-2 border-none rounded-lg"
                             >
-                                <span>Go to Dashboard</span>
+                                <span>Open Dashboard</span>
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
                             </Link>
                             <button
                                 onClick={handleLogout}
-                                className="btn btn-outline text-white border-white/40 hover:bg-white/10 rounded-xl cursor-pointer"
+                                className="btn bg-transparent text-slate-200 border border-white/25 hover:bg-white/10 rounded-lg h-11 px-4 font-medium cursor-pointer"
                             >
-                                Sign Out
+                                Sign out
                             </button>
                         </>
                     ) : (
                         <>
                             <Link
                                 href="/login"
-                                className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] font-bold shadow-sm px-6 flex items-center gap-2 border-none rounded-xl"
+                                className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] font-medium px-5 h-11 flex items-center gap-2 border-none rounded-lg"
                             >
-                                <span>Sign In</span>
+                                <span>Sign in</span>
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
                             </Link>
                             <Link
                                 href="/registration"
-                                className="btn btn-outline text-white border-white/40 hover:bg-white/10 rounded-xl"
+                                className="btn bg-transparent text-slate-200 border border-white/25 hover:bg-white/10 rounded-lg h-11 px-4 font-medium"
                             >
                                 Register
                             </Link>
@@ -232,17 +233,17 @@ export default function Home() {
             <div className="w-full mb-12">
                 <div className="flex items-center justify-between mb-3 px-1 text-left">
                     <div>
-                        <h2 className="text-xl font-bold text-[#1E293B] flex items-center gap-2">
+                        <h2 className="text-lg sm:text-xl font-medium text-[#111827] flex items-center gap-2">
                             <span>Operations Overview</span>
-                            <span className="badge bg-[#0F2747] text-[#F59E0B] badge-sm text-[11px] font-bold border-none">Auto-Slide</span>
+                            <span className="text-xs font-mono text-[#6B7487]">3 channels</span>
                         </h2>
-                        <p className="text-xs text-[#475569]">Integrated energy supply and fleet distribution channels</p>
+                        <p className="text-xs text-[#4B5565]">Integrated energy supply and fleet distribution terminals</p>
                     </div>
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setIsAutoPlay(!isAutoPlay)}
                             aria-label={isAutoPlay ? "Pause automatic slide transition" : "Play automatic slide transition"}
-                            className="btn btn-xs btn-ghost text-xs text-[#475569] hover:text-[#1E293B] cursor-pointer"
+                            className="btn btn-xs btn-ghost text-xs text-[#4B5565] hover:text-[#111827] cursor-pointer font-medium"
                         >
                             {isAutoPlay ? "Pause" : "Play"}
                         </button>
@@ -255,17 +256,17 @@ export default function Home() {
                     </div>
                 )}
 
-                <div className="carousel w-full rounded-2xl shadow-md overflow-hidden relative bg-[#0F2747] h-[360px] md:h-[420px] border border-[#E2E8F0]">
+                <div className="carousel w-full rounded-2xl overflow-hidden relative bg-[#0F2747] h-[360px] md:h-[420px] border border-[#E2E8F0]">
                     {isLoadingProducts ? (
                         Array.from({ length: 3 }).map((_, index) => (
                             <div
                                 key={`home-skeleton-${index}`}
-                                className="absolute inset-0 flex items-end justify-start bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 animate-pulse p-6 md:p-12"
+                                className="absolute inset-0 flex items-end justify-start bg-[#ECEFF4] p-6 md:p-12"
                             >
                                 <div className="w-full max-w-xl space-y-3">
-                                    <div className="h-4 w-32 rounded-full bg-slate-300" />
-                                    <div className="h-8 w-3/4 rounded-md bg-slate-300" />
-                                    <div className="h-4 w-2/3 rounded-md bg-slate-300" />
+                                    <div className="h-4 w-32 rounded bg-slate-300" />
+                                    <div className="h-8 w-3/4 rounded bg-slate-300" />
+                                    <div className="h-4 w-2/3 rounded bg-slate-300" />
                                 </div>
                             </div>
                         ))
@@ -273,7 +274,7 @@ export default function Home() {
                         HERO_SLIDES.map((slide, idx) => (
                             <div
                                 key={slide.id}
-                                className={`carousel-item absolute inset-0 w-full h-full transition-all duration-700 ease-in-out ${idx === currentHeroSlide
+                                className={`carousel-item absolute inset-0 w-full h-full transition-[opacity,transform] duration-500 ${idx === currentHeroSlide
                                     ? "opacity-100 translate-x-0 z-10"
                                     : idx < currentHeroSlide
                                         ? "opacity-0 -translate-x-full z-0"
@@ -291,21 +292,22 @@ export default function Home() {
                                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1240px"
                                     className="w-full h-full object-cover brightness-50"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent flex flex-col justify-end p-6 md:p-12 pb-14 md:pb-14 text-left text-white">
-                                    <span className="text-xs font-bold uppercase tracking-wider text-[#F59E0B] mb-2 bg-[#F59E0B]/20 w-fit px-3 py-1 rounded-full border border-[#F59E0B]/30">
-                                        {slide.badge}
-                                    </span>
-                                    <h3 className="text-2xl md:text-4xl font-extrabold max-w-2xl leading-tight tracking-tight text-white">
+                                <div className="absolute inset-0 bg-black/55 flex flex-col justify-end p-6 md:p-12 pb-14 md:pb-14 text-left text-white">
+                                    <div className="inline-flex items-center gap-2 text-xs font-medium text-[#F59E0B] mb-2">
+                                        <span className="w-2 h-2 rounded-full bg-[#F59E0B]" aria-hidden="true" />
+                                        <span>{slide.badge}</span>
+                                    </div>
+                                    <h3 className="text-2xl md:text-4xl font-medium max-w-2xl leading-tight text-white">
                                         {slide.title}
                                     </h3>
                                     <p className="text-xs md:text-sm text-slate-200 mt-2 max-w-xl leading-relaxed">
                                         {slide.tagline}
                                     </p>
                                     <div className="mt-5 flex gap-3">
-                                        <Link href="/dashboard" className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] btn-sm md:btn-md shadow-sm font-bold border-none rounded-xl">
+                                        <Link href="/dashboard" className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] btn-sm md:btn-md font-medium border-none rounded-lg">
                                             Explore Products
                                         </Link>
-                                        <Link href="/about" className="btn btn-outline btn-sm md:btn-md text-white border-white/50 hover:bg-white/20 rounded-xl">
+                                        <Link href="/about" className="btn bg-transparent btn-sm md:btn-md text-white border border-white/40 hover:bg-white/15 rounded-lg font-medium">
                                             Learn Logistics
                                         </Link>
                                     </div>
@@ -317,20 +319,20 @@ export default function Home() {
                     <div className="absolute left-4 right-4 top-1/2 -translate-y-1/2 flex justify-between z-20 pointer-events-none">
                         <button
                             onClick={() => setCurrentHeroSlide((prev) => (prev === 0 ? HERO_SLIDES.length - 1 : prev - 1))}
-                            className="btn btn-circle btn-sm md:btn-md bg-black/60 hover:bg-black text-white border-none pointer-events-auto shadow-md cursor-pointer"
-                            aria-label="Previous Slide"
+                            className="btn btn-circle btn-sm md:btn-md bg-black/60 hover:bg-black/80 text-white border-none pointer-events-auto cursor-pointer"
+                            aria-label="Previous slide"
                         >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 19l-7-7 7-7" />
                             </svg>
                         </button>
                         <button
                             onClick={() => setCurrentHeroSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
-                            className="btn btn-circle btn-sm md:btn-md bg-black/60 hover:bg-black text-white border-none pointer-events-auto shadow-md cursor-pointer"
-                            aria-label="Next Slide"
+                            className="btn btn-circle btn-sm md:btn-md bg-black/60 hover:bg-black/80 text-white border-none pointer-events-auto cursor-pointer"
+                            aria-label="Next slide"
                         >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 5l7 7-7 7" />
                             </svg>
                         </button>
                     </div>
@@ -343,7 +345,7 @@ export default function Home() {
                                 className="p-2 flex items-center justify-center cursor-pointer focus:outline-none"
                                 aria-label={`Go to slide ${idx + 1}`}
                             >
-                                <span className={`block h-2.5 rounded-full transition-all ${idx === currentHeroSlide ? "bg-[#F59E0B] w-7" : "bg-white/60 hover:bg-white w-2.5"
+                                <span className={`block h-2 rounded-full transition-colors ${idx === currentHeroSlide ? "bg-[#F59E0B] w-6" : "bg-white/60 hover:bg-white w-2"
                                     }`} />
                             </button>
                         ))}
@@ -354,46 +356,47 @@ export default function Home() {
             <div className="w-full mb-12">
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 px-1 text-left gap-3">
                     <div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-[#1E293B] tracking-tight">
-                                Featured Oil Products & Energy Grades
+                        <div className="flex items-center gap-2.5 flex-wrap">
+                            <h2 className="text-lg sm:text-xl font-medium text-[#111827]">
+                                Petroleum Products & Energy Grades
                             </h2>
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#15803D] text-white shadow-none shrink-0">
-                                Live Catalog
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-medium bg-[#F5F7FA] border border-[#E2E8F0] text-[#4B5565] shrink-0">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" aria-hidden="true" />
+                                Live catalog
                             </span>
                         </div>
-                        <p className="text-xs text-[#475569] mt-0.5">
-                            Items stream continuously. Hover over any product card to pause and view details.
+                        <p className="text-xs text-[#4B5565] mt-0.5">
+                            Hover over any product card to pause the stream and view grade details
                         </p>
                     </div>
 
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setIsMarqueeMode(!isMarqueeMode)}
-                            className="btn btn-xs rounded-lg border border-[#CBD5E1] bg-[#FFFFFF] text-[#1E293B] hover:bg-[#F5F7FA] cursor-pointer text-xs"
+                            className="btn btn-xs h-8 px-3 rounded-lg border border-[#CBD5E1] bg-[#FFFFFF] text-[#111827] hover:bg-[#F5F7FA] cursor-pointer text-xs font-medium"
                         >
-                            {isMarqueeMode ? "Switch to Manual Mode" : "Switch to Auto Stream"}
+                            {isMarqueeMode ? "Switch to manual scroll" : "Switch to auto stream"}
                         </button>
                         {!isMarqueeMode && (
                             <div className="flex gap-1">
                                 <button
                                     onClick={() => handleScroll("left")}
-                                    className="btn btn-circle btn-xs bg-[#FFFFFF] border border-[#CBD5E1] hover:bg-[#F5F7FA] text-[#1E293B] cursor-pointer"
-                                    title="Scroll Left"
+                                    className="btn btn-circle btn-xs h-8 w-8 bg-[#FFFFFF] border border-[#CBD5E1] hover:bg-[#F5F7FA] text-[#111827] cursor-pointer"
+                                    title="Scroll left"
                                     aria-label="Scroll products left"
                                 >
                                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 19l-7-7 7-7" />
                                     </svg>
                                 </button>
                                 <button
                                     onClick={() => handleScroll("right")}
-                                    className="btn btn-circle btn-xs bg-[#FFFFFF] border border-[#CBD5E1] hover:bg-[#F5F7FA] text-[#1E293B] cursor-pointer"
-                                    title="Scroll Right"
+                                    className="btn btn-circle btn-xs h-8 w-8 bg-[#FFFFFF] border border-[#CBD5E1] hover:bg-[#F5F7FA] text-[#111827] cursor-pointer"
+                                    title="Scroll right"
                                     aria-label="Scroll products right"
                                 >
                                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 5l7 7-7 7" />
                                     </svg>
                                 </button>
                             </div>
@@ -401,141 +404,89 @@ export default function Home() {
                     </div>
                 </div>
 
-                <div className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-4 md:p-6 shadow-sm overflow-hidden">
+                <div className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-4 md:p-6 overflow-hidden">
                     {products.length === 0 ? (
-                        <div className="text-center py-12 text-[#64748B]">
-                            <p className="font-semibold text-base mb-1 text-[#1E293B]">No products currently available in the catalog.</p>
-                            <p className="text-xs">Verified oil products will appear here once listed.</p>
+                        <div className="text-center py-12 text-[#6B7487]">
+                            <p className="font-medium text-base mb-1 text-[#111827]">No products currently available in the catalog</p>
+                            <p className="text-xs">Verified petroleum products appear here once listed</p>
                         </div>
                     ) : isMarqueeMode ? (
                         <div className="w-full overflow-hidden">
                             <div className="animate-carousel-rtl flex flex-nowrap">
-                                <div className="marquee-track">
-                                    {products.map((product) => (
-                                        <div key={`prod-1-${product.id}`} className="marquee-card">
-                                            <div className="card bg-[#FFFFFF] w-full shadow-sm border border-[#E2E8F0] overflow-hidden hover:shadow-md transition-all text-left rounded-2xl h-full flex flex-col justify-between">
-                                                <figure className="h-44 sm:h-48 w-full overflow-hidden bg-[#F5F7FA] shrink-0 relative">
-                                                    <img
-                                                        src={product.image}
-                                                        alt={product.name}
-                                                        width={360}
-                                                        height={192}
-                                                        loading="lazy"
-                                                        decoding="async"
-                                                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                                                        onError={(e) => {
-                                                            e.currentTarget.src = getProductImage(product.name, undefined, product.id);
-                                                        }}
-                                                    />
-                                                </figure>
-                                                <div className="card-body p-4 sm:p-5 flex flex-col justify-between grow">
-                                                    <div>
-                                                        <div className="flex items-center justify-between mb-2 gap-1.5">
-                                                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-[#F5F7FA] border border-[#CBD5E1] text-[#1E293B] truncate max-w-[130px]">
-                                                                {product.category}
-                                                            </span>
-                                                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold shrink-0 ${product.stockLevel === "In Stock" ? "bg-[#15803D] text-white" : product.stockLevel === "Low Stock" ? "bg-[#B45309] text-white" : "bg-[#B91C1C] text-white"}`}>
-                                                                {product.stockLevel}
-                                                            </span>
+                                {[1, 2].map((trackIdx) => (
+                                    <div key={`track-${trackIdx}`} className="marquee-track" aria-hidden={trackIdx === 2 ? "true" : undefined}>
+                                        {products.map((product) => (
+                                            <div key={`prod-${trackIdx}-${product.id}`} className="marquee-card">
+                                                <div className="card bg-[#FFFFFF] w-full border border-[#E2E8F0] overflow-hidden hover:border-[#CBD5E1] transition-colors text-left rounded-2xl h-full flex flex-col justify-between">
+                                                    <figure className="h-44 sm:h-48 w-full overflow-hidden bg-[#F5F7FA] shrink-0 relative">
+                                                        <img
+                                                            src={product.image}
+                                                            alt={product.name}
+                                                            width={360}
+                                                            height={192}
+                                                            loading="lazy"
+                                                            decoding="async"
+                                                            className="w-full h-full object-cover"
+                                                            onError={(e) => {
+                                                                e.currentTarget.src = getProductImage(product.name, undefined, product.id);
+                                                            }}
+                                                        />
+                                                    </figure>
+                                                    <div className="card-body p-5 flex flex-col justify-between grow">
+                                                        <div>
+                                                            <div className="flex items-center justify-between mb-2 gap-2">
+                                                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#F5F7FA] border border-[#E2E8F0] text-[#4B5565] truncate max-w-[140px]">
+                                                                    {product.category}
+                                                                </span>
+                                                                <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium shrink-0 ${product.stockLevel === "In Stock" ? "bg-emerald-50 text-[#16A34A] border border-emerald-200" : product.stockLevel === "Low Stock" ? "bg-amber-50 text-[#D97706] border border-amber-200" : "bg-rose-50 text-[#DC2626] border border-rose-200"}`}>
+                                                                    <span className={`w-1.5 h-1.5 rounded-full ${product.stockLevel === "In Stock" ? "bg-[#16A34A]" : product.stockLevel === "Low Stock" ? "bg-[#D97706]" : "bg-[#DC2626]"}`} />
+                                                                    {product.stockLevel}
+                                                                </span>
+                                                            </div>
+                                                            <h3 className="card-title text-base font-medium text-[#111827] mb-1 line-clamp-1">
+                                                                {product.name}
+                                                            </h3>
+                                                            <p className="text-xs text-[#4B5565] line-clamp-2 leading-relaxed">
+                                                                {product.description}
+                                                            </p>
                                                         </div>
-                                                        <h3 className="card-title text-sm sm:text-base font-bold text-[#1E293B] mb-1 line-clamp-1">
-                                                            {product.name}
-                                                        </h3>
-                                                        <p className="text-xs text-[#475569] line-clamp-2">
-                                                            {product.description}
-                                                        </p>
-                                                    </div>
 
-                                                    <div className="pt-3 mt-2 border-t border-[#E2E8F0] flex items-center justify-between gap-2">
-                                                        <span className="text-sm sm:text-base font-extrabold text-[#0F2747]">
-                                                            {product.price}
-                                                        </span>
-                                                        <div className="card-actions justify-end">
-                                                            <Link
-                                                                href={`/products/${product.id}`}
-                                                                className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] btn-xs sm:btn-sm font-bold border-none rounded-xl"
-                                                            >
-                                                                View Details
-                                                            </Link>
+                                                        <div className="pt-3 mt-3 border-t border-[#E2E8F0] flex items-center justify-between gap-2">
+                                                            <span className="font-mono tabular-nums text-base font-semibold text-[#0F2747]">
+                                                                {product.price}
+                                                            </span>
+                                                            <div className="card-actions justify-end">
+                                                                <Link
+                                                                    href={`/products/${product.id}`}
+                                                                    tabIndex={trackIdx === 2 ? -1 : undefined}
+                                                                    aria-hidden={trackIdx === 2 ? "true" : undefined}
+                                                                    className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] btn-xs sm:btn-sm font-medium border-none rounded-lg"
+                                                                >
+                                                                    View Details
+                                                                </Link>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <div className="marquee-track" aria-hidden="true">
-                                    {products.map((product) => (
-                                        <div key={`prod-2-${product.id}`} className="marquee-card">
-                                            <div className="card bg-[#FFFFFF] w-full shadow-sm border border-[#E2E8F0] overflow-hidden hover:shadow-md transition-all text-left rounded-2xl h-full flex flex-col justify-between">
-                                                <figure className="h-44 sm:h-48 w-full overflow-hidden bg-[#F5F7FA] shrink-0 relative">
-                                                    <img
-                                                        src={product.image}
-                                                        alt={product.name}
-                                                        width={360}
-                                                        height={192}
-                                                        loading="lazy"
-                                                        decoding="async"
-                                                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                                                        onError={(e) => {
-                                                            e.currentTarget.src = getProductImage(product.name, undefined, product.id);
-                                                        }}
-                                                    />
-                                                </figure>
-                                                <div className="card-body p-4 sm:p-5 flex flex-col justify-between grow">
-                                                    <div>
-                                                        <div className="flex items-center justify-between mb-2 gap-1.5">
-                                                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-[#F5F7FA] border border-[#CBD5E1] text-[#1E293B] truncate max-w-[130px]">
-                                                                {product.category}
-                                                            </span>
-                                                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold shrink-0 ${product.stockLevel === "In Stock" ? "bg-[#15803D] text-white" : product.stockLevel === "Low Stock" ? "bg-[#B45309] text-white" : "bg-[#B91C1C] text-white"}`}>
-                                                                {product.stockLevel}
-                                                            </span>
-                                                        </div>
-                                                        <h3 className="card-title text-sm sm:text-base font-bold text-[#1E293B] mb-1 line-clamp-1">
-                                                            {product.name}
-                                                        </h3>
-                                                        <p className="text-xs text-[#475569] line-clamp-2">
-                                                            {product.description}
-                                                        </p>
-                                                    </div>
-
-                                                    <div className="pt-3 mt-2 border-t border-[#E2E8F0] flex items-center justify-between gap-2">
-                                                        <span className="text-sm sm:text-base font-extrabold text-[#0F2747]">
-                                                            {product.price}
-                                                        </span>
-                                                        <div className="card-actions justify-end">
-                                                            <Link
-                                                                href={`/products/${product.id}`}
-                                                                tabIndex={-1}
-                                                                aria-hidden="true"
-                                                                className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] btn-xs sm:btn-sm font-bold border-none rounded-xl"
-                                                            >
-                                                                View Details
-                                                            </Link>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                        ))}
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     ) : (
                         <div
                             ref={scrollContainerRef}
-                            className="carousel carousel-center rounded-box w-full space-x-6 p-2 overflow-x-auto scroll-smooth"
+                            className="carousel carousel-center rounded-box w-full space-x-5 p-2 overflow-x-auto scroll-smooth"
                         >
                             {products.map((product) => (
                                 <div key={product.id} className="carousel-item">
-                                    <div className="card bg-[#FFFFFF] w-80 sm:w-96 shadow-sm border border-[#E2E8F0] overflow-hidden text-left rounded-2xl">
+                                    <div className="card bg-[#FFFFFF] w-80 sm:w-96 border border-[#E2E8F0] overflow-hidden text-left rounded-2xl">
                                         <figure className="h-48 w-full overflow-hidden bg-[#F5F7FA]">
                                             <img
                                                 src={product.image}
                                                 alt={product.name}
-                                                className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                                                className="w-full h-full object-cover"
                                                 onError={(e) => {
                                                     e.currentTarget.src = getProductImage(product.name, undefined, product.id);
                                                 }}
@@ -544,30 +495,31 @@ export default function Home() {
                                         <div className="card-body p-5 flex flex-col justify-between">
                                             <div>
                                                 <div className="flex items-center justify-between mb-2">
-                                                    <span className="badge bg-[#F5F7FA] border border-[#CBD5E1] text-xs font-semibold text-[#1E293B]">
+                                                    <span className="px-2 py-0.5 rounded bg-[#F5F7FA] border border-[#E2E8F0] text-xs font-medium text-[#4B5565]">
                                                         {product.category}
                                                     </span>
-                                                    <span className={`badge text-xs font-semibold border-none ${product.stockLevel === "In Stock" ? "bg-[#16A34A] text-white" : product.stockLevel === "Low Stock" ? "bg-[#F59E0B] text-[#1E293B]" : "bg-[#DC2626] text-white"
+                                                    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium ${product.stockLevel === "In Stock" ? "bg-emerald-50 text-[#16A34A] border border-emerald-200" : product.stockLevel === "Low Stock" ? "bg-amber-50 text-[#D97706] border border-amber-200" : "bg-rose-50 text-[#DC2626] border border-rose-200"
                                                         }`}>
+                                                        <span className={`w-1.5 h-1.5 rounded-full ${product.stockLevel === "In Stock" ? "bg-[#16A34A]" : product.stockLevel === "Low Stock" ? "bg-[#D97706]" : "bg-[#DC2626]"}`} />
                                                         {product.stockLevel}
                                                     </span>
                                                 </div>
-                                                <h3 className="card-title text-base sm:text-lg font-bold text-[#1E293B] mb-1">
+                                                <h3 className="card-title text-base font-medium text-[#111827] mb-1">
                                                     {product.name}
                                                 </h3>
-                                                <p className="text-xs sm:text-sm text-[#64748B] line-clamp-2">
+                                                <p className="text-xs text-[#4B5565] line-clamp-2 leading-relaxed">
                                                     {product.description}
                                                 </p>
                                             </div>
 
-                                            <div className="pt-3 mt-2 border-t border-[#E2E8F0] flex items-center justify-between gap-2">
-                                                <span className="text-base font-extrabold text-[#0F2747]">
+                                            <div className="pt-3 mt-3 border-t border-[#E2E8F0] flex items-center justify-between gap-2">
+                                                <span className="font-mono tabular-nums text-base font-semibold text-[#0F2747]">
                                                     {product.price}
                                                 </span>
                                                 <div className="card-actions justify-end">
                                                     <Link
                                                         href={`/products/${product.id}`}
-                                                        className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] btn-sm font-bold border-none rounded-xl"
+                                                        className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] btn-sm font-medium border-none rounded-lg"
                                                     >
                                                         View Details
                                                     </Link>
@@ -583,40 +535,40 @@ export default function Home() {
             </div>
 
             <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 text-left">
-                <div className="card bg-[#FFFFFF] p-6 rounded-2xl border border-[#E2E8F0] shadow-sm hover:border-[#0F2747]/40 transition-all">
-                    <div className="w-10 h-10 rounded-xl bg-[#0F2747]/10 text-[#0F2747] flex items-center justify-center mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <div className="card bg-[#FFFFFF] p-6 rounded-2xl border border-[#E2E8F0] hover:border-[#CBD5E1] transition-colors">
+                    <div className="w-9 h-9 rounded-lg bg-[#F5F7FA] border border-[#E2E8F0] text-[#4B5565] flex items-center justify-center mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                     </div>
-                    <h3 className="font-bold text-base text-[#1E293B] mb-1">Direct Refinery Sourcing</h3>
-                    <p className="text-xs text-[#475569] leading-relaxed">
-                        Refineries post verified fuel inventory directly, eliminating intermediaries and reducing supply chain bottlenecks.
+                    <h3 className="font-medium text-base text-[#111827] mb-1">Direct Refinery Sourcing</h3>
+                    <p className="text-xs text-[#4B5565] leading-relaxed">
+                        Refineries publish verified fuel inventory directly, reducing supply chain bottlenecks and middleman markups.
                     </p>
                 </div>
 
-                <div className="card bg-[#FFFFFF] p-6 rounded-2xl border border-[#E2E8F0] shadow-sm hover:border-[#0F2747]/40 transition-all">
-                    <div className="w-10 h-10 rounded-xl bg-[#16A34A]/10 text-[#16A34A] flex items-center justify-center mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                <div className="card bg-[#FFFFFF] p-6 rounded-2xl border border-[#E2E8F0] hover:border-[#CBD5E1] transition-colors">
+                    <div className="w-9 h-9 rounded-lg bg-[#F5F7FA] border border-[#E2E8F0] text-[#4B5565] flex items-center justify-center mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
                         </svg>
                     </div>
-                    <h3 className="font-bold text-base text-[#1E293B] mb-1">Regional Dealer Network</h3>
-                    <p className="text-xs text-[#475569] leading-relaxed">
-                        Licensed dealers procure stock in bulk from suppliers and dispatch localized deliveries to commercial customers.
+                    <h3 className="font-medium text-base text-[#111827] mb-1">Regional Dealer Network</h3>
+                    <p className="text-xs text-[#4B5565] leading-relaxed">
+                        Licensed dealers procure stock in bulk from refinery terminals and dispatch local deliveries to commercial buyers.
                     </p>
                 </div>
 
-                <div className="card bg-[#FFFFFF] p-6 rounded-2xl border border-[#E2E8F0] shadow-sm hover:border-[#0F2747]/40 transition-all">
-                    <div className="w-10 h-10 rounded-xl bg-[#F59E0B]/15 text-[#D97706] flex items-center justify-center mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                <div className="card bg-[#FFFFFF] p-6 rounded-2xl border border-[#E2E8F0] hover:border-[#CBD5E1] transition-colors">
+                    <div className="w-9 h-9 rounded-lg bg-[#F5F7FA] border border-[#E2E8F0] text-[#4B5565] flex items-center justify-center mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
                     </div>
-                    <h3 className="font-bold text-base text-[#1E293B] mb-1">Scheduled Tanker Delivery</h3>
-                    <p className="text-xs text-[#475569] leading-relaxed">
-                        Complete shipment tracking with estimated transit times, destination depot validation, and delivery status logs.
+                    <h3 className="font-medium text-base text-[#111827] mb-1">Scheduled Tanker Delivery</h3>
+                    <p className="text-xs text-[#4B5565] leading-relaxed">
+                        End-to-end shipment tracking with estimated transit times, destination depot validation, and e-POD custody receipts.
                     </p>
                 </div>
             </div>
@@ -624,69 +576,63 @@ export default function Home() {
             <div className="w-full mb-12 text-left">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-[#E2E8F0] pb-4">
                     <div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#15803D] text-white shadow-none shrink-0">
-                                100% Verified
-                            </span>
-                            <h2 className="text-lg sm:text-xl md:text-2xl font-black text-[#1E293B]">
-                                Verified Delivery Reviews & Fuel Ratings
+                        <div className="flex items-center gap-2.5 flex-wrap">
+                            <h2 className="text-lg sm:text-xl font-medium text-[#111827]">
+                                Delivery Reviews & Fuel Ratings
                             </h2>
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-medium bg-[#F5F7FA] border border-[#E2E8F0] text-[#4B5565] shrink-0">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" aria-hidden="true" />
+                                Verified deliveries
+                            </span>
                         </div>
-                        <p className="text-xs text-[#475569] mt-1">
-                            Feedback from commercial buyers, fleet managers, and dealers with confirmed completed deliveries.
+                        <p className="text-xs text-[#4B5565] mt-1">
+                            Feedback from commercial buyers, fleet managers, and dealers with completed tanker deliveries
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
-                            Only complete order buyers can review
+                        <span className="text-xs font-medium text-[#6B7487] bg-[#F5F7FA] px-3 py-1.5 rounded-lg border border-[#E2E8F0]">
+                            Completed order buyers only
                         </span>
                     </div>
                 </div>
 
                 {publicReviews.length === 0 ? (
-                    <div className="bg-white p-8 rounded-2xl border border-[#E2E8F0] text-center shadow-xs">
-                        <p className="text-xs text-slate-600">No verified delivery reviews recorded yet.</p>
+                    <div className="bg-white p-8 rounded-2xl border border-[#E2E8F0] text-center">
+                        <p className="text-xs text-[#6B7487]">No verified delivery reviews recorded yet</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {publicReviews.map((rev) => (
                             <div
                                 key={rev.orderId}
-                                className="card bg-white p-5 rounded-2xl border border-[#E2E8F0] shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between"
+                                className="card bg-white p-5 rounded-2xl border border-[#E2E8F0] flex flex-col justify-between"
                             >
                                 <div>
-                                    <div className="flex items-center justify-between gap-2 mb-2">
-                                        <div className="flex items-center gap-1.5" aria-label={`Rating ${rev.rating} out of 5 stars`}>
-                                            <div className="flex text-amber-500 text-sm" aria-hidden="true">
-                                                {Array.from({ length: 5 }).map((_, idx) => (
-                                                    <span key={idx} className={idx < rev.rating ? "text-amber-500" : "text-slate-300"}>
-                                                        ★
-                                                    </span>
-                                                ))}
-                                            </div>
-                                            <span className="text-xs font-bold text-[#1E293B]">({rev.rating}/5)</span>
+                                    <div className="flex items-center justify-between gap-2 mb-3">
+                                        <div className="flex items-center gap-1.5" aria-label={`Rating ${rev.rating} out of 5`}>
+                                            <span className="font-mono tabular-nums text-xs font-semibold text-[#111827] bg-[#F5F7FA] border border-[#E2E8F0] px-2 py-0.5 rounded">
+                                                {rev.rating}.0 / 5.0
+                                            </span>
                                         </div>
-                                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-300">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-emerald-700" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                            </svg>
-                                            Verified Delivery #{rev.orderId}
+                                        <span className="inline-flex items-center gap-1.5 text-xs font-mono tabular-nums font-medium text-[#16A34A] bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" aria-hidden="true" />
+                                            Order #{rev.orderId}
                                         </span>
                                     </div>
 
-                                    <p className="text-xs text-[#1E293B] font-medium leading-relaxed italic bg-slate-50 p-3 rounded-xl border border-slate-200">
-                                        "{rev.comment}"
+                                    <p className="text-xs text-[#111827] leading-relaxed bg-[#F5F7FA] p-3 rounded-lg border border-[#E2E8F0]">
+                                        &ldquo;{rev.comment}&rdquo;
                                     </p>
                                 </div>
 
-                                <div className="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between text-xs">
+                                <div className="mt-4 pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs">
                                     <div>
-                                        <p className="font-bold text-[#1E293B]">{rev.reviewerName}</p>
-                                        <p className="text-[11px] text-[#475569]">
+                                        <p className="font-medium text-[#111827]">{rev.reviewerName}</p>
+                                        <p className="text-xs text-[#4B5565]">
                                             {rev.reviewerRole || "Commercial Buyer"} · {rev.productName || "Petroleum Grade"}
                                         </p>
                                     </div>
-                                    <span className="text-[10px] text-slate-500 font-medium">
+                                    <span className="text-xs text-[#6B7487] font-mono tabular-nums">
                                         {rev.createdAt ? new Date(rev.createdAt).toLocaleDateString() : "Recent"}
                                     </span>
                                 </div>
@@ -695,34 +641,35 @@ export default function Home() {
                     </div>
                 )}
 
-                <div className="mt-6 p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-                    <p className="text-slate-600">
-                        <strong className="text-slate-800">Have a delivered order?</strong> Log in to your account, head to the Orders tab, and submit your delivery rating directly on your completed order receipt.
+                <div className="mt-6 p-4 rounded-xl bg-white border border-[#E2E8F0] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                    <p className="text-[#4B5565]">
+                        <span className="font-medium text-[#111827]">Completed a delivery?</span> Sign in to your account, open the Orders tab, and record your delivery rating on the receipt.
                     </p>
                     <Link
                         href="/dashboard"
-                        className="btn bg-[#0F2747] hover:bg-[#163860] text-white btn-xs px-4 py-2 rounded-lg font-bold border-none shrink-0"
+                        className="btn bg-[#0F2747] hover:bg-[#163860] text-white btn-xs h-8 px-4 rounded-lg font-medium border-none shrink-0"
                     >
                         Go to My Orders
                     </Link>
                 </div>
             </div>
 
-            <div className="w-full mb-12 bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 text-left shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="w-full mb-12 bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 text-left flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                 <div>
-                    <span className="badge bg-[#0F2747] text-[#F59E0B] font-bold text-xs uppercase px-2.5 py-1 mb-2">
-                        Help & Compliance
-                    </span>
-                    <h2 className="text-lg sm:text-xl font-bold text-[#1E293B]">Have Questions Regarding Procurement or e-POD?</h2>
-                    <p className="text-xs text-[#64748B] mt-1 max-w-xl leading-relaxed">
+                    <div className="inline-flex items-center gap-2 text-xs font-medium text-[#6B7487] mb-2">
+                        <span className="w-2 h-2 rounded-full bg-[#16A34A]" aria-hidden="true" />
+                        <span>Help & compliance</span>
+                    </div>
+                    <h2 className="text-lg sm:text-xl font-medium text-[#111827]">Questions on Procurement or Electronic Proof of Delivery?</h2>
+                    <p className="text-xs text-[#4B5565] mt-1 max-w-xl leading-relaxed">
                         Read our public knowledge base covering Euro V diesel specs, HazMat transport protocols, Platts wholesale pricing, and 4-digit PIN delivery receipts.
                     </p>
                 </div>
                 <Link
                     href="/faq"
-                    className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] font-bold text-xs rounded-xl px-5 py-2.5 border-none shrink-0"
+                    className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] font-medium text-xs rounded-lg px-5 h-10 border-none shrink-0"
                 >
-                    View All FAQs
+                    View FAQ
                 </Link>
             </div>
         </main>
