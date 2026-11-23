@@ -31,57 +31,57 @@ export default function Navigation() {
     const isActive = (path: string) => pathname === path;
 
     return (
-        <nav className="bg-[#0F2747] text-white rounded-2xl px-3 py-2.5 sm:px-4 sm:py-2.5 my-2 sm:my-3 w-full max-w-[1240px] mx-auto border border-[#163860]">
-            <div className="flex items-center justify-between gap-2">
-                <Link href="/" className="flex items-center gap-2 text-white font-black text-sm sm:text-base tracking-tight hover:opacity-95 transition-opacity">
-                    <span className="w-8 h-8 rounded-lg bg-[#F59E0B] text-[#1E293B] flex items-center justify-center font-black text-xs">
+        <nav className="bg-[#0F2747] text-white rounded-xl px-4 py-2 my-3 w-full max-w-[1240px] mx-auto border border-[#163860]">
+            <div className="flex items-center justify-between gap-3 min-h-10">
+                <Link href="/" className="flex items-center gap-2 text-white font-semibold text-sm sm:text-base hover:opacity-90 transition-opacity">
+                    <span className="w-7 h-7 rounded-md bg-[#F59E0B] text-[#111827] flex items-center justify-center font-semibold text-xs">
                         OS
                     </span>
-                    <span className="font-bold text-sm">OSDMS</span>
+                    <span className="font-medium text-sm">OSDMS</span>
                 </Link>
 
-                <div className="hidden md:flex items-center gap-1.5 text-xs">
+                <div className="hidden md:flex items-center gap-1 text-sm">
                     <Link
                         href="/"
-                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${isActive("/")
-                                ? "bg-[#163860] text-[#F59E0B] font-bold"
-                                : "text-white hover:bg-[#163860]/80 hover:text-[#F59E0B]"
+                        className={`px-3 h-9 inline-flex items-center rounded-lg text-xs font-medium transition-colors ${isActive("/")
+                            ? "bg-[#163860] text-[#F59E0B]"
+                            : "text-slate-200 hover:bg-[#163860]/80 hover:text-white"
                             }`}
                     >
                         Home
                     </Link>
                     <Link
                         href="/about"
-                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${isActive("/about")
-                                ? "bg-[#163860] text-[#F59E0B] font-bold"
-                                : "text-white hover:bg-[#163860]/80 hover:text-[#F59E0B]"
+                        className={`px-3 h-9 inline-flex items-center rounded-lg text-xs font-medium transition-colors ${isActive("/about")
+                            ? "bg-[#163860] text-[#F59E0B]"
+                            : "text-slate-200 hover:bg-[#163860]/80 hover:text-white"
                             }`}
                     >
-                        About Us
+                        About
                     </Link>
                     <Link
                         href="/faq"
-                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${isActive("/faq")
-                                ? "bg-[#163860] text-[#F59E0B] font-bold"
-                                : "text-white hover:bg-[#163860]/80 hover:text-[#F59E0B]"
+                        className={`px-3 h-9 inline-flex items-center rounded-lg text-xs font-medium transition-colors ${isActive("/faq")
+                            ? "bg-[#163860] text-[#F59E0B]"
+                            : "text-slate-200 hover:bg-[#163860]/80 hover:text-white"
                             }`}
                     >
                         FAQ
                     </Link>
                     <Link
                         href="/contact"
-                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${isActive("/contact")
-                                ? "bg-[#163860] text-[#F59E0B] font-bold"
-                                : "text-white hover:bg-[#163860]/80 hover:text-[#F59E0B]"
+                        className={`px-3 h-9 inline-flex items-center rounded-lg text-xs font-medium transition-colors ${isActive("/contact")
+                            ? "bg-[#163860] text-[#F59E0B]"
+                            : "text-slate-200 hover:bg-[#163860]/80 hover:text-white"
                             }`}
                     >
                         Contact
                     </Link>
                     <Link
                         href="/terms"
-                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${isActive("/terms")
-                                ? "bg-[#163860] text-[#F59E0B] font-bold"
-                                : "text-white hover:bg-[#163860]/80 hover:text-[#F59E0B]"
+                        className={`px-3 h-9 inline-flex items-center rounded-lg text-xs font-medium transition-colors ${isActive("/terms")
+                            ? "bg-[#163860] text-[#F59E0B]"
+                            : "text-slate-200 hover:bg-[#163860]/80 hover:text-white"
                             }`}
                     >
                         Terms
@@ -90,9 +90,9 @@ export default function Navigation() {
                     {user && (
                         <Link
                             href="/dashboard"
-                            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${isActive("/dashboard")
-                                    ? "bg-[#F59E0B] text-[#1E293B] font-bold"
-                                    : "text-slate-200 hover:bg-[#163860]/70 hover:text-white"
+                            className={`px-3 h-9 inline-flex items-center rounded-lg text-xs font-medium transition-colors ${isActive("/dashboard")
+                                ? "bg-[#F59E0B] text-[#111827]"
+                                : "text-slate-200 hover:bg-[#163860]/80 hover:text-white"
                                 }`}
                         >
                             Dashboard
@@ -100,32 +100,32 @@ export default function Navigation() {
                     )}
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                     {!user ? (
-                        <div className="hidden sm:flex items-center gap-2">
+                        <div className="hidden sm:flex items-center gap-3">
                             <Link
                                 href="/login"
-                                className="px-3 py-1.5 bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] font-bold rounded-lg text-xs"
+                                className="px-3 h-8 inline-flex items-center text-slate-200 hover:text-white text-xs font-medium transition-colors"
                             >
-                                Sign In
+                                Sign in
                             </Link>
                             <Link
                                 href="/registration"
-                                className="px-3 py-1.5 border border-slate-400 hover:bg-white/10 hover:border-white rounded-lg text-xs font-semibold text-white"
+                                className="px-4 h-8 inline-flex items-center bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] font-medium rounded-lg text-xs transition-colors"
                             >
                                 Register
                             </Link>
                         </div>
                     ) : (
-                        <div className="hidden sm:flex items-center gap-2">
-                            <span className="text-xs text-slate-300 font-medium">
-                                Hi, <strong className="text-white">{user.userName || user.name || "User"}.</strong>
+                        <div className="hidden sm:flex items-center gap-3">
+                            <span className="text-xs text-slate-300">
+                                {user.userName || user.name || "User"}
                             </span>
                             <button
                                 onClick={handleLogout}
-                                className="px-3 py-1.5 bg-[#DC2626] hover:bg-[#B91C1C] text-white font-bold rounded-lg text-xs"
+                                className="px-3 h-8 inline-flex items-center bg-[#163860] hover:bg-[#1E4A7D] text-white font-medium rounded-lg text-xs transition-colors cursor-pointer"
                             >
-                                Logout
+                                Sign out
                             </button>
                         </div>
                     )}
@@ -133,16 +133,16 @@ export default function Navigation() {
                     <button
                         type="button"
                         onClick={() => setMobileMenuOpen((prev) => !prev)}
-                        className="md:hidden p-2 rounded-lg bg-[#163860] text-white hover:bg-[#1E4A7D] transition"
+                        className="md:hidden p-2 rounded-lg bg-[#163860] text-white hover:bg-[#1E4A7D] transition-colors"
                         aria-label="Toggle navigation menu"
                     >
                         {mobileMenuOpen ? (
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         ) : (
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
                         )}
                     </button>
@@ -150,39 +150,39 @@ export default function Navigation() {
             </div>
 
             {mobileMenuOpen && (
-                <div className="md:hidden pt-3 pb-2 border-t border-[#163860] mt-2 flex flex-col gap-1.5">
+                <div className="md:hidden pt-3 pb-2 border-t border-[#163860] mt-2 flex flex-col gap-1">
                     <Link
                         href="/"
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`px-3 py-2 rounded-lg text-sm font-semibold transition ${isActive("/") ? "bg-[#163860] text-[#F59E0B] font-bold" : "text-slate-200"}`}
+                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive("/") ? "bg-[#163860] text-[#F59E0B]" : "text-slate-200"}`}
                     >
                         Home
                     </Link>
                     <Link
                         href="/about"
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`px-3 py-2 rounded-lg text-sm font-semibold transition ${isActive("/about") ? "bg-[#163860] text-[#F59E0B] font-bold" : "text-slate-200"}`}
+                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive("/about") ? "bg-[#163860] text-[#F59E0B]" : "text-slate-200"}`}
                     >
-                        About Us
+                        About
                     </Link>
                     <Link
                         href="/faq"
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`px-3 py-2 rounded-lg text-sm font-semibold transition ${isActive("/faq") ? "bg-[#163860] text-[#F59E0B] font-bold" : "text-slate-200"}`}
+                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive("/faq") ? "bg-[#163860] text-[#F59E0B]" : "text-slate-200"}`}
                     >
                         FAQ
                     </Link>
                     <Link
                         href="/contact"
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`px-3 py-2 rounded-lg text-sm font-semibold transition ${isActive("/contact") ? "bg-[#163860] text-[#F59E0B] font-bold" : "text-slate-200"}`}
+                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive("/contact") ? "bg-[#163860] text-[#F59E0B]" : "text-slate-200"}`}
                     >
                         Contact
                     </Link>
                     <Link
                         href="/terms"
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`px-3 py-2 rounded-lg text-sm font-semibold transition ${isActive("/terms") ? "bg-[#163860] text-[#F59E0B] font-bold" : "text-slate-200"}`}
+                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive("/terms") ? "bg-[#163860] text-[#F59E0B]" : "text-slate-200"}`}
                     >
                         Terms & Conditions
                     </Link>
@@ -190,26 +190,26 @@ export default function Navigation() {
                         <Link
                             href="/dashboard"
                             onClick={() => setMobileMenuOpen(false)}
-                            className={`px-3 py-2 rounded-lg text-sm font-semibold transition ${isActive("/dashboard") ? "bg-[#F59E0B] text-[#1E293B] font-bold" : "text-slate-200"}`}
+                            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive("/dashboard") ? "bg-[#F59E0B] text-[#111827]" : "text-slate-200"}`}
                         >
                             Dashboard
                         </Link>
                     )}
 
-                    <div className="pt-2 border-t border-[#163860]/80 flex flex-col gap-2">
+                    <div className="pt-2 border-t border-[#163860] flex flex-col gap-2">
                         {!user ? (
                             <div className="grid grid-cols-2 gap-2">
                                 <Link
                                     href="/login"
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className="text-center py-2 bg-[#F59E0B] text-[#1E293B] font-bold rounded-lg text-sm"
+                                    className="text-center py-2 border border-slate-400 text-white font-medium rounded-lg text-sm"
                                 >
-                                    Sign In
+                                    Sign in
                                 </Link>
                                 <Link
                                     href="/registration"
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className="text-center py-2 border border-slate-400 text-white font-semibold rounded-lg text-sm"
+                                    className="text-center py-2 bg-[#F59E0B] text-[#111827] font-medium rounded-lg text-sm"
                                 >
                                     Register
                                 </Link>
@@ -217,16 +217,16 @@ export default function Navigation() {
                         ) : (
                             <div className="flex items-center justify-between pt-1">
                                 <span className="text-xs text-slate-300">
-                                    Logged in: <strong className="text-white">{user.userName || user.name || "User"}.</strong>
+                                    {user.userName || user.name || "User"}
                                 </span>
                                 <button
                                     onClick={() => {
                                         setMobileMenuOpen(false);
                                         handleLogout();
                                     }}
-                                    className="px-3 py-1.5 bg-[#DC2626] text-white font-bold rounded-lg text-xs"
+                                    className="px-3 py-1.5 bg-[#163860] text-white font-medium rounded-lg text-xs"
                                 >
-                                    Logout
+                                    Sign out
                                 </button>
                             </div>
                         )}
