@@ -4,9 +4,11 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import axios from "axios";
+import { motion, AnimatePresence } from "motion/react";
 import MyNavigation from "@/components/navigation";
 import MyHeader from "@/components/header";
 import UberMapTracker from "@/components/uber-map-tracker";
+import { SpotlightCard } from "@/components/ui/motion-primitives";
 import { getPusherClient, ChatMessage } from "@/lib/pusher";
 import { checkEmailUniqueness } from "@/lib/email-checker";
 import { API_ENDPOINT, API_ENDPOINT as apiBase } from "@/lib/api";
@@ -2444,105 +2446,77 @@ export default function Dashboard() {
                     )}
 
                     <div className="mt-4 sm:mt-6 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                        {dashboardMetrics.map((metric) => (
-                            <div key={metric.label} className={`rounded-xl border p-4 ${metric.tint}`}>
-                                <div className="text-xs font-medium text-[#6B7487] truncate">{metric.label}</div>
-                                <div className="mt-2 font-mono tabular-nums text-xl sm:text-2xl font-semibold text-[#111827] leading-none">{metric.value}</div>
-                                <div className="mt-1.5 font-mono tabular-nums text-xs text-[#4B5565] line-clamp-1">{metric.detail}</div>
-                            </div>
+                        {dashboardMetrics.map((metric, idx) => (
+                            <motion.div
+                                key={metric.label}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.28, delay: idx * 0.05, ease: [0.22, 1, 0.36, 1] }}
+                            >
+                                <SpotlightCard className={`rounded-xl border p-4 ${metric.tint}`}>
+                                    <div className="text-xs font-medium text-[#6B7487] truncate">{metric.label}</div>
+                                    <div className="mt-2 font-mono tabular-nums text-xl sm:text-2xl font-semibold text-[#111827] leading-none">{metric.value}</div>
+                                    <div className="mt-1.5 font-mono tabular-nums text-xs text-[#4B5565] line-clamp-1">{metric.detail}</div>
+                                </SpotlightCard>
+                            </motion.div>
                         ))}
                     </div>
 
                     <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pt-4 pb-1 no-scrollbar w-full">
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab("overview")}
-                            className={`btn btn-xs sm:btn-sm rounded-xl font-bold transition-all text-xs shrink-0 ${activeTab === "overview"
-                                ? "btn-primary shadow-sm"
-                                : "btn-ghost text-secondary-gray hover:text-[#0F2747]"
-                                }`}
-                        >
-                            Overview
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab("products")}
-                            className={`btn btn-xs sm:btn-sm rounded-xl font-bold transition-all text-xs shrink-0 ${activeTab === "products"
-                                ? "btn-primary shadow-sm"
-                                : "btn-ghost text-secondary-gray hover:text-[#0F2747]"
-                                }`}
-                        >
-                            Products ({products.length})
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab("orders")}
-                            className={`btn btn-xs sm:btn-sm rounded-xl font-bold transition-all text-xs shrink-0 ${activeTab === "orders"
-                                ? "btn-primary shadow-sm"
-                                : "btn-ghost text-secondary-gray hover:text-[#0F2747]"
-                                }`}
-                        >
-                            Orders ({orders.length})
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab("tracking")}
-                            className={`btn btn-sm rounded-xl font-bold transition-all ${activeTab === "tracking"
-                                ? "btn-primary shadow-sm"
-                                : "btn-ghost text-secondary-gray hover:text-[#0F2747]"
-                                }`}
-                        >
-                            Live Tracking
-                        </button>
-                        {(user.role === "Dealer" || user.title === "Dealer" || user.role === "Supplier" || user.title === "Supplier") && (
-                            <button
-                                type="button"
-                                onClick={() => setActiveTab("inventory")}
-                                className={`btn btn-sm rounded-xl font-bold transition-all ${activeTab === "inventory"
-                                    ? "btn-primary shadow-sm"
-                                    : "btn-ghost text-secondary-gray hover:text-[#0F2747]"
-                                    }`}
-                            >
-                                Stock Reserve
-                            </button>
-                        )}
-                        {(user.role === "Admin" || user.title === "Admin") && (
-                            <button
-                                type="button"
-                                onClick={() => setActiveTab("admin-monitoring")}
-                                className={`btn btn-sm rounded-xl font-bold transition-all ${activeTab === "admin-monitoring"
-                                    ? "btn-primary shadow-sm"
-                                    : "btn-ghost text-secondary-gray hover:text-[#0F2747]"
-                                    }`}
-                            >
-                                Admin Monitoring
-                            </button>
-                        )}
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab("chat")}
-                            className={`btn btn-sm rounded-xl font-bold transition-all ${activeTab === "chat"
-                                ? "btn-primary shadow-sm"
-                                : "btn-ghost text-secondary-gray hover:text-[#0F2747]"
-                                }`}
-                        >
-                            Realtime Chat
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab("profile")}
-                            className={`btn btn-sm rounded-xl font-bold transition-all ${activeTab === "profile"
-                                ? "btn-primary shadow-sm"
-                                : "btn-ghost text-secondary-gray hover:text-[#0F2747]"
-                                }`}
-                        >
-                            Profile
-                        </button>
+                        {([
+                            { id: "overview" as DashboardTab, label: "Overview", show: true },
+                            { id: "products" as DashboardTab, label: `Products (${products.length})`, show: true },
+                            { id: "orders" as DashboardTab, label: `Orders (${orders.length})`, show: true },
+                            { id: "tracking" as DashboardTab, label: "Live Tracking", show: true },
+                            {
+                                id: "inventory" as DashboardTab,
+                                label: "Stock Reserve",
+                                show: user.role === "Dealer" || user.title === "Dealer" || user.role === "Supplier" || user.title === "Supplier",
+                            },
+                            {
+                                id: "admin-monitoring" as DashboardTab,
+                                label: "Admin Monitoring",
+                                show: user.role === "Admin" || user.title === "Admin",
+                            },
+                            { id: "chat" as DashboardTab, label: "Realtime Chat", show: true },
+                            { id: "profile" as DashboardTab, label: "Profile", show: true },
+                        ]
+                            .filter((t) => t.show)
+                            .map((tab) => {
+                                const isCurrent = activeTab === tab.id;
+                                return (
+                                    <button
+                                        key={tab.id}
+                                        type="button"
+                                        onClick={() => setActiveTab(tab.id)}
+                                        className={`relative px-3.5 h-8 rounded-lg font-medium transition-colors text-xs shrink-0 cursor-pointer z-10 ${
+                                            isCurrent ? "text-white" : "text-[#4B5565] hover:text-[#0F2747] hover:bg-[#F5F7FA]"
+                                        }`}
+                                    >
+                                        {isCurrent && (
+                                            <motion.span
+                                                layoutId="dashboard-active-tab-pill"
+                                                transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                                                className="absolute inset-0 rounded-lg bg-[#0F2747] -z-10"
+                                            />
+                                        )}
+                                        <span>{tab.label}</span>
+                                    </button>
+                                );
+                            }))}
                     </div>
                 </div>
 
                 { }
-                <div className="w-full max-w-[1200px] mb-12">
+                <AnimatePresence mode="wait">
+                <motion.div
+                    key={activeTab}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+                    className="w-full max-w-[1200px] mb-12"
+                >
                     {activeTab === "overview" && (
                         <OverviewTab
                             userData={user}
@@ -2663,7 +2637,8 @@ export default function Dashboard() {
                             onDeleteAccount={handleDeleteOwnAccount}
                         />
                     )}
-                </div>
+                </motion.div>
+                </AnimatePresence>
             </div>
 
             { }
