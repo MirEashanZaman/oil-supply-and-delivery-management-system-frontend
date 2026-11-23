@@ -38,27 +38,33 @@ export const PostProductModal: React.FC<PostProductModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
-      <div className="bg-[#F8FAFC] border border-[#E2E8F0] w-full max-w-[540px] rounded-[18px] shadow-xl p-4 sm:p-5 relative">
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute top-5 right-5 flex h-9 w-9 items-center justify-center rounded-full bg-slate-200 text-lg font-bold text-[#475569] transition hover:bg-slate-300"
-          aria-label="Close modal"
-        >
-          ×
-        </button>
-
-        <div className="mb-6 text-center">
-          <h3 className="text-[1.5rem] font-black tracking-tight text-[#0F2747]">
-            Post New Product
-          </h3>
+    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 animate-fadeIn">
+      <div className="bg-white border border-[#E2E8F0] w-full max-w-[540px] rounded-2xl p-6 relative text-left">
+        <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3 mb-5">
+          <div>
+            <h3 className="text-lg font-medium text-[#111827]">
+              Post New Product Lot
+            </h3>
+            <p className="text-xs text-[#6B7487] mt-0.5">
+              Publish a certified petroleum grade to the supply catalog
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#F5F7FA] text-[#4B5565] transition-colors hover:bg-[#ECEFF4] hover:text-[#111827] cursor-pointer"
+            aria-label="Close modal"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
 
         <form onSubmit={onSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <label className="block text-[0.85rem] font-semibold text-[#0F2747] text-left">
-              Product Name
+          <div>
+            <label className="block text-xs font-medium text-[#111827] mb-1">
+              Product name
             </label>
             <input
               type="text"
@@ -66,14 +72,14 @@ export const PostProductModal: React.FC<PostProductModalProps> = ({
               onChange={(e) =>
                 setNewProduct((prev) => ({ ...prev, name: e.target.value }))
               }
-              className="w-full bg-white border border-[#CBD5E1] rounded-[18px] px-4 py-3 text-base text-[#1E293B] placeholder:text-[#64748B] focus:outline-none focus:border-[#0F2747] shadow-sm"
-              placeholder="Enter product name"
+              className="w-full bg-[#F5F7FA] border border-[#CBD5E1] rounded-lg px-3.5 py-2.5 text-sm text-[#111827] placeholder:text-[#6B7487] focus:outline-none focus:bg-white focus:border-[#0F2747] transition-colors"
+              placeholder="e.g. Ultra-Low Sulfur Diesel"
               required
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="block text-[0.85rem] font-semibold text-[#0F2747] text-left">
+          <div>
+            <label className="block text-xs font-medium text-[#111827] mb-1">
               Category
             </label>
             <select
@@ -81,7 +87,7 @@ export const PostProductModal: React.FC<PostProductModalProps> = ({
               onChange={(e) =>
                 setNewProduct((prev) => ({ ...prev, category: e.target.value }))
               }
-              className="w-full bg-white border border-[#CBD5E1] rounded-xl px-3 py-2.5 text-sm text-[#1E293B] focus:outline-none focus:border-[#0F2747] shadow-sm"
+              className="w-full bg-[#F5F7FA] border border-[#CBD5E1] rounded-lg px-3.5 py-2.5 text-sm text-[#111827] focus:outline-none focus:bg-white focus:border-[#0F2747] transition-colors"
             >
               <option value="Octane">Octane</option>
               <option value="Diesel">Diesel</option>
@@ -94,9 +100,9 @@ export const PostProductModal: React.FC<PostProductModalProps> = ({
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <label className="block text-[0.85rem] font-semibold text-[#0F2747] text-left">
-                Unit Price ($)
+            <div>
+              <label className="block text-xs font-medium text-[#111827] mb-1">
+                Unit price ($)
               </label>
               <input
                 type="number"
@@ -106,15 +112,15 @@ export const PostProductModal: React.FC<PostProductModalProps> = ({
                 onChange={(e) =>
                   setNewProduct((prev) => ({ ...prev, price: e.target.value }))
                 }
-                className="w-full bg-white border border-[#CBD5E1] rounded-[18px] px-4 py-3 text-base text-[#1E293B] placeholder:text-[#64748B] focus:outline-none focus:border-[#0F2747] shadow-sm"
-                placeholder="Enter product price"
+                className="w-full bg-[#F5F7FA] border border-[#CBD5E1] rounded-lg px-3.5 py-2.5 text-sm font-mono tabular-nums text-[#111827] placeholder:text-[#6B7487] focus:outline-none focus:bg-white focus:border-[#0F2747] transition-colors"
+                placeholder="85.00"
                 required
               />
             </div>
 
-            <div className="space-y-2">
-              <label className="block text-[0.85rem] font-semibold text-[#0F2747] text-left">
-                Stock (Liters/Units)
+            <div>
+              <label className="block text-xs font-medium text-[#111827] mb-1">
+                Stock (units)
               </label>
               <input
                 type="number"
@@ -123,16 +129,16 @@ export const PostProductModal: React.FC<PostProductModalProps> = ({
                 onChange={(e) =>
                   setNewProduct((prev) => ({ ...prev, stock: e.target.value }))
                 }
-                className="w-full bg-white border border-[#CBD5E1] rounded-[18px] px-4 py-3 text-base text-[#1E293B] placeholder:text-[#64748B] focus:outline-none focus:border-[#0F2747] shadow-sm"
-                placeholder="Enter stock quantity"
+                className="w-full bg-[#F5F7FA] border border-[#CBD5E1] rounded-lg px-3.5 py-2.5 text-sm font-mono tabular-nums text-[#111827] placeholder:text-[#6B7487] focus:outline-none focus:bg-white focus:border-[#0F2747] transition-colors"
+                placeholder="1500"
                 required
               />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="block text-[0.85rem] font-semibold text-[#0F2747] text-left">
-              Description
+          <div>
+            <label className="block text-xs font-medium text-[#111827] mb-1">
+              Specification notes
             </label>
             <textarea
               value={newProduct.description}
@@ -142,24 +148,22 @@ export const PostProductModal: React.FC<PostProductModalProps> = ({
                   description: e.target.value,
                 }))
               }
-              className="w-full bg-white border border-[#CBD5E1] rounded-xl px-3 py-2.5 text-sm text-[#1E293B] placeholder:text-[#64748B] focus:outline-none focus:border-[#0F2747] resize-none h-22 shadow-sm"
-              placeholder="Enter product description"
+              className="w-full bg-[#F5F7FA] border border-[#CBD5E1] rounded-lg px-3.5 py-2.5 text-sm text-[#111827] placeholder:text-[#6B7487] focus:outline-none focus:bg-white focus:border-[#0F2747] resize-none h-20 transition-colors"
+              placeholder="Grade specification and sulfur rating"
             />
           </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="block text-[0.85rem] font-bold text-[#0F2747] text-left">
-                Product Photo <span className="text-red-600 font-extrabold text-xs bg-red-100/80 border border-red-200 px-2 py-0.5 rounded-md ml-1">Required *</span>
-              </label>
-            </div>
-            <p className="text-[0.72rem] text-[#64748B] -mt-1 text-left">
-              Upload a clear photo for this product. A photo is required to publish this product.
+          <div className="space-y-1.5">
+            <label className="block text-xs font-medium text-[#111827]">
+              Product photo
+            </label>
+            <p className="text-xs text-[#6B7487]">
+              Upload a photo for this petroleum grade
             </p>
 
             {newProduct.photo ? (
-              <div className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-300 rounded-xl shadow-sm">
-                <div className="w-16 h-16 rounded-lg overflow-hidden bg-slate-200 border border-slate-300 flex-shrink-0 relative">
+              <div className="flex items-center gap-3 p-3 bg-[#F5F7FA] border border-[#E2E8F0] rounded-xl">
+                <div className="w-14 h-14 rounded-lg overflow-hidden bg-white border border-[#E2E8F0] shrink-0 relative">
                   <img
                     src={URL.createObjectURL(newProduct.photo)}
                     alt="Product preview"
@@ -167,15 +171,15 @@ export const PostProductModal: React.FC<PostProductModalProps> = ({
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-bold text-slate-800 truncate">
+                  <p className="text-xs font-medium text-[#111827] truncate">
                     {newProduct.photo.name}
                   </p>
-                  <p className="text-[0.7rem] text-slate-500">
+                  <p className="text-xs text-[#6B7487] font-mono tabular-nums">
                     {(newProduct.photo.size / 1024).toFixed(1)} KB
                   </p>
                   <label
                     htmlFor="product-photo-upload"
-                    className="inline-block mt-1 text-[0.75rem] font-semibold text-[#0F2747] hover:underline cursor-pointer"
+                    className="inline-block mt-1 text-xs font-medium text-[#0F2747] hover:underline cursor-pointer"
                   >
                     Change photo
                   </label>
@@ -185,19 +189,19 @@ export const PostProductModal: React.FC<PostProductModalProps> = ({
                   onClick={() =>
                     setNewProduct((prev) => ({ ...prev, photo: null }))
                   }
-                  className="px-2.5 py-1 text-xs font-semibold text-red-600 hover:bg-red-50 border border-red-200 rounded-lg transition"
+                  className="px-2.5 py-1 text-xs font-medium text-[#DC2626] hover:bg-rose-50 border border-rose-200 rounded-lg transition-colors"
                 >
                   Remove
                 </button>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 hover:border-[#0F2747] rounded-xl p-4 bg-white transition cursor-pointer relative group">
+              <div className="flex flex-col items-center justify-center border border-dashed border-[#CBD5E1] hover:border-[#0F2747] rounded-xl p-4 bg-[#F5F7FA] transition-colors cursor-pointer relative group">
                 <label
                   htmlFor="product-photo-upload"
                   className="w-full h-full flex flex-col items-center justify-center cursor-pointer"
                 >
                   <svg
-                    className="w-8 h-8 text-slate-400 group-hover:text-[#0F2747] transition mb-1"
+                    className="w-6 h-6 text-[#6B7487] group-hover:text-[#0F2747] transition-colors mb-1.5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -205,15 +209,15 @@ export const PostProductModal: React.FC<PostProductModalProps> = ({
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      strokeWidth={2}
+                      strokeWidth={1.5}
                       d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
-                  <span className="text-xs font-bold text-[#0F2747]">
-                    Click to select photo <span className="text-red-500">*</span>
+                  <span className="text-xs font-medium text-[#111827]">
+                    Select product photo
                   </span>
-                  <span className="text-[0.7rem] text-slate-500 mt-0.5">
-                    PNG, JPG, JPEG, WEBP
+                  <span className="text-xs text-[#6B7487] mt-0.5">
+                    PNG, JPG, WEBP
                   </span>
                 </label>
               </div>
@@ -235,18 +239,18 @@ export const PostProductModal: React.FC<PostProductModalProps> = ({
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-2">
+          <div className="flex justify-end gap-2.5 pt-3 border-t border-[#E2E8F0]">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-slate-200 text-[#334155] hover:bg-slate-300 rounded-xl text-sm font-bold transition"
+              className="px-4 py-2 bg-white border border-[#CBD5E1] text-[#111827] hover:bg-[#F5F7FA] rounded-lg text-xs font-medium transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2.5 bg-[#0F2747] hover:bg-[#163860] text-white rounded-xl text-sm font-black transition disabled:opacity-50 shadow-sm"
+              className="px-5 py-2 bg-[#0F2747] hover:bg-[#163860] text-white rounded-lg text-xs font-medium transition-colors disabled:opacity-50 cursor-pointer"
             >
               {submitting ? "Publishing..." : "Publish Product"}
             </button>
