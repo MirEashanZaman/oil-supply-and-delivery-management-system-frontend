@@ -32,44 +32,51 @@ export const WholesaleOrderModal: React.FC<WholesaleOrderModalProps> = ({
 }) => {
   if (!isOpen || !product) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
-      <div className="bg-[#0F172A] border border-slate-700 w-full max-w-lg rounded-2xl shadow-2xl p-6 relative">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-white"
-        >
+  const numericPrice = Number(String(product.price || 0).replace(/[$,\s]/g, "")) || product.numericPrice || 0;
 
-        </button>
-        <h3 className="text-xl font-bold text-white mb-2">
-          Place Wholesale Sourcing Order
-        </h3>
-        <p className="text-xs text-slate-400 mb-4">
-          Order bulk petroleum products directly from supplier refineries for
-          dealer inventory.
-        </p>
+  return (
+    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 animate-fadeIn">
+      <div className="bg-white border border-[#E2E8F0] w-full max-w-lg rounded-2xl p-6 relative text-left">
+        <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3 mb-4">
+          <div>
+            <h3 className="text-lg font-medium text-[#111827]">
+              Wholesale Sourcing Order
+            </h3>
+            <p className="text-xs text-[#6B7487] mt-0.5">
+              Procure bulk petroleum lots directly from refinery terminals
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close modal"
+            className="w-8 h-8 rounded-lg bg-[#F5F7FA] hover:bg-[#ECEFF4] text-[#4B5565] hover:text-[#111827] flex items-center justify-center transition-colors cursor-pointer"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
         <form onSubmit={onSubmit} className="space-y-4">
-          <div className="p-3 bg-slate-900 border border-slate-700/60 rounded-xl">
-            <div className="text-xs text-slate-400">Product</div>
-            <div className="text-sm font-bold text-amber-400">
+          <div className="p-3.5 bg-[#F5F7FA] border border-[#E2E8F0] rounded-xl space-y-1">
+            <div className="text-xs text-[#6B7487]">Selected grade</div>
+            <div className="text-sm font-medium text-[#111827]">
               {product.name}
             </div>
-            <div className="text-xs text-slate-400">
-              Supplier:{" "}
-              {product.supplier?.name ||
-                product.user?.name ||
-                "Refinery Partner"}
-            </div>
-            <div className="text-xs text-slate-400">
-              Unit Wholesale Price:{" "}
-              <span className="text-emerald-400 font-semibold">
-                ${product.price}
+            <div className="flex items-center justify-between text-xs text-[#4B5565] pt-1">
+              <span>
+                Supplier: {product.supplier?.name || product.user?.name || "Refinery Partner"}
+              </span>
+              <span className="font-mono tabular-nums font-semibold text-[#0F2747]">
+                {typeof product.price === "string" && product.price.startsWith("$") ? product.price : `$${numericPrice.toFixed(2)}`} / unit
               </span>
             </div>
           </div>
+
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">
-              Quantity (Liters / Barrels)
+            <label className="block text-xs font-medium text-[#111827] mb-1">
+              Quantity (barrels / units)
             </label>
             <input
               type="number"
@@ -77,65 +84,68 @@ export const WholesaleOrderModal: React.FC<WholesaleOrderModalProps> = ({
               max={product.stock}
               value={wholesaleQuantity}
               onChange={(e) => setWholesaleQuantity(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500"
-              placeholder="Enter quantity"
+              className="w-full bg-[#F5F7FA] border border-[#CBD5E1] rounded-lg px-3.5 py-2.5 text-[#111827] font-mono tabular-nums text-sm focus:outline-none focus:bg-white focus:border-[#0F2747] transition-colors"
+              placeholder="Quantity"
               required
             />
-            <span className="text-[10px] text-slate-500">
-              Available Supplier Stock: {product.stock}
-            </span>
+            {product.stock !== undefined && (
+              <span className="font-mono tabular-nums text-xs text-[#6B7487] mt-1 block">
+                Available supplier stock: {product.stock}
+              </span>
+            )}
           </div>
+
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">
-              Delivery Depot Address
+            <label className="block text-xs font-medium text-[#111827] mb-1">
+              Delivery depot address
             </label>
             <input
               type="text"
               value={wholesaleAddress}
               onChange={(e) => setWholesaleAddress(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500"
-              placeholder="Enter delivery depot address"
+              className="w-full bg-[#F5F7FA] border border-[#CBD5E1] rounded-lg px-3.5 py-2.5 text-[#111827] text-sm focus:outline-none focus:bg-white focus:border-[#0F2747] transition-colors"
+              placeholder="Receiving depot address"
               required
             />
           </div>
+
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">
-              Special Handling / Tanker Notes (Optional)
+            <label className="block text-xs font-medium text-[#111827] mb-1">
+              Handling & tanker notes (optional)
             </label>
             <textarea
               value={wholesaleNotes}
               onChange={(e) => setWholesaleNotes(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-amber-500 resize-none h-20"
-              placeholder="Enter special handling notes"
+              className="w-full bg-[#F5F7FA] border border-[#CBD5E1] rounded-lg px-3.5 py-2 text-[#111827] text-sm focus:outline-none focus:bg-white focus:border-[#0F2747] resize-none h-20 transition-colors"
+              placeholder="Discharge manifold or scheduling notes"
             />
           </div>
+
           {wholesaleQuantity && Number(wholesaleQuantity) > 0 && (
-            <div className="flex justify-between items-center bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 text-sm">
-              <span className="text-amber-300 font-medium">
-                Estimated Sourcing Total:
+            <div className="flex justify-between items-center bg-[#F5F7FA] border border-[#E2E8F0] rounded-xl p-3.5 text-xs">
+              <span className="text-[#4B5565] font-medium">
+                Estimated sourcing total
               </span>
-              <span className="text-amber-400 font-bold text-base">
-                $
-                {(
-                  Number(wholesaleQuantity) * Number(product.price)
-                ).toLocaleString()}
+              <span className="font-mono tabular-nums text-[#0F2747] font-semibold text-base">
+                ${(Number(wholesaleQuantity) * numericPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
           )}
-          <div className="flex justify-end gap-3 pt-2">
+
+          <div className="flex justify-end gap-2.5 pt-2 border-t border-[#E2E8F0]">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 bg-slate-800 text-slate-300 hover:bg-slate-700 rounded-xl text-sm font-semibold transition"
+              className="px-4 py-2 bg-white border border-[#CBD5E1] text-[#111827] hover:bg-[#F5F7FA] rounded-lg text-xs font-medium transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={orderingWholesale}
-              className="px-5 py-2.5 bg-accent hover:bg-accent-hover text-slate-950 rounded-xl text-sm font-bold transition disabled:opacity-50"
+              className="px-5 py-2 bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] rounded-lg text-xs font-medium transition-colors disabled:opacity-50 cursor-pointer"
             >
-              {orderingWholesale ? "Processing Order..." : "Confirm Wholesale Purchase"}
+              {orderingWholesale ? "Processing..." : "Confirm Wholesale Order"}
             </button>
           </div>
         </form>
