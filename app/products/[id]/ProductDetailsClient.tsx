@@ -6,7 +6,7 @@ import axios from "axios";
 import MyNavigation from "@/components/navigation";
 import MyHeader from "@/components/header";
 import { getProductImage } from "@/components/dashboard/utils";
-import { getPusherClient, ChatMessage } from "@/lib/pusher";
+import { getPusherClient } from "@/lib/pusher";
 import { getStoredReviews, fetchAllServerReviews, OrderReview } from "@/lib/reviews";
 
 type Product = {
@@ -26,10 +26,9 @@ export default function ProductDetails({
     product: Product | null;
     productId: string;
 }) {
-
     const [isInquireModalOpen, setIsInquireModalOpen] = useState(false);
-    const [isPusherConnected, setIsPusherConnected] = useState(false);
-    const [connectionStatus, setConnectionStatus] = useState("Connecting...");
+    const [, setIsPusherConnected] = useState(false);
+    const [, setConnectionStatus] = useState("Connecting");
     const [connectionAttempts, setConnectionAttempts] = useState(0);
     const [inquiryName, setInquiryName] = useState("");
     const [inquiryEmail, setInquiryEmail] = useState("");
@@ -90,9 +89,9 @@ export default function ProductDetails({
                 setConnectionAttempts(prev => prev + 1);
                 if (connectionAttempts < 3) {
                     setTimeout(() => {
-                        const pusher = getPusherClient();
-                        if (pusher) {
-                            pusher.subscribe("oil-supply-chat");
+                        const pusherClient = getPusherClient();
+                        if (pusherClient) {
+                            pusherClient.subscribe("oil-supply-chat");
                         }
                     }, 3000);
                 }
@@ -139,21 +138,21 @@ export default function ProductDetails({
         <div className="w-full flex flex-col items-center">
             <MyHeader
                 name="Product Details"
-                message={`Product specification and ordering details for item #${productId}`}
+                message={`Specification and dispatch ordering details for lot #${productId}`}
             />
             <MyNavigation />
 
-            <div className="w-full max-w-4xl mt-6">
-                <div className="breadcrumbs text-xs text-[#64748B] mb-4 px-1">
+            <div className="w-full max-w-[1240px] mt-6">
+                <div className="breadcrumbs text-xs text-[#6B7487] mb-4 px-1">
                     <ul>
                         <li><Link href="/" className="hover:text-[#0F2747]">Home</Link></li>
                         <li><Link href="/dashboard" className="hover:text-[#0F2747]">Catalog</Link></li>
-                        <li className="font-semibold text-[#1E293B]">Product #{productId}</li>
+                        <li className="font-mono tabular-nums font-medium text-[#111827]">Lot #{productId}</li>
                     </ul>
                 </div>
 
                 {product ? (
-                    <div className="card lg:card-side bg-[#FFFFFF] shadow-md border border-[#E2E8F0] rounded-2xl overflow-hidden">
+                    <div className="card lg:card-side bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl overflow-hidden">
                         <figure className="lg:w-1/2 h-72 lg:h-auto bg-[#F5F7FA] relative">
                             <img
                                 src={product.image || getProductImage(product.name, product.image, product.id)}
@@ -164,54 +163,56 @@ export default function ProductDetails({
                                 }}
                             />
                             <div className="absolute top-4 left-4">
-                                <span className="badge bg-[#0F2747] text-[#F59E0B] font-bold text-xs px-3 py-1 border-none shadow-sm">
-                                    Verified Grade
+                                <span className="inline-flex items-center gap-1.5 bg-[#0F2747] text-white font-medium text-xs px-3 py-1 rounded-md">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" aria-hidden="true" />
+                                    Verified grade
                                 </span>
                             </div>
                         </figure>
 
-                        <div className="card-body p-6 sm:p-8 lg:w-1/2 justify-between">
+                        <div className="card-body p-6 sm:p-8 lg:w-1/2 justify-between text-left">
                             <div>
-                                <div className="flex items-center gap-2 mb-2">
-                                    <span className="badge bg-[#F5F7FA] border border-[#CBD5E1] text-[#1E293B] text-xs font-semibold">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <span className="px-2.5 py-0.5 rounded bg-[#F5F7FA] border border-[#E2E8F0] text-[#4B5565] text-xs font-medium">
                                         {product.category || "Petroleum"}
                                     </span>
-                                    <span className={`badge text-xs font-semibold border-none ${product.stockLevel === "Out of Stock" ? "bg-[#DC2626] text-white" : product.stockLevel === "Low Stock" ? "bg-[#F59E0B] text-[#1E293B]" : "bg-[#16A34A] text-white"}`}>
+                                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-medium ${product.stockLevel === "Out of Stock" ? "bg-rose-50 text-[#DC2626] border border-rose-200" : product.stockLevel === "Low Stock" ? "bg-amber-50 text-[#D97706] border border-amber-200" : "bg-emerald-50 text-[#16A34A] border border-emerald-200"}`}>
+                                        <span className={`w-1.5 h-1.5 rounded-full ${product.stockLevel === "Out of Stock" ? "bg-[#DC2626]" : product.stockLevel === "Low Stock" ? "bg-[#D97706]" : "bg-[#16A34A]"}`} />
                                         {product.stockLevel || "In Stock"}
                                     </span>
                                 </div>
 
-                                <h1 className="card-title text-2xl sm:text-3xl font-bold text-[#1E293B] tracking-tight">
+                                <h1 className="card-title text-2xl sm:text-3xl font-medium text-[#111827]">
                                     {product.name}
                                 </h1>
 
-                                <p className="text-[#64748B] text-xs sm:text-sm leading-relaxed mt-3">
-                                    {product.description || "No description provided."}
+                                <p className="text-[#4B5565] text-xs sm:text-sm leading-relaxed mt-3">
+                                    {product.description || "Standard refinery specification."}
                                 </p>
 
                                 <div className="mt-5 pt-4 border-t border-[#E2E8F0] space-y-2 text-xs">
-                                    <div className="flex justify-between py-1 border-b border-[#F1F5F9]">
-                                        <span className="text-[#64748B]">Item Code</span>
-                                        <span className="font-mono font-semibold text-[#1E293B]">OIL-{product.id}</span>
+                                    <div className="flex justify-between py-1.5 border-b border-[#F5F7FA]">
+                                        <span className="text-[#6B7487]">Item code</span>
+                                        <span className="font-mono tabular-nums font-medium text-[#111827]">OIL-{product.id}</span>
                                     </div>
-                                    <div className="flex justify-between py-1 border-b border-[#F1F5F9]">
-                                        <span className="text-[#64748B]">Quality Standard</span>
-                                        <span className="font-semibold text-[#1E293B]">Standard National Refinery Grade</span>
+                                    <div className="flex justify-between py-1.5 border-b border-[#F5F7FA]">
+                                        <span className="text-[#6B7487]">Quality standard</span>
+                                        <span className="font-medium text-[#111827]">National Refinery & ISO 9001 Grade</span>
                                     </div>
-                                    <div className="flex justify-between py-1">
-                                        <span className="text-[#64748B]">Delivery Options</span>
-                                        <span className="font-semibold text-[#1E293B]">Tanker Truck / Bulk Depot Dispatch</span>
+                                    <div className="flex justify-between py-1.5">
+                                        <span className="text-[#6B7487]">Delivery method</span>
+                                        <span className="font-medium text-[#111827]">Road Tanker / Bulk Depot Dispatch</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="mt-6 pt-4 border-t border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                 <div>
-                                    <span className="text-[11px] uppercase tracking-wider text-[#64748B] block font-bold">Standard Price</span>
-                                    <span className="text-3xl font-extrabold text-[#0F2747]">
+                                    <span className="text-xs text-[#6B7487] block font-medium">Standard price</span>
+                                    <span className="font-mono tabular-nums text-3xl font-semibold text-[#0F2747]">
                                         {typeof product.price === "number" ? `$${product.price.toFixed(2)}` : product.price || "$0.00"}
                                     </span>
-                                    <span className="text-xs text-[#64748B] block">per unit / barrel</span>
+                                    <span className="text-xs text-[#6B7487] block">per unit / barrel</span>
                                 </div>
 
                                 <div className="card-actions flex-wrap gap-2">
@@ -220,14 +221,14 @@ export default function ProductDetails({
                                             setIsInquireModalOpen(true);
                                             setInquirySuccess(false);
                                         }}
-                                        className="btn bg-[#0F2747] hover:bg-[#163860] text-white font-bold border-none shadow-sm text-xs sm:text-sm rounded-xl"
+                                        className="btn bg-[#0F2747] hover:bg-[#163860] text-white font-medium border-none text-xs sm:text-sm rounded-lg"
                                     >
-                                        Inquire via PusherJS
+                                        Inquire Dispatch
                                     </button>
-                                    <Link href="/dashboard" className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] font-bold border-none shadow-sm text-xs sm:text-sm rounded-xl">
-                                        Order Oil Now
+                                    <Link href="/dashboard" className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] font-medium border-none text-xs sm:text-sm rounded-lg">
+                                        Order Fuel
                                     </Link>
-                                    <Link href="/" className="btn btn-outline border-[#CBD5E1] text-[#1E293B] hover:bg-[#F5F7FA] text-xs sm:text-sm rounded-xl">
+                                    <Link href="/" className="btn bg-white border border-[#CBD5E1] text-[#111827] hover:bg-[#F5F7FA] text-xs sm:text-sm rounded-lg font-medium">
                                         Back
                                     </Link>
                                 </div>
@@ -235,14 +236,14 @@ export default function ProductDetails({
                         </div>
                     </div>
                 ) : (
-                    <div className="card bg-[#FFFFFF] border border-[#E2E8F0] p-8 text-center shadow-sm rounded-2xl">
-                        <h2 className="text-lg font-bold text-[#1E293B] mb-1">Product #{productId} Not Found</h2>
-                        <p className="text-[#64748B] text-xs mb-4">No product was found matching this identification number.</p>
+                    <div className="card bg-[#FFFFFF] border border-[#E2E8F0] p-8 text-center rounded-2xl">
+                        <h2 className="text-lg font-medium text-[#111827] mb-1">Product #{productId} not found</h2>
+                        <p className="text-[#6B7487] text-xs mb-4">No product record matched this identification number</p>
                         <div className="flex justify-center gap-3">
-                            <Link href="/dashboard" className="btn bg-[#0F2747] text-white hover:bg-[#153e70] btn-sm rounded-xl">
+                            <Link href="/dashboard" className="btn bg-[#0F2747] text-white hover:bg-[#163860] btn-sm rounded-lg font-medium">
                                 View Catalog
                             </Link>
-                            <Link href="/" className="btn btn-outline border-[#CBD5E1] text-[#1E293B] btn-sm rounded-xl">
+                            <Link href="/" className="btn bg-white border border-[#CBD5E1] text-[#111827] btn-sm rounded-lg font-medium">
                                 Back to Home
                             </Link>
                         </div>
@@ -250,60 +251,54 @@ export default function ProductDetails({
                 )}
 
                 {product && (
-                    <div className="mt-8 bg-white p-5 sm:p-8 rounded-2xl border border-[#E2E8F0] shadow-sm text-left">
+                    <div className="mt-8 bg-white p-6 sm:p-8 rounded-2xl border border-[#E2E8F0] text-left">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-[#E2E8F0] pb-4">
                             <div>
-                                <div className="flex items-center gap-2 flex-wrap">
-                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#16A34A] text-white shadow-none shrink-0">
-                                        Verified
-                                    </span>
-                                    <h2 className="text-lg sm:text-xl font-black text-[#1E293B]">
+                                <div className="flex items-center gap-2.5 flex-wrap">
+                                    <h2 className="text-lg sm:text-xl font-medium text-[#111827]">
                                         Customer Delivery Reviews & Ratings
                                     </h2>
+                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-medium bg-[#F5F7FA] border border-[#E2E8F0] text-[#4B5565] shrink-0">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" aria-hidden="true" />
+                                        Verified
+                                    </span>
                                 </div>
-                                <p className="text-xs text-[#64748B] mt-0.5">
-                                    Real delivery experiences from buyers with confirmed completed tanker shipments.
+                                <p className="text-xs text-[#4B5565] mt-0.5">
+                                    Delivery feedback from buyers with completed tanker shipments
                                 </p>
                             </div>
-                            <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-lg border border-slate-200 shrink-0">
+                            <span className="text-xs font-medium text-[#6B7487] bg-[#F5F7FA] px-3 py-1 rounded-lg border border-[#E2E8F0] shrink-0">
                                 Verified completed buyers only
                             </span>
                         </div>
 
                         {productReviews.length === 0 ? (
-                            <div className="p-6 bg-slate-50 rounded-xl text-center border border-slate-200">
-                                <p className="text-xs text-slate-500">No delivery reviews posted for this petroleum product yet.</p>
+                            <div className="p-6 bg-[#F5F7FA] rounded-xl text-center border border-[#E2E8F0]">
+                                <p className="text-xs text-[#6B7487]">No delivery reviews posted for this petroleum product yet</p>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {productReviews.map((rev) => (
                                     <div
                                         key={rev.orderId}
-                                        className="p-4 rounded-xl bg-slate-50/70 border border-slate-200 flex flex-col justify-between"
+                                        className="p-4 rounded-xl bg-[#F5F7FA] border border-[#E2E8F0] flex flex-col justify-between"
                                     >
                                         <div>
                                             <div className="flex items-center justify-between gap-2 mb-2">
-                                                <div className="flex items-center gap-1.5">
-                                                    <div className="flex text-amber-500 text-xs">
-                                                        {Array.from({ length: 5 }).map((_, idx) => (
-                                                            <span key={idx} className={idx < rev.rating ? "text-amber-500" : "text-slate-200"}>
-                                                                ★
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                    <span className="text-xs font-bold text-dark-slate">({rev.rating}/5)</span>
-                                                </div>
-                                                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                                                    Delivered Order #{rev.orderId}
+                                                <span className="font-mono tabular-nums text-xs font-semibold text-[#111827] bg-white border border-[#E2E8F0] px-2 py-0.5 rounded">
+                                                    {rev.rating}.0 / 5.0
+                                                </span>
+                                                <span className="font-mono tabular-nums text-xs font-medium text-[#16A34A] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                                    Order #{rev.orderId}
                                                 </span>
                                             </div>
-                                            <p className="text-xs text-slate-800 italic leading-relaxed">
-                                                "{rev.comment}"
+                                            <p className="text-xs text-[#111827] leading-relaxed">
+                                                &ldquo;{rev.comment}&rdquo;
                                             </p>
                                         </div>
-                                        <div className="mt-3 pt-2 border-t border-slate-200 flex items-center justify-between text-[11px]">
-                                            <span className="font-bold text-dark-slate">{rev.reviewerName}</span>
-                                            <span className="text-[10px] text-slate-400">
+                                        <div className="mt-3 pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-xs">
+                                            <span className="font-medium text-[#111827]">{rev.reviewerName}</span>
+                                            <span className="font-mono tabular-nums text-xs text-[#6B7487]">
                                                 {rev.createdAt ? new Date(rev.createdAt).toLocaleDateString() : "Recent"}
                                             </span>
                                         </div>
@@ -316,29 +311,32 @@ export default function ProductDetails({
             </div>
 
             {isInquireModalOpen && product && (
-                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
-                    <div className="bg-[#FFFFFF] rounded-2xl shadow-xl border border-[#E2E8F0] w-full max-w-[500px] text-left p-6 sm:p-8">
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 animate-fadeIn">
+                    <div className="bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0] w-full max-w-[500px] text-left p-6 sm:p-8">
                         <div className="flex justify-between items-center border-b border-[#E2E8F0] pb-3 mb-4">
                             <div>
-                                <h3 className="text-lg font-bold text-[#1E293B]">Inquire About Product</h3>
-                                <p className="text-xs text-[#64748B]">{product.name} (ID: #{product.id})</p>
+                                <h3 className="text-lg font-medium text-[#111827]">Inquire About Product</h3>
+                                <p className="text-xs text-[#6B7487] font-mono tabular-nums">{product.name} · Lot #{product.id}</p>
                             </div>
                             <button
                                 onClick={() => setIsInquireModalOpen(false)}
-                                className="text-[#64748B] hover:text-[#1E293B] text-xl font-bold cursor-pointer"
+                                className="text-[#6B7487] hover:text-[#111827] p-1 cursor-pointer"
+                                aria-label="Close modal"
                             >
-                                x
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
                             </button>
                         </div>
 
                         {inquirySuccess ? (
                             <div className="text-center py-6 space-y-3">
-                                <div role="alert" className="alert bg-[#16A34A] text-white py-3 rounded-xl border-none text-xs">
-                                    <span>Inquiry dispatched in real-time via PusherJS! The supplier has been notified.</span>
+                                <div role="alert" className="alert bg-emerald-50 text-[#16A34A] border border-emerald-200 py-3 rounded-lg text-xs font-medium">
+                                    <span>Inquiry sent to the supplier dispatch channel</span>
                                 </div>
                                 <button
                                     onClick={() => setIsInquireModalOpen(false)}
-                                    className="btn bg-[#0F2747] text-white btn-sm rounded-xl"
+                                    className="btn bg-[#0F2747] text-white btn-sm rounded-lg font-medium"
                                 >
                                     Done
                                 </button>
@@ -346,38 +344,38 @@ export default function ProductDetails({
                         ) : (
                             <form onSubmit={handleSendProductInquiry} className="space-y-4">
                                 <div>
-                                    <label className="block text-xs font-semibold text-[#1E293B] mb-1">Your Name</label>
+                                    <label className="block text-xs font-medium text-[#111827] mb-1">Your name</label>
                                     <input
                                         type="text"
                                         required
                                         value={inquiryName}
-                                        placeholder="Enter your name"
+                                        placeholder="Full name"
                                         onChange={(e) => setInquiryName(e.target.value)}
-                                        className="input input-bordered w-full bg-[#FFFFFF] text-[#1E293B] border-[#CBD5E1] focus:border-[#0F2747] text-xs rounded-xl"
+                                        className="input input-bordered w-full bg-[#FFFFFF] text-[#111827] border-[#CBD5E1] focus:border-[#0F2747] text-xs rounded-lg"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-semibold text-[#1E293B] mb-1">Your Email</label>
+                                    <label className="block text-xs font-medium text-[#111827] mb-1">Your email</label>
                                     <input
                                         type="email"
                                         required
                                         value={inquiryEmail}
-                                        placeholder="Enter your email"
+                                        placeholder="Email address"
                                         onChange={(e) => setInquiryEmail(e.target.value)}
-                                        className="input input-bordered w-full bg-[#FFFFFF] text-[#1E293B] border-[#CBD5E1] focus:border-[#0F2747] text-xs rounded-xl"
+                                        className="input input-bordered w-full bg-[#FFFFFF] text-[#111827] border-[#CBD5E1] focus:border-[#0F2747] text-xs rounded-lg"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-semibold text-[#1E293B] mb-1">Your Message / Requirements</label>
+                                    <label className="block text-xs font-medium text-[#111827] mb-1">Message & volume requirements</label>
                                     <textarea
                                         required
                                         rows={3}
                                         value={inquiryMessage}
-                                        placeholder="Enter your message"
+                                        placeholder="Specify required volume and delivery depot"
                                         onChange={(e) => setInquiryMessage(e.target.value)}
-                                        className="textarea textarea-bordered w-full bg-[#FFFFFF] text-[#1E293B] border-[#CBD5E1] focus:border-[#0F2747] text-xs rounded-xl"
+                                        className="textarea textarea-bordered w-full bg-[#FFFFFF] text-[#111827] border-[#CBD5E1] focus:border-[#0F2747] text-xs rounded-lg"
                                     />
                                 </div>
 
@@ -385,16 +383,16 @@ export default function ProductDetails({
                                     <button
                                         type="button"
                                         onClick={() => setIsInquireModalOpen(false)}
-                                        className="btn btn-outline border-[#CBD5E1] text-[#1E293B] btn-sm rounded-xl flex-1"
+                                        className="btn bg-white border border-[#CBD5E1] text-[#111827] btn-sm rounded-lg flex-1 font-medium"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={isSendingInquiry}
-                                        className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] font-bold btn-sm border-none shadow-sm rounded-xl flex-2"
+                                        className="btn bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] font-medium btn-sm border-none rounded-lg flex-2"
                                     >
-                                        {isSendingInquiry ? "Broadcasting..." : "Send via PusherJS"}
+                                        {isSendingInquiry ? "Sending..." : "Send Inquiry"}
                                     </button>
                                 </div>
                             </form>
