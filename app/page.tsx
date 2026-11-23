@@ -311,7 +311,7 @@ export default function Home() {
                                     />
                                 </motion.div>
 
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent flex flex-col justify-end p-6 md:p-12 pb-14 md:pb-14 text-left text-white">
+                                <div className="absolute inset-0 bg-black/55 flex flex-col justify-end p-6 md:p-12 pb-14 md:pb-14 text-left text-white">
                                     <motion.div
                                         initial={{ opacity: 0, y: 12 }}
                                         animate={{ opacity: 1, y: 0 }}
