@@ -73,37 +73,37 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
     <div className="w-full text-left animate-fadeIn">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1E293B]">
+          <h1 className="text-xl sm:text-2xl font-medium text-[#111827]">
             Petroleum Products & Fuels Marketplace
           </h1>
-          <p className="text-sm text-[#64748B]">
-            Certified petroleum grades sourced directly from national refineries and authorized regional depots.
+          <p className="text-xs sm:text-sm text-[#4B5565] mt-0.5">
+            Certified petroleum grades sourced from national refineries and authorized regional depots
           </p>
         </div>
         {(isSupplier || isDealer) && onOpenPostProductModal && (
           <button
             onClick={onOpenPostProductModal}
-            className="bg-[#F59E0B] hover:bg-[#D97706] text-[#1E293B] px-5 py-2.5 rounded-xl text-sm font-bold transition-colors cursor-pointer shadow-sm border-none self-start sm:self-auto flex items-center gap-2"
+            className="bg-[#F59E0B] hover:bg-[#D97706] text-[#111827] px-4 h-10 rounded-lg text-xs font-medium transition-colors cursor-pointer border-none self-start sm:self-auto flex items-center gap-2"
           >
             <span>+</span> Post Product Lot
           </button>
         )}
       </div>
 
-      <div className="bg-white border border-[#E2E8F0] p-4 sm:p-5 rounded-2xl mb-6 shadow-sm">
+      <div className="bg-white border border-[#E2E8F0] p-4 sm:p-5 rounded-2xl mb-6">
         <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between mb-3">
           <div className="relative flex-1">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#6B7487]">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
             <input
               type="text"
               value={productSearchQuery}
               onChange={(e) => setProductSearchQuery(e.target.value)}
-              placeholder="Search petroleum fuels, octane grade, diesel..."
-              className="w-full pl-10 pr-10 py-2.5 border border-[#E2E8F0] rounded-xl text-sm bg-[#F8FAFC] text-dark-slate placeholder-secondary-gray focus:outline-none focus:border-primary focus:bg-white transition-all shadow-inner"
+              placeholder="Search products"
+              className="w-full pl-10 pr-10 py-2.5 border border-[#E2E8F0] rounded-lg text-sm bg-[#F5F7FA] text-[#111827] placeholder-[#6B7487] focus:outline-none focus:border-[#0F2747] focus:bg-white transition-colors"
             />
             {productSearchQuery && (
               <button
@@ -197,7 +197,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                 <img
                   src={product.image || getProductImage(product.name, product.image, product.id)}
                   alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.src = getProductImage(product.name, undefined, product.id);
                   }}
@@ -243,7 +243,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                 </div>
 
                 <div className="pt-4 mt-2 border-t border-[#F1F5F9] flex items-center justify-between gap-2">
-                  <span className="text-base font-extrabold text-[#0F2747]">{product.price}</span>
+                  <span className="font-mono tabular-nums text-base font-semibold text-[#0F2747]">{product.price}</span>
                   <div className="card-actions justify-end">
                     {(() => {
                       const isOwner = isProductOwner(product, userData);
